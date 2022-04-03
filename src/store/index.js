@@ -2,7 +2,14 @@ import { createStore } from 'vuex'
 
 export const store = createStore({
 	state() {
-		return {}
+		return {
+			isLogged: false,
+		}
 	},
-	mutations: {}
+	mutations: {
+		setLogged(state, payload) {
+			console.log("State is now:", payload);
+			state.isLogged = payload.isLogged;
+		}
+	}
 })
