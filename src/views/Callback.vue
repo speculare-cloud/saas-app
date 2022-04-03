@@ -19,6 +19,10 @@ export default {
 			.then((resp) => {
 				console.log("Success", resp);
 				// Redirect to the Home page
+				this.$store.commit({
+					type: 'setLogged',
+					isLogged: true
+				});
 				this.$router.replace({ name: 'Home' });
 			}).catch((err) => {
 				console.log("Error", err);
