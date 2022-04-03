@@ -12,9 +12,9 @@ app.use(router)
 app.use(store)
 
 app.config.globalProperties.$filters = {
-    pluralize(value, number) {
-        return pluralize(value, number)
-    }
+	pluralize(value, number) {
+		return pluralize(value, number)
+	}
 }
 
 app.mount('#app')

@@ -1,0 +1,94 @@
+<template>
+	<section class="flex flex-col sm:flex-row h-screen items-center">
+		<header class="hidden lg:block absolute z-10 top-0 left-0 right-0 px-2 mx-auto">
+			<img class="mt-12 ml-8 w-40" src="https://speculare.cloud/assets/imgs/icon.svg">
+		</header>
+
+		<div class="bg-white w-full md:max-w-md lg:max-w-full md:w-1/2 xl:w-1/3 h-screen px-6 lg:px-16 xl:px-12 flex items-center justify-center">
+			<div class="w-full h-100">
+				<img class="block w-52 mb-12 lg:mb-0 lg:hidden lg:mt-12 lg:ml-8 lg:w-40" src="https://speculare.cloud/assets/imgs/icon.svg">
+
+				<h1 class="mb-6 text-3xl">
+					Speculare Monitoring Platform
+				</h1>
+
+				<p class="mb-6 text-gray-400">
+					<span class="block">Welcome back!</span>
+					<span>Please log in to your account.</span>
+				</p>
+
+				<div class="mt-6">
+					<div class="input-holder">
+						<div class="input-label-holder">
+							<input
+								ref="emailField" autocomplete="on" name="email" placeholder="john.doe@speculare.cloud"
+								type="email" class="input-field border-solid border-[1px]" :class="(emailEmpty || !emailValid) ? 'border-red-500' : 'border-blue-500'" v-model="emailAddr"
+								@input="checkEmail">
+							<label aria-live="assertive" class="input-label" :class="(emailEmpty || !emailValid) ? 'text-red-500' : 'text-gray-400'">Email address</label>
+							<div class="input-mandatory-holder">
+								<svg class="input-svg" viewBox="0 0 24 24">
+									<path d="M10,2H14L13.21,9.91L19.66,5.27L21.66,8.73L14.42,12L21.66,15.27L19.66,18.73L13.21,14.09L14,22H10L10.79,14.09L4.34,18.73L2.34,15.27L9.58,12L2.34,8.73L4.34,5.27L10.79,9.91L10,2Z" />
+								</svg>
+							</div>
+						</div>
+						<div class="input-error-holder" :class="(emailEmpty || !emailValid) ? 'block' : 'hidden'">
+							<div class="input-error">
+								<span v-if="emailEmpty">Email address cannot be empty.</span>
+								<span v-if="!emailEmpty && !emailValid">Email is not valid.</span>
+							</div>
+						</div>
+					</div>
+
+					<button class="flex w-full justify-center items-center bg-blue-500 hover:bg-blue-600 focus:bg-blue-600 text-white rounded-lg px-4 py-3 mt-6">
+						<div class="flex mr-2">
+							<svg class="w-4 h-4 min-h-[1em] min-w-[1em] align-middle" style="fill: currentcolor;" viewBox="0 0 24 24">
+								<path d="M7.5,5.6L5,7L6.4,4.5L5,2L7.5,3.4L10,2L8.6,4.5L10,7L7.5,5.6M19.5,15.4L22,14L20.6,16.5L22,19L19.5,17.6L17,19L18.4,16.5L17,14L19.5,15.4M22,2L20.6,4.5L22,7L19.5,5.6L17,7L18.4,4.5L17,2L19.5,3.4L22,2M13.34,12.78L15.78,10.34L13.66,8.22L11.22,10.66L13.34,12.78M14.37,7.29L16.71,9.63C17.1,10 17.1,10.65 16.71,11.04L5.04,22.71C4.65,23.1 4,23.1 3.63,22.71L1.29,20.37C0.9,20 0.9,19.35 1.29,18.96L12.96,7.29C13.35,6.9 14,6.9 14.37,7.29Z" />
+							</svg>
+						</div>
+						<span>Send a magic link</span>
+					</button>
+				</div>
+
+				<p class="text-gray-400 text-center mt-12">
+					Do not have an account yet? <router-link key="register" :to="{ name: 'register' }" class="text-blue-500 hover:text-blue-600">
+						Create one
+					</router-link>
+				</p>
+			</div>
+		</div>
+
+		<div class="bg-blue-600 hidden sm:block w-full md:w-1/2 xl:w-2/3 h-screen">
+			<img src="https://source.unsplash.com/random" class="w-full h-full object-cover" loading="lazy">
+		</div>
+	</section>
+</template>
+
+<script>
+export default {
+	name: 'Home',
+
+	data () {
+		return {
+			emailAddr: "",
+			emailEmpty: true,
+			emailValid: false,
+		}
+	},
+
+	methods: {
+		validateEmail: function(email) {
+			return String(email)
+				.toLowerCase()
+				.match(
+					/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+				);
+		},
+		checkEmail: function() {
+			console.log("Checking email format", this.emailAddr);
+
+			this.emailEmpty = this.emailAddr == "";
+			this.emailValid = this.validateEmail(this.emailAddr);
+		}
+	}
+}
+</script>
