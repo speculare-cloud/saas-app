@@ -87,16 +87,6 @@ export default {
 		}
 	},
 
-	// React to isLogged
-	watch: {
-		'$store.state.isLogged': function(value) {
-			console.log("isLogged Updated: ", value);
-			if (value) {
-				this.$router.replace({ name: 'Home' });
-			}
-		}
-	},
-
 	methods: {
 		validateEmail: function(email) {
 			return String(email)
