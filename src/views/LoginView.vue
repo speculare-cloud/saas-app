@@ -4,7 +4,7 @@
 			<img class="mt-12 ml-8 w-40" src="https://speculare.cloud/assets/imgs/icon.svg">
 		</header>
 
-		<div class="bg-white w-full md:max-w-md lg:max-w-full md:w-1/2 xl:w-1/3 h-screen px-6 lg:px-16 xl:px-12 flex items-center justify-center">
+		<div class="bg-white w-full lg:max-w-full md:w-1/2 xl:w-1/3 h-screen px-6 lg:px-16 xl:px-12 flex items-center justify-center">
 			<div class="w-full h-100">
 				<img class="block w-52 mb-12 lg:mb-0 lg:hidden lg:mt-12 lg:ml-8 lg:w-40" src="https://speculare.cloud/assets/imgs/icon.svg">
 
