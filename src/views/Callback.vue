@@ -15,7 +15,7 @@ export default {
 			return;
 		}
 
-		axios.get("https://auth.speculare.cloud/api/csso?jwt=" + this.$route.query.jwt)
+		axios.get("https://auth.speculare.cloud/api/csso?jwt=" + this.$route.query.jwt, { withCredentials: true })
 			.then((resp) => {
 				console.log("Success", resp);
 				// Redirect to the Home page
