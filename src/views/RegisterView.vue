@@ -57,7 +57,7 @@
 				</div>
 
 				<p class="text-gray-400 text-center mt-12">
-					Already have an account? <router-link key="login" :to="{ name: 'login' }" class="text-blue-500 hover:text-blue-600">
+					Already have an account? <router-link key="login" :to="{ name: 'Login' }" class="text-blue-500 hover:text-blue-600">
 						Log in
 					</router-link>
 				</p>

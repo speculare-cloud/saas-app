@@ -8,6 +8,11 @@ import '@/assets/app.css'
 
 const app = createApp(App)
 
+router.beforeEach((toRoute, _fromRoute, next) => {
+	window.document.title = toRoute.name + " - Speculare Console";
+	next();
+})
+
 app.use(router)
 app.use(store)
 

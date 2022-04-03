@@ -50,7 +50,7 @@
 				</div>
 
 				<p class="text-gray-400 text-center mt-12">
-					Do not have an account yet? <router-link key="register" :to="{ name: 'register' }" class="text-blue-500 hover:text-blue-600">
+					Do not have an account yet? <router-link key="register" :to="{ name: 'Register' }" class="text-blue-500 hover:text-blue-600">
 						Create one
 					</router-link>
 				</p>
