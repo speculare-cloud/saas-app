@@ -3,8 +3,6 @@
 </template>
 
 <script>
-import axios from 'axios'
-
 export default {
 	name: 'Callback',
 
@@ -15,7 +13,7 @@ export default {
 			return;
 		}
 
-		axios.get("https://auth.speculare.cloud/api/csso?jwt=" + this.$route.query.jwt, { withCredentials: true })
+		this.$http.get("https://auth.speculare.cloud/api/csso?jwt=" + this.$route.query.jwt)
 			.then((resp) => {
 				console.log("Success", resp);
 				// Redirect to the Home page

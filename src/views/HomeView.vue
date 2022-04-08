@@ -13,14 +13,12 @@
 </template>
 
 <script>
-import axios from 'axios'
-
 export default {
 	name: 'Home',
 
 	methods: {
 		logout: async function() {
-			await axios.get("https://auth.speculare.cloud/api/logout", { withCredentials: true })
+			await this.$http.get("https://auth.speculare.cloud/api/logout")
 				.then(() => {
 					this.$store.commit({
 						type: 'setLogged',
@@ -32,7 +30,7 @@ export default {
 				});
 		},
 		generateKey: async function() {
-			await axios.post("https://auth.speculare.cloud/api/key", {}, { withCredentials: true })
+			await this.$http.post("https://auth.speculare.cloud/api/key", {})
 				.then((resp) => {
 					console.log("New key: ", resp);
 				}).catch((err) => {

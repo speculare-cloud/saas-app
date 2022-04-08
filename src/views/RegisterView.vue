@@ -80,8 +80,6 @@
 </template>
 
 <script>
-import axios from 'axios'
-
 export default {
 	name: 'Register',
 
@@ -112,7 +110,7 @@ export default {
 
 			this.requestLoading = true;
 			console.log("Sending request for email: ", this.emailAddr);
-			await axios.post("https://auth.speculare.cloud/api/rsso", {
+			await this.$http.post("https://auth.speculare.cloud/api/rsso", {
 				email: this.emailAddr
 			}).then((resp) => {
 				console.log("Success", resp);
