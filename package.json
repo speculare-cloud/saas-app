@@ -10,6 +10,7 @@
     "dependencies": {
         "axios": "^0.26.1",
         "core-js": "^3.21.1",
+        "daisyui": "^2.13.6",
         "moment": "^2.29.1",
         "vue": "^3.2.31",
         "vue-router": "^4.0.14",

@@ -3,7 +3,7 @@ const colors = require('tailwindcss/colors')
 module.exports = {
 	content: ['./public/index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
 	variants: {},
-	plugins: [],
+	plugins: [require("daisyui")],
 	theme: {
 		extend: {
 			colors: {
