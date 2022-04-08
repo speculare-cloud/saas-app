@@ -32,7 +32,7 @@ export default {
 				});
 		},
 		generateKey: async function() {
-			await axios.post("https://auth.speculare.cloud/api/key", { withCredentials: true })
+			await axios.post("https://auth.speculare.cloud/api/key", {}, { withCredentials: true })
 				.then((resp) => {
 					console.log("New key: ", resp);
 				}).catch((err) => {
