@@ -227,6 +227,10 @@ export default {
 					console.log(resp);
 					
 					resp.data.forEach(elem => {
+						if (this.rawKeys.find((e) => e.key == elem.key) !== undefined) {
+							return;
+						}
+						
 						if (!this.bertas.includes(elem.berta)) {
 							console.log("Adding new berta", elem.berta);
 							this.bertas.push(elem.berta);
