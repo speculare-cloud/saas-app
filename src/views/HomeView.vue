@@ -119,7 +119,7 @@
 										</button>
 									</label>
 								</div>
-								<div class="flex mt-4 gap-4">
+								<div class="flex justify-between sm:justify-start mt-4 gap-4">
 									<button class="btn btn-info lowercase btn-sm">
 										regenerate key
 									</button>
@@ -230,7 +230,7 @@ export default {
 						if (this.rawKeys.find((e) => e.key == elem.key) !== undefined) {
 							return;
 						}
-						
+
 						if (!this.bertas.includes(elem.berta)) {
 							console.log("Adding new berta", elem.berta);
 							this.bertas.push(elem.berta);
