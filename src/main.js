@@ -14,7 +14,7 @@ const httpAxios = axios.create({
 const app = createApp(App);
 
 app.config.globalProperties.$authBase = process.env.VUE_APP_AUTH_SERVER;
-app.config.globalProperties.$bertaOverride = (process.env.NODE_ENV !== 'production') ? process.env.VUE_APP_BERTA_OVERRIDE : undefined;
+app.config.globalProperties.$bertaOverride = process.env.VUE_APP_BERTA_OVERRIDE;
 
 app.config.globalProperties.$http = httpAxios;
 

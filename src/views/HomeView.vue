@@ -96,7 +96,10 @@
 										<input
 											v-else type="password" :value="item.key" class="input input-bordered w-full focus:outline-none text-3xl h-9"
 											readonly>
-										<button class="btn btn-primary h-9 min-h-6 text-sm lowercase" @click="toggleShow(item)">show</button>
+										<button class="btn btn-primary h-9 min-h-6 text-sm lowercase" @click="toggleShow(item)">
+											<p v-if="item.show">hide</p>
+											<p v-else>show</p>
+										</button>
 									</label>
 								</div>
 							</div>
@@ -198,7 +201,7 @@ export default {
 			this.bertas.forEach(async (elem) => {
 				console.log("Gathering for Berta", elem);
 
-				let bertaUrl = this.$bertaOverride ? this.$bertaOverride : "https://server.speculare.cloud";
+				let bertaUrl = this.$bertaOverride ? this.$bertaOverride : "https://" + elem + ".speculare.cloud";
 				await this.$http.get(bertaUrl + "/api/hosts")
 					.then((resp) => {
 						console.log(resp);
