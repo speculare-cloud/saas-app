@@ -77,7 +77,7 @@
 										Berta {{ item.berta }}
 									</div>
 									<h2 class="card-title">
-										{{ trunk(item.host) }}
+										{{ item.hostname }}
 									</h2>
 								</div>
 								<div class="flex-1 form-control">
@@ -149,14 +149,18 @@ export default {
 
 	data () {
 		return {
+			bertas: [],
+			rawKeys: [],
 			keys: [{
 				key: "AZQpE53HqYUnIPww7J0MltSdzFRELB2e",
 				host: "4fcf4b4f65721729a82d61a2bcf32c74637ad2c6",
+				hostname: "slave-one",
 				berta: "B1",
 				show: false,
 			}, {
 				key: "AZQpE53HqYUnIPww7J0MltSdzFRELB2e",
 				host: "b131f5adb1b3ff662d355085036005b15bc34677",
+				hostname: "server-core",
 				berta: "B1",
 				show: false,
 			}],
@@ -177,9 +181,11 @@ export default {
 				.then((resp) => {
 					console.log(resp);
 					
-					// TODO - Remove cleanup and default data
-					this.keys = [];
 					resp.data.forEach(elem => {
+						if (!this.berta.contains(elem.berta)) {
+							this.berta.push(elem.berta);
+						}
+
 						const newObj = {
 							key: elem.key,
 							host: elem.host_uuid,
@@ -187,11 +193,37 @@ export default {
 							show: false
 						};
 
-						this.keys.push(newObj);
+						this.rawKeys.push(newObj);
 					});
 				}).catch((err) => {
 					console.log(err);
 				});
+
+			this.bertas.forEach(async (elem) => {
+				console.log("Gathering for Berta", elem);
+				await this.$http.get("https://server.speculare.cloud/api/hosts")
+					.then((resp) => {
+						console.log(resp);
+					
+						resp.data.forEach(elem => {
+							// TODO - rkey can (maybe?) be undefined
+							let rkey = this.rawKeys.find((e) => e.host == elem.uuid);
+
+							const newObj = {
+								key: rkey.key,
+								host: elem.host_uuid,
+								hostname: elem.hostname,
+								os: elem.system,
+								berta: rkey.berta,
+								show: false
+							};
+
+							this.keys.push(newObj);
+						});
+					}).catch((err) => {
+						console.log(err);
+					});
+			});
 		},
 		trunk: function(text) {
 			return text.slice(0, 6);
