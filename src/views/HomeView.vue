@@ -20,49 +20,38 @@
 				</div>
 			</header>
 
-			<main class="mt-4">
-				<div class="flex items-center justify-between mb-8">
+			<main class="mt-6 px-6">
+				<div class="flex flex-col sm:flex-row gap-4 sm:items-center sm:justify-between mb-8">
 					<h3 class="text-2xl">
 						Have a great day!
 					</h3>
-					<div class="flex gap-4">
-						<div class="form-control">
-							<input type="text" placeholder="Search" class="input input-bordered">
-						</div>
-						<button @click="generateKey" class="btn">
-							Add new
-						</button>
-					</div>
+					<button @click="generateKey" class="btn" style="width: fit-content;">
+						Add new
+					</button>
 				</div>
 
 				<div class="card w-full bg-neutral text-neutral-content">
-					<div class="card-body items-center text-center">
-						<h2 class="card-title">
-							Cookies!
-						</h2>
-						<p>We are using cookies for no reason.</p>
-						<div class="card-actions justify-end">
-							<button class="btn btn-primary">
-								Accept
-							</button>
-							<button class="btn btn-ghost">
-								Deny
-							</button>
+					<div v-for="item in keys" :key="item.key" class="card-body flex-col sm:flex-row sm:items-center sm:justify-between px-6 sm:px-8 py-4">
+						<div class="flex-1 flex items-center justify-between sm:justify-start sm:gap-4">
+							<div class="badge badge-lg bg-base-100 py-4">
+								Berta {{ item.berta }}
+							</div>
+							<h2 class="card-title">
+								{{ trunk(item.host) }}
+							</h2>
 						</div>
-					</div>
-					<div class="divider my-0 h-0" /> 
-					<div class="card-body items-center text-center">
-						<h2 class="card-title">
-							Cookies!
-						</h2>
-						<p>We are using cookies for no reason.</p>
-						<div class="card-actions justify-end">
-							<button class="btn btn-primary">
-								Accept
-							</button>
-							<button class="btn btn-ghost">
-								Deny
-							</button>
+						<div class="flex-1 form-control">
+							<div class="input-group">
+								<input
+									v-if="item.show" :value="item.key" type="text" class="input w-full focus:outline-none"
+									readonly>
+								<input
+									v-else type="password" :value="item.key" class="input w-full focus:outline-none text-3xl"
+									readonly>
+								<button class="btn btn-square" @click="toggleShow(item)">
+									show
+								</button>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -72,10 +61,60 @@
 </template>
 
 <script>
+import { nextTick } from 'vue'
+
 export default {
 	name: 'Home',
 
+	data () {
+		return {
+			keys: [{
+				key: "AZQpE53HqYUnIPww7J0MltSdzFRELB2e",
+				host: "4fcf4b4f65721729a82d61a2bcf32c74637ad2c6",
+				berta: "B1",
+				show: false,
+			}, {
+				key: "AZQpE53HqYUnIPww7J0MltSdzFRELB2e",
+				host: "b131f5adb1b3ff662d355085036005b15bc34677",
+				berta: "B1",
+				show: false,
+			}],
+		}
+	},
+
+	mounted: function () {
+		const vm = this
+
+		nextTick(() => {
+			vm.$http.get("https://auth.speculare.cloud/api/key")
+				.then((resp) => {
+					console.log(resp);
+					
+					// TODO - Remove cleanup and default data
+					vm.keys = [];
+					resp.data.forEach(elem => {
+						const newObj = {
+							key: elem.key,
+							host: elem.host_uuid,
+							berta: elem.berta,
+							show: false
+						};
+
+						vm.keys.push(newObj);
+					});
+				}).catch((err) => {
+					console.log(err);
+				});
+		})
+	},
+
 	methods: {
+		trunk: function(text) {
+			return text.slice(0, 6);
+		},
+		toggleShow: function(item) {
+			item.show = !item.show;
+		},
 		logout: async function() {
 			await this.$http.get("https://auth.speculare.cloud/api/logout")
 				.then(() => {
