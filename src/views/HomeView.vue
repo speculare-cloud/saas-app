@@ -41,7 +41,7 @@
 							</h2>
 						</div>
 						<div class="flex-1 form-control">
-							<div class="input-group">
+							<div class="input-group gap-2">
 								<input
 									v-if="item.show" :value="item.key" type="text" class="input w-full focus:outline-none"
 									readonly>
