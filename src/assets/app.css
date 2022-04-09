@@ -113,3 +113,7 @@ body,
     color: rgb(221, 50, 82);
     padding-top: 2px;
 }
+
+#apikeys>div:not(:last-child) {
+    border-bottom: 1px solid #dfe3e8
+}

@@ -12,7 +12,7 @@
 								<img src="https://avatars.dicebear.com/api/bottts/speculare.svg">
 							</div>
 						</label>
-						<ul tabindex="0" class="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52" data-theme="light">
+						<ul tabindex="0" class="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52">
 							<li><a>Settings</a></li>
 							<li><a @click="logout">Logout</a></li>
 						</ul>
@@ -25,15 +25,15 @@
 					<h3 class="text-2xl">
 						Have a great day!
 					</h3>
-					<button @click="generateKey" class="btn" style="width: fit-content;">
+					<button @click="generateKey" class="btn hover:bg-stone-700" style="width: fit-content;">
 						Add new
 					</button>
 				</div>
 
-				<div class="card w-full bg-neutral text-neutral-content">
-					<div v-for="item in keys" :key="item.key" class="card-body flex-col sm:flex-row sm:items-center sm:justify-between px-6 sm:px-8 py-4">
+				<div id="apikeys" class="card w-full bg-base-100 shadow-xl">
+					<div id="childapikeys" v-for="item in keys" :key="item.key" class="card-body flex-col sm:flex-row sm:items-center sm:justify-between px-6 sm:px-8 py-4">
 						<div class="flex-1 flex items-center justify-between sm:justify-start sm:gap-4">
-							<div class="badge badge-lg bg-base-100 py-4">
+							<div class="badge badge-lg py-4">
 								Berta {{ item.berta }}
 							</div>
 							<h2 class="card-title">
@@ -41,17 +41,15 @@
 							</h2>
 						</div>
 						<div class="flex-1 form-control">
-							<div class="input-group gap-2">
+							<label class="input-group">
 								<input
-									v-if="item.show" :value="item.key" type="text" class="input w-full focus:outline-none"
+									v-if="item.show" :value="item.key" type="text" class="input input-bordered w-full focus:outline-none"
 									readonly>
 								<input
-									v-else type="password" :value="item.key" class="input w-full focus:outline-none text-3xl"
+									v-else type="password" :value="item.key" class="input input-bordered w-full focus:outline-none text-3xl"
 									readonly>
-								<button class="btn btn-square" @click="toggleShow(item)">
-									show
-								</button>
-							</div>
+								<button class="btn hover:bg-stone-700" @click="toggleShow(item)">show</button>
+							</label>
 						</div>
 					</div>
 				</div>
