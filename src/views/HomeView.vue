@@ -65,9 +65,20 @@
 							<h3 class="text-2xl">
 								Have a great day!
 							</h3>
-							<button @click="generateKey" class="btn bg-neutral h-9 min-h-6 lowercase" style="width: fit-content;">
-								Add new
-							</button>
+							<div class="indicator">
+								<span v-if="rawKeys.length == 0" class="indicator-item indicator-end sm:indicator-start badge badge-primary" /> 
+								<button @click="generateKey" class="btn bg-neutral h-9 min-h-6 lowercase" style="width: fit-content;">
+									Add new
+								</button>
+							</div>
+						</div>
+
+						<div v-if="rawKeys.length == 0" class="bg-neutral text-neutral-content shadow-xl rounded-box mb-2" style="height: 60px;">
+							<div class="card-body justify-center items-center align-middle text-center p-3 h-full">
+								<p class="flex-none flex justify-center">
+									Generate your first key with the <span class="badge badge-primary mx-1" /> annotated button!
+								</p>
+							</div>
 						</div>
 
 						<div v-for="item in rawKeys" :key="item.key" tabindex="0" class="collapse collapse-arrow bg-neutral text-neutral-content shadow-xl rounded-box mb-2">
@@ -85,7 +96,13 @@
 								</div>
 							</div>
 							<div class="collapse-content">
-								<div class="form-control">
+								<div v-if="!item.host" class="alert shadow-lg p-3 text-sm">
+									<div>
+										<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-info flex-shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+										<span>No data received yet... is this host configured correctly?</span>
+									</div>
+								</div>
+								<div class="form-control" :class="!item.host ? 'mt-2': ''">
 									<label class="label">
 										<span class="label-text">Secret key</span>
 									</label>
