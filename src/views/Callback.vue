@@ -13,7 +13,7 @@ export default {
 			return;
 		}
 
-		this.$http.get("https://auth.speculare.cloud/api/csso?jwt=" + this.$route.query.jwt)
+		this.$http.get(this.$authBase + "/api/csso?jwt=" + this.$route.query.jwt)
 			.then((resp) => {
 				console.log("Success", resp);
 				// Redirect to the Home page

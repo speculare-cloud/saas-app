@@ -65,37 +65,45 @@
 							<h3 class="text-2xl">
 								Have a great day!
 							</h3>
-							<button @click="generateKey" class="btn btn-active" style="width: fit-content;">
+							<button @click="generateKey" class="btn bg-neutral h-9 min-h-6 lowercase" style="width: fit-content;">
 								Add new
 							</button>
 						</div>
 
-						<div id="apikeys" class="card w-full bg-neutral text-neutral-content shadow-xl">
-							<div id="childapikeys" v-for="item in keys" :key="item.key" class="card-body flex-col sm:flex-row sm:items-center sm:justify-between px-6 sm:px-8 py-4">
-								<div class="flex-1 flex items-center justify-between sm:justify-start sm:gap-4">
-									<div class="bg-primary text-primary-content badge badge-lg py-4">
-										Berta {{ item.berta }}
+						<div v-for="item in rawKeys" :key="item.key" tabindex="0" class="collapse collapse-arrow bg-neutral text-neutral-content shadow-xl rounded-box mb-2">
+							<input type="checkbox" class="peer">
+							<div class="collapse-title text-xl font-medium p-3 min-h-min">
+								<div class="flex-1 flex items-center justify-between sm:justify-start">
+									<div class="tooltip tooltip-right tooltip-primary" data-tip="Assigned berta.">
+										<div class="bg-primary text-primary-content badge badge-lg py-4">
+											{{ item.berta }}
+										</div>
 									</div>
-									<h2 class="card-title">
-										{{ item.hostname }}
+									<h2 class="flex-1 card-title text-base font-normal ml-2">
+										{{ item.hostname ?? trunk(item.host) ?? "waiting data..." }}
 									</h2>
 								</div>
-								<div class="flex-1 form-control">
+							</div>
+							<div class="collapse-content">
+								<div class="form-control">
+									<label class="label">
+										<span class="label-text">Secret key</span>
+									</label>
 									<label class="input-group">
 										<input
-											v-if="item.show" :value="item.key" type="text" class="input input-bordered w-full focus:outline-none"
+											v-if="item.show" :value="item.key" type="text" class="input input-bordered w-full focus:outline-none h-9"
 											readonly>
 										<input
-											v-else type="password" :value="item.key" class="input input-bordered w-full focus:outline-none text-3xl"
+											v-else type="password" :value="item.key" class="input input-bordered w-full focus:outline-none text-3xl h-9"
 											readonly>
-										<button class="btn btn-active" @click="toggleShow(item)">show</button>
+										<button class="btn btn-primary h-9 min-h-6 text-sm lowercase" @click="toggleShow(item)">show</button>
 									</label>
 								</div>
 							</div>
 						</div>
 
 						<div class="flex items-center justify-center mt-8">
-							<div class="alert shadow-lg bg-neutral" style="width: auto;">
+							<div class="alert shadow-lg bg-neutral p-3" style="width: auto;">
 								<div>
 									<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-info flex-shrink-0 w-6 h-6">
 										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -142,7 +150,7 @@
 </template>
 
 <script>
-import { nextTick } from 'vue'
+import { nextTick, ref } from 'vue'
 
 export default {
 	name: 'Home',
@@ -150,8 +158,7 @@ export default {
 	data () {
 		return {
 			bertas: [],
-			rawKeys: [],
-			keys: [],
+			rawKeys: ref([]),
 		}
 	},
 
@@ -165,7 +172,7 @@ export default {
 
 	methods: {
 		refreshList: async function() {
-			await this.$http.get("https://auth.speculare.cloud/api/key")
+			await this.$http.get(this.$authBase + "/api/key")
 				.then((resp) => {
 					console.log(resp);
 					
@@ -190,7 +197,9 @@ export default {
 
 			this.bertas.forEach(async (elem) => {
 				console.log("Gathering for Berta", elem);
-				await this.$http.get("https://server.speculare.cloud/api/hosts")
+
+				let bertaUrl = this.$bertaOverride ? this.$bertaOverride : "https://server.speculare.cloud";
+				await this.$http.get(bertaUrl + "/api/hosts")
 					.then((resp) => {
 						console.log(resp);
 					
@@ -198,16 +207,8 @@ export default {
 							// TODO - rkey can (maybe?) be undefined
 							let rkey = this.rawKeys.find((e) => e.host == elem.uuid);
 
-							const newObj = {
-								key: rkey.key,
-								host: elem.host_uuid,
-								hostname: elem.hostname,
-								os: elem.system,
-								berta: rkey.berta,
-								show: false
-							};
-
-							this.keys.push(newObj);
+							rkey.hostname = elem.hostname;
+							rkey.os = elem.system;
 						});
 					}).catch((err) => {
 						console.log(err);
@@ -215,13 +216,14 @@ export default {
 			});
 		},
 		trunk: function(text) {
+			if (text === null) return undefined
 			return text.slice(0, 6);
 		},
 		toggleShow: function(item) {
 			item.show = !item.show;
 		},
 		logout: async function() {
-			await this.$http.get("https://auth.speculare.cloud/api/logout")
+			await this.$http.get(this.$authBase + "/api/logout")
 				.then(() => {
 					this.$store.commit({
 						type: 'setLogged',
@@ -233,7 +235,7 @@ export default {
 				});
 		},
 		generateKey: async function() {
-			await this.$http.post("https://auth.speculare.cloud/api/key", {})
+			await this.$http.post(this.$authBase + "/api/key", {})
 				.then(async (resp) => {
 					console.log("New key: ", resp);
 					await this.refreshList();

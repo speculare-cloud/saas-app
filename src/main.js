@@ -9,11 +9,14 @@ import '@/assets/app.css'
 
 const httpAxios = axios.create({
 	withCredentials: true
-})
+});
 
-const app = createApp(App)
+const app = createApp(App);
 
-app.config.globalProperties.$http = httpAxios
+app.config.globalProperties.$authBase = process.env.VUE_APP_AUTH_SERVER;
+app.config.globalProperties.$bertaOverride = (process.env.NODE_ENV !== 'production') ? process.env.VUE_APP_BERTA_OVERRIDE : undefined;
+
+app.config.globalProperties.$http = httpAxios;
 
 // Enforce auth requirement for the views
 router.beforeEach(async(toRoute, _fromRoute, next) => {
@@ -22,7 +25,7 @@ router.beforeEach(async(toRoute, _fromRoute, next) => {
 	} else if (toRoute.meta.requireAuth && !store.state.isLogged) {
 		next({ name: 'Login' });
 	} else if (!toRoute.meta.requireAuth) {
-		await httpAxios.get("https://auth.speculare.cloud/api/whoami")
+		await httpAxios.get(app.config.globalProperties.$authBase + "/api/whoami")
 			.then(() => {
 				store.commit({
 					type: 'setLogged',
@@ -40,9 +43,9 @@ router.beforeEach(async(toRoute, _fromRoute, next) => {
 		window.document.title = toRoute.name + " - Speculare Console";
 		next();
 	}
-})
+});
 
-app.use(router)
-app.use(store)
+app.use(router);
+app.use(store);
 
-app.mount('#app')
+app.mount('#app');

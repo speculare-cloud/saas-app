@@ -117,7 +117,7 @@ export default {
 
 			this.requestLoading = true;
 			console.log("Sending request for email: ", this.emailAddr);
-			await this.$http.post("https://auth.speculare.cloud/api/sso", {
+			await this.$http.post(this.$authBase + "/api/sso", {
 				email: this.emailAddr
 			}).then((resp) => {
 				console.log("Success", resp);
