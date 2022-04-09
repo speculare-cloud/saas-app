@@ -115,5 +115,10 @@ body,
 }
 
 #apikeys>div:not(:last-child) {
-    border-bottom: 1px solid #dfe3e8
+    border-bottom: 1px solid rgba(193, 209, 235, 0.1);
+}
+
+.currentSideNav {
+    background-color: hsl(var(--bc) / var(--tw-bg-opacity));
+    --tw-bg-opacity: 0.1;
 }
