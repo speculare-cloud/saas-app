@@ -213,7 +213,7 @@ export default {
 		},
 		generateKey: async function() {
 			await this.$http.post("https://auth.speculare.cloud/api/key", {})
-				.then((resp) => {
+				.then(async (resp) => {
 					console.log("New key: ", resp);
 					await this.refreshList();
 				}).catch((err) => {
