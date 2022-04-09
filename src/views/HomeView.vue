@@ -151,19 +151,7 @@ export default {
 		return {
 			bertas: [],
 			rawKeys: [],
-			keys: [{
-				key: "AZQpE53HqYUnIPww7J0MltSdzFRELB2e",
-				host: "4fcf4b4f65721729a82d61a2bcf32c74637ad2c6",
-				hostname: "slave-one",
-				berta: "B1",
-				show: false,
-			}, {
-				key: "AZQpE53HqYUnIPww7J0MltSdzFRELB2e",
-				host: "b131f5adb1b3ff662d355085036005b15bc34677",
-				hostname: "server-core",
-				berta: "B1",
-				show: false,
-			}],
+			keys: [],
 		}
 	},
 
