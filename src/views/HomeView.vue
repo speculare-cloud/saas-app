@@ -171,6 +171,7 @@ export default {
 					
 					resp.data.forEach(elem => {
 						if (!this.bertas.contains(elem.berta)) {
+							console.log("Adding new berta", elem.berta);
 							this.bertas.push(elem.berta);
 						}
 
