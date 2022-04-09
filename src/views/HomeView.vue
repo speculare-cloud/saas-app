@@ -71,6 +71,25 @@
 									Add new
 								</button>
 							</div>
+							<input ref="mlt" type="checkbox" id="modal-limit" class="modal-toggle">
+							<div class="modal modal-bottom sm:modal-middle">
+								<div class="modal-box relative">
+									<label for="modal-limit" class="btn btn-sm btn-circle absolute right-2 top-2">✕</label>
+									<h3 class="font-bold text-lg">
+										You've reached the limit of your plan
+									</h3>
+									<p class="pt-6">
+										Unfortunately you cannot create a new key because you've already filled your limits of keys.
+									</p>
+									<p class="mt-2">
+										You can however upgrade for another plan if you'd like.
+									</p>
+									<div class="modal-action">
+										<label for="modal-limit" class="btn btn-sm lowercase">cancel</label>
+										<label for="modal-limit" class="btn btn-sm btn-primary lowercase">upgrade</label>
+									</div>
+								</div>
+							</div>
 						</div>
 
 						<div v-if="rawKeys.length == 0" class="bg-neutral text-neutral-content shadow-xl rounded-box mb-2" style="height: 60px;">
@@ -289,6 +308,10 @@ export default {
 				});
 		},
 		generateKey: async function() {
+			if (this.rawKeys.length >= 3) {
+				this.$refs.mlt.checked = true;
+				return;
+			}
 			await this.$http.post(this.$authBase + "/api/key", {})
 				.then(async (resp) => {
 					console.log("New key: ", resp);
