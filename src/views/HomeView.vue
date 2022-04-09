@@ -170,8 +170,8 @@ export default {
 					console.log(resp);
 					
 					resp.data.forEach(elem => {
-						if (!this.berta.contains(elem.berta)) {
-							this.berta.push(elem.berta);
+						if (!this.bertas.contains(elem.berta)) {
+							this.bertas.push(elem.berta);
 						}
 
 						const newObj = {
