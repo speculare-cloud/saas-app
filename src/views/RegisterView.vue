@@ -39,7 +39,7 @@
 						</label>
 						<input
 							ref="emailField" autocomplete="on" name="email" type="email"
-							placeholder="john.doe@speculare.cloud" 
+							placeholder="john.doe@speculare.cloud"
 							class="input input-bordered w-full bg-base-300" :class="(emailEmpty || !emailValid) ? 'input-error' : 'input-success'"
 							v-model="emailAddr" @input="checkEmail" style="font-size: 0.875rem;">
 						<div class="input-error mt-2 text-error" :class="(emailEmpty || !emailValid) ? 'block' : 'hidden'">

@@ -15,11 +15,11 @@ const app = createApp(App);
 
 app.config.globalProperties.$authBase = process.env.VUE_APP_AUTH_SERVER;
 app.config.globalProperties.$bertaOverride = process.env.VUE_APP_BERTA_OVERRIDE;
-
 app.config.globalProperties.$http = httpAxios;
 
 // Enforce auth requirement for the views
 router.beforeEach(async(toRoute, _fromRoute, next) => {
+	// If in debug mode we bypass route restrictions
 	if (process.env.NODE_ENV !== 'production') {
 		next();
 	} else if (toRoute.meta.requireAuth && !store.state.isLogged) {
