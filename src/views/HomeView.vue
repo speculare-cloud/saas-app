@@ -10,25 +10,6 @@
 					Add new
 				</button>
 			</div>
-			<input ref="mlt" type="checkbox" id="modal-limit" class="modal-toggle">
-			<div class="modal modal-bottom sm:modal-middle">
-				<div class="modal-box relative">
-					<label for="modal-limit" class="btn btn-sm lg:btn-md btn-circle absolute right-2 top-2">✕</label>
-					<h3 class="font-bold text-lg">
-						You've reached the limit of your plan
-					</h3>
-					<p class="pt-6">
-						Unfortunately you cannot create a new key because you've already filled your limits of keys.
-					</p>
-					<p class="mt-2">
-						You can however upgrade for another plan if you'd like.
-					</p>
-					<div class="modal-action">
-						<label for="modal-limit" class="btn btn-sm lg:btn-md lowercase">cancel</label>
-						<label for="modal-limit" class="btn btn-sm lg:btn-md btn-primary lowercase">upgrade</label>
-					</div>
-				</div>
-			</div>
 		</div>
 
 		<div v-if="rawKeys.length == 0" class="bg-neutral text-neutral-content shadow-xl rounded-box mb-2" style="height: 60px;">
@@ -98,6 +79,27 @@
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
 					</svg>
 					<span>Need help? Let us know at <a href="mailto:contact@speculare.cloud" class="text-info">contact@speculare.cloud</a></span>
+				</div>
+			</div>
+		</div>
+
+		<!-- Modals -->
+		<input ref="mlt" type="checkbox" id="modal-limit" class="modal-toggle">
+		<div class="modal modal-bottom sm:modal-middle">
+			<div class="modal-box relative">
+				<label for="modal-limit" class="btn btn-sm lg:btn-md btn-circle absolute right-2 top-2">✕</label>
+				<h3 class="font-bold text-lg">
+					You've reached the limit of your plan
+				</h3>
+				<p class="pt-6">
+					Unfortunately you cannot create a new key because you've already filled your limits of keys.
+				</p>
+				<p class="mt-2">
+					You can however upgrade for another plan if you'd like.
+				</p>
+				<div class="modal-action">
+					<label for="modal-limit" class="btn btn-sm lg:btn-md lowercase">cancel</label>
+					<label for="modal-limit" class="btn btn-sm lg:btn-md btn-primary lowercase">upgrade</label>
 				</div>
 			</div>
 		</div>
