@@ -67,14 +67,14 @@
 							</h3>
 							<div class="indicator">
 								<span v-if="rawKeys.length == 0" class="indicator-item indicator-end sm:indicator-start badge badge-primary" /> 
-								<button @click="generateKey" class="btn bg-neutral btn-sm lowercase">
+								<button @click="generateKey" class="btn bg-neutral btn-sm lg:btn-md lowercase">
 									Add new
 								</button>
 							</div>
 							<input ref="mlt" type="checkbox" id="modal-limit" class="modal-toggle">
 							<div class="modal modal-bottom sm:modal-middle">
 								<div class="modal-box relative">
-									<label for="modal-limit" class="btn btn-sm btn-circle absolute right-2 top-2">✕</label>
+									<label for="modal-limit" class="btn btn-sm lg:btn-md btn-circle absolute right-2 top-2">✕</label>
 									<h3 class="font-bold text-lg">
 										You've reached the limit of your plan
 									</h3>
@@ -85,8 +85,8 @@
 										You can however upgrade for another plan if you'd like.
 									</p>
 									<div class="modal-action">
-										<label for="modal-limit" class="btn btn-sm lowercase">cancel</label>
-										<label for="modal-limit" class="btn btn-sm btn-primary lowercase">upgrade</label>
+										<label for="modal-limit" class="btn btn-sm lg:btn-md lowercase">cancel</label>
+										<label for="modal-limit" class="btn btn-sm lg:btn-md btn-primary lowercase">upgrade</label>
 									</div>
 								</div>
 							</div>
@@ -127,29 +127,29 @@
 									</label>
 									<label class="input-group">
 										<input
-											v-if="item.show" :value="item.key" type="text" class="input input-bordered w-full focus:outline-none h-8"
+											v-if="item.show" :value="item.key" type="text" class="input input-bordered w-full focus:outline-none h-8 lg:h-12"
 											readonly>
 										<input
-											v-else type="password" :value="item.key" class="input input-bordered w-full focus:outline-none text-3xl h-8"
+											v-else type="password" :value="item.key" class="input input-bordered w-full focus:outline-none text-3xl h-8 lg:h-12"
 											readonly>
-										<button class="btn btn-primary btn-sm text-sm lowercase" @click="toggleShow(item)">
+										<button class="btn btn-primary btn-sm lg:btn-md text-sm lowercase" @click="toggleShow(item)">
 											<p v-if="item.show">hide</p>
 											<p v-else>show</p>
 										</button>
 									</label>
 								</div>
 								<div class="flex justify-between sm:justify-start mt-4 gap-4">
-									<button class="btn btn-info lowercase btn-sm">
+									<button class="btn btn-info lowercase btn-sm lg:btn-md">
 										regenerate key
 									</button>
-									<label :for="'delete-modal-' + trunk(item.key)" class="btn btn-error modal-button lowercase btn-sm">
+									<label :for="'delete-modal-' + trunk(item.key)" class="btn btn-error modal-button lowercase btn-sm lg:btn-md">
 										delete key
 									</label>
 								</div>
 								<input type="checkbox" :id="'delete-modal-' + trunk(item.key)" class="modal-toggle">
 								<div class="modal modal-bottom sm:modal-middle">
 									<div class="modal-box relative">
-										<label :for="'delete-modal-' + trunk(item.key)" class="btn btn-sm btn-circle absolute right-2 top-2">✕</label>
+										<label :for="'delete-modal-' + trunk(item.key)" class="btn btn-sm lg:btn-md btn-circle absolute right-2 top-2">✕</label>
 										<h3 class="font-bold text-lg">
 											Are you really sure?
 										</h3>
@@ -163,8 +163,8 @@
 											<input type="text" placeholder="Type here" class="input input-bordered input-error w-full" style="font-size: 1rem;">
 										</div>
 										<div class="modal-action">
-											<label :for="'delete-modal-' + trunk(item.key)" class="btn btn-sm lowercase">cancel</label>
-											<label :for="'delete-modal-' + trunk(item.key)" class="btn btn-sm btn-error lowercase">proceed</label>
+											<label :for="'delete-modal-' + trunk(item.key)" class="btn btn-sm lg:btn-md lowercase">cancel</label>
+											<label :for="'delete-modal-' + trunk(item.key)" class="btn btn-sm lg:btn-md btn-error lowercase">proceed</label>
 										</div>
 									</div>
 								</div>
