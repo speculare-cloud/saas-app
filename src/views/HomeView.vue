@@ -6,7 +6,7 @@
 			</h3>
 			<div class="indicator">
 				<span v-if="rawKeys.length == 0" class="indicator-item indicator-end sm:indicator-start badge badge-primary" />
-				<button @click="generateKey" class="btn bg-neutral btn-sm lg:btn-md lowercase">
+				<button @click="generateKey" class="btn bg-neutral lowercase">
 					Add new
 				</button>
 			</div>
@@ -47,22 +47,22 @@
 					</label>
 					<label class="input-group">
 						<input
-							v-if="item.show" :value="item.key" type="text" class="input input-bordered w-full focus:outline-none h-8 lg:h-12"
+							v-if="item.show" :value="item.key" type="text" class="input input-bordered w-full focus:outline-none"
 							readonly>
 						<input
-							v-else type="password" :value="item.key" class="input input-bordered w-full focus:outline-none text-3xl h-8 lg:h-12"
+							v-else type="password" :value="item.key" class="input input-bordered w-full focus:outline-none text-3xl"
 							readonly>
-						<button class="btn btn-primary btn-sm lg:btn-md text-sm lowercase" @click="toggleShow(item)">
+						<button class="btn btn-primary text-sm lowercase" @click="toggleShow(item)">
 							<p v-if="item.show">hide</p>
 							<p v-else>show</p>
 						</button>
 					</label>
 				</div>
 				<div class="flex justify-between sm:justify-start mt-4 gap-4">
-					<label :for="'refresh-modal-' + trunk(item.key)" class="btn btn-info lowercase btn-sm lg:btn-md">
+					<label :for="'refresh-modal-' + trunk(item.key)" class="btn btn-info lowercase">
 						refresh key
 					</label>
-					<label :for="'delete-modal-' + trunk(item.key)" class="btn btn-error modal-button lowercase btn-sm lg:btn-md">
+					<label :for="'delete-modal-' + trunk(item.key)" class="btn btn-error modal-button lowercase">
 						delete key
 					</label>
 				</div>
@@ -73,7 +73,7 @@
 		</div>
 
 		<div class="flex items-center justify-center mt-8">
-			<div class="alert shadow-lg bg-neutral p-3" style="width: auto;">
+			<div class="alert shadow-lg bg-neutral" style="width: auto;">
 				<div>
 					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-info flex-shrink-0 w-6 h-6">
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -87,7 +87,7 @@
 		<input ref="mlt" type="checkbox" id="modal-limit" class="modal-toggle">
 		<div class="modal modal-bottom sm:modal-middle">
 			<div class="modal-box relative">
-				<label for="modal-limit" class="btn btn-sm lg:btn-md btn-circle absolute right-2 top-2">✕</label>
+				<label for="modal-limit" class="btn btn-circle absolute right-2 top-2">✕</label>
 				<h3 class="font-bold text-lg">
 					You've reached the limit of your plan
 				</h3>
@@ -98,8 +98,8 @@
 					You can however upgrade for another plan if you'd like.
 				</p>
 				<div class="modal-action">
-					<label for="modal-limit" class="btn btn-sm lg:btn-md lowercase">cancel</label>
-					<label for="modal-limit" class="btn btn-sm lg:btn-md btn-primary lowercase">upgrade</label>
+					<label for="modal-limit" class="btn lowercase">cancel</label>
+					<label for="modal-limit" class="btn btn-primary lowercase">upgrade</label>
 				</div>
 			</div>
 		</div>
