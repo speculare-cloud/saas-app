@@ -16,6 +16,14 @@ const routes = [{
 		meta: {
 			requireAuth: true,
 		}
+	}, {
+		path: 'billing',
+		name: 'Billing',
+		component: () =>
+			import ('@/views/BillingView'),
+		meta: {
+			requireAuth: true,
+		}
 	}]
 }, {
 	path: '/login',

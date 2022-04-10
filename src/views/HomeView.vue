@@ -1,6 +1,6 @@
 <template>
 	<div class="flex-1">
-		<div class="flex flex-col sm:flex-row gap-4 sm:items-center sm:justify-between mb-8">
+		<div class="flex flex-col sm:flex-row gap-4 sm:items-center sm:justify-between mb-8 sm:h-11">
 			<h3 class="text-2xl">
 				Have a great day!
 			</h3>
