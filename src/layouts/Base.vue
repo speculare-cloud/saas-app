@@ -1,6 +1,6 @@
 <template>
 	<div class="drawer">
-		<input id="my-drawer-3" type="checkbox" class="drawer-toggle">
+		<input ref="drawerCheck" id="my-drawer-3" type="checkbox" class="drawer-toggle">
 		<div class="drawer-content flex flex-col">
 			<!-- Navbar -->
 			<div class="bg-neutral text-neutral-content">
@@ -72,7 +72,7 @@
 			<label for="my-drawer-3" class="drawer-overlay" />
 			<ul class="menu p-4 overflow-y-auto w-80 bg-base-100">
 				<li>
-					<router-link key="home" :to="{ name: 'Home' }">
+					<router-link key="home" :to="{ name: 'Home' }" @click="this.$refs.drawerCheck.checked = false">
 						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="h-5 w-5" fill="currentColor">
 							<path d="M13 18.002a.998.998 0 0 1-.94-.658L8.986 8.889l-2.048 5.465a1.001 1.001 0 0 1-1.794.163l-2.187-3.645-1.124 1.685a1.001 1.001 0 0 1-1.664-1.11l2-3a.966.966 0 0 1 .856-.445.997.997 0 0 1 .833.485l1.935 3.224 2.27-6.06A1 1 0 0 1 9 5h.005a1 1 0 0 1 .935.659l2.946 8.102 3.152-11.035c.12-.421.502-.715.94-.725.43-.026.833.268.97.684l2 6a1 1 0 1 1-1.896.632l-.98-2.933-3.11 10.89a1 1 0 0 1-.927.726H13" />
 						</svg>
@@ -80,7 +80,7 @@
 					</router-link>
 				</li>
 				<li>
-					<router-link key="billing" :to="{ name: 'Billing' }">
+					<router-link key="billing" :to="{ name: 'Billing' }" @click="this.$refs.drawerCheck.checked = false">
 						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="h-5 w-5" fill="currentColor">
 							<path d="M10 0C4.486 0 0 4.486 0 10s4.486 10 10 10 10-4.486 10-10S15.514 0 10 0m0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8M9.977 7c.026 0 .649.04 1.316.707a1 1 0 0 0 1.414-1.414A4.487 4.487 0 0 0 11 5.2V5a1 1 0 1 0-2 0v.184A2.996 2.996 0 0 0 7 8c0 2.28 1.727 2.713 2.758 2.97C10.873 11.25 11 11.354 11 12c0 .552-.448 1-.976 1-.026 0-.65-.04-1.317-.707a1 1 0 0 0-1.414 1.415A4.502 4.502 0 0 0 9 14.798v.2a1 1 0 1 0 2 0v-.184A2.995 2.995 0 0 0 13 12c0-2.28-1.726-2.712-2.757-2.97C9.128 8.752 9 8.646 9 8c0-.55.449-1 .977-1" />
 						</svg>
