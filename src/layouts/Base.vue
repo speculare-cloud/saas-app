@@ -70,7 +70,7 @@
 		<!-- Sidebar nav -->
 		<div class="drawer-side">
 			<label for="my-drawer-3" class="drawer-overlay" />
-			<ul class="menu p-4 overflow-y-auto w-80 bg-base-100">
+			<ul class="menu p-4 overflow-y-auto w-80 bg-base-100 gap-2">
 				<li>
 					<router-link key="home" :to="{ name: 'Home' }" @click="this.$refs.drawerCheck.checked = false">
 						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="h-5 w-5" fill="currentColor">
