@@ -10,7 +10,7 @@
     "dependencies": {
         "axios": "^0.26.1",
         "core-js": "^3.21.1",
-        "daisyui": "^2.13.6",
+        "daisyui": "^2.15.1",
         "moment": "^2.29.1",
         "vue": "^3.2.31",
         "vue-router": "^4.0.14",
@@ -19,6 +19,7 @@
     "devDependencies": {
         "@babel/core": "^7.17.8",
         "@babel/eslint-parser": "^7.17.0",
+        "@tailwindcss/typography": "^0.5.2",
         "@vue/cli-plugin-babel": "~5.0.4",
         "@vue/cli-plugin-eslint": "~5.0.4",
         "@vue/cli-plugin-router": "~5.0.4",

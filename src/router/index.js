@@ -12,7 +12,23 @@ const routes = [{
 		path: 'home',
 		name: 'Home',
 		component: () =>
-			import ('@/views/HomeView'),
+			import ('@/views/Home'),
+		meta: {
+			requireAuth: true,
+		}
+	}, {
+		path: 'incidents',
+		name: 'Incidents',
+		component: () =>
+			import ('@/views/Incidents'),
+		meta: {
+			requireAuth: true,
+		}
+	}, {
+		path: 'notifications',
+		name: 'Notifications',
+		component: () =>
+			import ('@/views/Notifications'),
 		meta: {
 			requireAuth: true,
 		}
@@ -20,7 +36,23 @@ const routes = [{
 		path: 'billing',
 		name: 'Billing',
 		component: () =>
-			import ('@/views/BillingView'),
+			import ('@/views/Billing'),
+		meta: {
+			requireAuth: true,
+		}
+	}, {
+		path: 'help',
+		name: 'Help',
+		component: () =>
+			import ('@/views/Help'),
+		meta: {
+			requireAuth: true,
+		}
+	}, {
+		path: 'account',
+		name: 'Account',
+		component: () =>
+			import ('@/views/Account'),
 		meta: {
 			requireAuth: true,
 		}
@@ -29,7 +61,7 @@ const routes = [{
 	path: '/login',
 	name: 'Login',
 	component: () =>
-		import ('@/views/LoginView.vue'),
+		import ('@/views/auth/Login.vue'),
 	meta: {
 		requireAuth: false,
 	}
@@ -37,7 +69,7 @@ const routes = [{
 	path: '/register',
 	name: 'Register',
 	component: () =>
-		import ('@/views/RegisterView.vue'),
+		import ('@/views/auth/Register.vue'),
 	meta: {
 		requireAuth: false,
 	}
@@ -45,14 +77,14 @@ const routes = [{
 	path: '/wait',
 	name: 'Wait',
 	component: () =>
-		import ('@/views/CheckmailView.vue'),
+		import ('@/views/auth/OpenMailbox.vue'),
 	meta: {
 		requireAuth: false,
 	}
 }, {
 	path: '/callback',
 	component: () =>
-		import ('@/views/Callback.vue'),
+		import ('@/views/auth/Callback.vue'),
 	meta: {
 		requireAuth: false,
 	}

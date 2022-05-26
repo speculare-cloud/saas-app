@@ -14,6 +14,10 @@
     }
 }
 
+svg {
+    fill: currentColor!important;
+}
+
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400;500;600;700;800;900&display=swap');
 html,
 body,
@@ -22,54 +26,220 @@ body,
     font-family: 'Montserrat', sans-serif;
 }
 
-.input-error {
-    font-size: 12px;
-    padding-top: 2px;
+.status-indicator {
+    position: relative;
+    display: inline-block;
+    width: 48px;
+    height: 48px
 }
 
-#apikeys>div:not(:last-child) {
-    border-bottom: 1px solid rgba(193, 209, 235, 0.1);
+.status-indicator .circle {
+    position: absolute;
+    top: 18px;
+    left: 18px;
+    width: 12px;
+    height: 12px;
+    border-radius: 100px
+}
+
+.status-indicator .circle.circle--animated {
+    animation-iteration-count: infinite;
+    animation-delay: 1s;
+    animation-fill-mode: backwards;
+    animation-duration: 4s;
+    animation-timing-function: linear
+}
+
+.status-indicator .circle-main {
+    z-index: 3;
+    background: #000
+}
+
+.status-indicator .circle-main.circle--animated {
+    animation-name: pulsate-main-infinite
+}
+
+.status-indicator .circle-secondary {
+    z-index: 2;
+    background: rgba(0, 0, 0, .1)
+}
+
+.status-indicator .circle-secondary.circle--animated {
+    animation-name: pulsate-secondary-infinite
+}
+
+.status-indicator .circle-tertiary {
+    z-index: 1;
+    background: rgba(0, 0, 0, .6);
+    opacity: 1
+}
+
+.status-indicator .circle-tertiary.circle--animated {
+    animation-name: pulsate-tertiary
+}
+
+.status-indicator--infinite .circle.circle--animated {
+    animation-iteration-count: infinite
+}
+
+.status-indicator--success .circle-main {
+    background: rgb(52, 211, 153)
+}
+
+.status-indicator--success .circle-secondary {
+    background: rgba(52, 211, 153, .1)
+}
+
+.status-indicator--success .circle-tertiary {
+    background: rgba(52, 211, 153, .4)
+}
+
+.status-indicator--warning .circle-main {
+    background: #ffb400
+}
+
+.status-indicator--warning .circle-secondary {
+    background: rgba(255, 180, 0, .1)
+}
+
+.status-indicator--warning .circle-tertiary {
+    background: rgba(255, 180, 0, .4)
+}
+
+.status-indicator--danger .circle-main {
+    background: #f21700
+}
+
+.status-indicator--danger .circle-secondary {
+    background: rgba(242, 23, 0, .1)
+}
+
+.status-indicator--danger .circle-tertiary {
+    background: rgba(242, 23, 0, .4)
+}
+
+.status-indicator--sm {
+    width: 40px;
+    height: 40px
+}
+
+.status-indicator--sm .circle {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    width: 10px;
+    height: 10px;
+    animation-iteration-count: 0;
+    will-change: transform
+}
+
+@keyframes pulsate-tertiary {
+    45% {
+        transform: scale(1, 1)
+    }
+    80% {
+        transform: scale(4, 4);
+        opacity: 0
+    }
+    100% {
+        transform: scale(4, 4);
+        opacity: 0
+    }
+}
+
+@keyframes pulsate-main-infinite {
+    20% {
+        transform: scale(1, 1)
+    }
+    45% {
+        transform: scale(1.5, 1.5)
+    }
+    55% {
+        transform: scale(1.5, 1.5)
+    }
+    80% {
+        transform: scale(1, 1)
+    }
+}
+
+@keyframes pulsate-secondary-infinite {
+    10% {
+        transform: scale(1, 1)
+    }
+    25% {
+        transform: scale(1, 1)
+    }
+    50% {
+        transform: scale(4, 4)
+    }
+    75% {
+        transform: scale(4, 4)
+    }
+    100% {
+        transform: scale(1, 1)
+    }
+}
+
+.form-control {
+    width: 100%;
+    border-radius: 8px;
+    border-width: 1px;
+    --tw-border-opacity: 1;
+    border-color: rgb(78 87 110/var(--tw-border-opacity));
+    --tw-bg-opacity: 1;
+    background-color: hsl(var(--n) / var(--tw-bg-opacity));
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-size: 14px;
+    line-height: 143%;
+    --tw-text-opacity: 1;
+    color: rgb(255 255 255/var(--tw-text-opacity));
 }
 
 .router-link-active {
-    background-color: hsl(var(--bc) / var(--tw-bg-opacity));
-    --tw-bg-opacity: 0.1;
-}
-
-.router-link-active:active {
     --tw-bg-opacity: 1;
     background-color: hsl(var(--p) / var(--tw-bg-opacity));
     --tw-text-opacity: 1;
     color: hsl(var(--pc) / var(--tw-text-opacity));
 }
 
-.list-unstyled {
-    padding-left: 0;
-    list-style: none;
+.divider:before {
+    background-color: hsl(var(--bc) / var(--tw-bg-opacity));
+    --tw-bg-opacity: 0.05;
 }
 
-.list-unstyled li:before {
-    content: "";
-    display: block;
-    position: absolute;
-    top: 4px;
-    left: 0;
-    width: 1rem;
-    height: 1rem;
-    background: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNSAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0xMi41MzA4IDQuNDY5NTlDMTIuNjcxNCA0LjYxMDI0IDEyLjc1MDQgNC44MDA5NyAxMi43NTA0IDQuOTk5ODRDMTIuNzUwNCA1LjE5ODcxIDEyLjY3MTQgNS4zODk0NCAxMi41MzA4IDUuNTMwMDlMNi41MzA4IDExLjUzMDFDNi4zOTAxNSAxMS42NzA3IDYuMTk5NDIgMTEuNzQ5NyA2LjAwMDU1IDExLjc0OTdDNS44MDE2OCAxMS43NDk3IDUuNjEwOTUgMTEuNjcwNyA1LjQ3MDMgMTEuNTMwMUwyLjQ3MDMgOC41MzAwOUMyLjMzMzY4IDguMzg4NjQgMi4yNTgwOSA4LjE5OTE5IDIuMjU5NzkgOC4wMDI1NEMyLjI2MTUgNy44MDU4OSAyLjM0MDM4IDcuNjE3NzggMi40Nzk0NCA3LjQ3ODczQzIuNjE4NDkgNy4zMzk2NyAyLjgwNjYgNy4yNjA3OSAzLjAwMzI1IDcuMjU5MDhDMy4xOTk5IDcuMjU3MzggMy4zODkzNSA3LjMzMjk3IDMuNTMwOCA3LjQ2OTU5TDYuMDAwNTUgOS45MzkzNEwxMS40NzAzIDQuNDY5NTlDMTEuNjEwOSA0LjMyODk5IDExLjgwMTcgNC4yNSAxMi4wMDA1IDQuMjVDMTIuMTk5NCA0LjI1IDEyLjM5MDIgNC4zMjg5OSAxMi41MzA4IDQuNDY5NTlaIiBmaWxsPSIjQTBBREJBIi8+Cjwvc3ZnPgo=);
-    background-size: 100%;
+.divider:after {
+    background-color: hsl(var(--bc) / var(--tw-bg-opacity));
+    --tw-bg-opacity: 0.05;
 }
 
-.list-unstyled li {
-    padding-left: 20px;
+.table :where(thead,
+tfoot) :where(th,
+td) {
+    --tw-bg-opacity: 1;
+    background-color: hsl(var(--n) / var(--tw-bg-opacity));
+    font-size: 0.75rem;
+    line-height: 1rem;
+    font-weight: 700;
+    text-transform: unset;
 }
 
-.list-unstyled li.highlighted {
-    font-weight: 600;
+.table :where(tbody th,
+tbody td) {
+    --tw-bg-opacity: 1;
+    background-color: hsl(var(--b3, var(--b2)) / var(--tw-bg-opacity));
 }
 
-.list-unstyled li {
-    position: relative;
-    margin: 16px 0;
-    padding-left: 1.5rem;
+.table :where(th,
+td) {
+    white-space: nowrap;
+    padding: 0.75rem 1rem;
+    vertical-align: middle;
+}
+
+.hover\:bg-base-250:hover {
+    --tw-bg-opacity: 0.5;
+    background-color: hsl(var(--b2, var(--b1)) / var(--tw-bg-opacity));
 }
