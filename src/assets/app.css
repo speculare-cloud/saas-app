@@ -252,3 +252,11 @@ td) {
     border-bottom-color: hsl(var(--b1) / var(--tw-border-opacity));
     border-bottom-width: 1px;
 }
+
+.drawer {
+    display: grid;
+    width: 100%;
+    overflow: hidden;
+    height: 100vh;
+    height: 100svh;
+}
