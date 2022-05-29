@@ -249,7 +249,7 @@ td) {
     color: #fff;
 }
 
-.servers-list div:not(:last-child) {
+.servers-list server:not(:last-child) {
     --tw-border-opacity: 1;
     border-bottom-color: hsl(var(--b1) / var(--tw-border-opacity));
     border-bottom-width: 1px;

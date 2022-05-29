@@ -28,7 +28,7 @@
 			Nothing yet
 		</div>
 		<div v-if="rawKeys.length !== 0" class="mt-12 bg-base-300 rounded-lg shadow servers-list">
-			<div v-for="item in rawKeys" :key="item.key" class="flex justify-between cursor-pointer pl-4 pr-8 py-2 hover:bg-base-250 gap-4">
+			<server v-for="item in rawKeys" :key="item.key" class="flex justify-between cursor-pointer pl-4 pr-8 py-2 hover:bg-base-250 gap-4">
 				<div class="flex items-center gap-4">
 					<div class="tooltip tooltip-right md:tooltip-left" data-tip="UP">
 						<span class="block leading-[0]">
@@ -66,7 +66,7 @@
 						</div>
 					</div>
 				</div>
-			</div>
+			</server>
 		</div>
 	</content>
 </template>
