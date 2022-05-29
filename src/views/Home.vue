@@ -24,8 +24,11 @@
 				</button>
 			</div>
 		</div>
-		<div class="mt-12 bg-base-300 rounded-lg shadow">
-			<div class="flex justify-between cursor-pointer pl-4 pr-8 py-2 hover:bg-base-250 gap-4">
+		<div v-if="rawKeys.length === 0" class="mt-12">
+			Nothing yet
+		</div>
+		<div v-if="rawKeys.length !== 0" class="mt-12 bg-base-300 rounded-lg shadow servers-list">
+			<div v-for="item in rawKeys" :key="item.key" class="flex justify-between cursor-pointer pl-4 pr-8 py-2 hover:bg-base-250 gap-4">
 				<div class="flex items-center gap-4">
 					<div class="tooltip tooltip-right md:tooltip-left" data-tip="UP">
 						<span class="block leading-[0]">
@@ -36,7 +39,7 @@
 							</div>
 						</span>
 					</div>
-					<p>speculare.cloud</p>
+					<p>{{ item.hostname ?? trunk(item.host) ?? "waiting data..." }}</p>
 				</div>
 				<div class="flex items-center gap-4 text-gray-300">
 					<span class="tooltip hidden md:block" data-tip="Collecting every 3 minutes">
@@ -69,13 +72,96 @@
 </template>
 
 <script>
+import { nextTick, ref } from 'vue'
+
 export default {
 	name: 'Home',
 
 	data () {
-		return {}
+		return {
+			// List of different Bertas hosted user's servers
+			bertas: [],
+			// List of owned keys by the user with info from Bertas.
+			rawKeys: ref([]),
+		}
 	},
 
-	mounted: function () {},
+	mounted: function () {
+		const vm = this
+
+		nextTick(async () => {
+			await vm.refreshList();
+		})
+	},
+
+	methods: {
+		refreshList: async function() {
+			await this.$http.get(this.$authBase + "/api/key")
+				.then((resp) => {
+					console.log(resp);
+
+					resp.data.forEach(elem => {
+						if (this.rawKeys.find((e) => e.key == elem.key) !== undefined) {
+							return;
+						}
+
+						if (!this.bertas.includes(elem.berta)) {
+							console.log("Adding new berta", elem.berta);
+							this.bertas.push(elem.berta);
+						}
+
+						const newObj = {
+							key: elem.key,
+							host: elem.host_uuid,
+							berta: elem.berta,
+							show: false
+						};
+
+						this.rawKeys.push(newObj);
+					});
+				}).catch((err) => {
+					console.log(err);
+				});
+
+			this.bertas.forEach(async (elem) => {
+				console.log("Gathering for Berta", elem);
+
+				let bertaUrl = this.$bertaOverride ? this.$bertaOverride : "https://" + elem + ".speculare.cloud";
+				await this.$http.get(bertaUrl + "/api/hosts")
+					.then((resp) => {
+						console.log(resp);
+
+						resp.data.forEach(elem => {
+							// TODO - rkey can (maybe?) be undefined
+							let rkey = this.rawKeys.find((e) => e.host == elem.uuid);
+
+							rkey.hostname = elem.hostname;
+							rkey.os = elem.system;
+						});
+					}).catch((err) => {
+						console.log(err);
+					});
+			});
+		},
+		trunk: function(text) {
+			if (text === null) return undefined
+
+			return text.slice(0, 6);
+		},
+		generateKey: async function() {
+			if (this.rawKeys.length >= 3) {
+				this.$refs.mlt.checked = true;
+				return;
+			}
+
+			await this.$http.post(this.$authBase + "/api/key", {})
+				.then(async (resp) => {
+					console.log("New key: ", resp);
+					await this.refreshList();
+				}).catch((err) => {
+					console.log(err);
+				});
+		}
+	}
 }
 </script>
