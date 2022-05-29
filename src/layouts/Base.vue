@@ -134,6 +134,10 @@ export default {
 		window.removeEventListener("resize", this.resizeHandler);
 	},
 
+	mounted: function () {
+		this.resizeHandler();
+	},
+
 	methods: {
 		logout: async function() {
 			await this.$http.get(this.$authBase + "/api/logout")
