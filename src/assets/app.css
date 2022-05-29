@@ -257,6 +257,6 @@ td) {
     display: grid;
     width: 100%;
     overflow: hidden;
-    height: 100vh;
-    height: 100svh;
+    height: calc(100 * var(--vh, 1vh));
+    height: 100svh!important;
 }
