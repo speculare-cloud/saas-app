@@ -195,14 +195,12 @@ body,
     font-size: 14px;
     line-height: 143%;
     --tw-text-opacity: 1;
-    color: rgb(255 255 255/var(--tw-text-opacity));
 }
 
 .router-link-active {
     --tw-bg-opacity: 1;
     background-color: hsl(var(--p) / var(--tw-bg-opacity));
     --tw-text-opacity: 1;
-    color: hsl(var(--pc) / var(--tw-text-opacity));
 }
 
 .divider:before {
