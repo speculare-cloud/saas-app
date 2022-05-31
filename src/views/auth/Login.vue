@@ -116,12 +116,11 @@ export default {
 			console.log("Sending request for email: ", this.emailAddr);
 			await this.$http.post(this.$authBase + "/api/sso", {
 				email: this.emailAddr
-			}).then((resp) => {
-				console.log("Success", resp);
-				// Get the domain name of the email
+			}).then(() => {
 				// Redirect to the wait page
-				this.$router.replace({ name: 'Wait', params: { emailDomain: this.emailAddr.split('@')[1] } });
+				this.$router.replace({ name: 'Wait' });
 			}).catch((err) => {
+				// TODO - Handle errors
 				console.log("Error", err);
 			}).finally(() => {
 				this.requestLoading = false;

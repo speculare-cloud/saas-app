@@ -37,15 +37,6 @@
 					<br>
 					<span>We have just sent you an email at your address, go to your inbox to find it.</span>
 				</p>
-
-				<a
-					v-if="this.$route.params.emailDomain" :href="'https://' + this.$route.params.emailDomain"
-					class="btn btn-primary flex w-full justify-center items-center mt-6 text-primary-content">
-					<div class="flex mr-2">
-						<span class="text-lg">✉</span>
-					</div>
-					<span>{{ this.$route.params.emailDomain }}</span>
-				</a>
 			</div>
 		</div>
 
@@ -58,9 +49,5 @@
 <script>
 export default {
 	name: 'Wait',
-
-	mounted: function () {
-		console.log(this.$route.params.emailDomain)
-	}
 }
 </script>

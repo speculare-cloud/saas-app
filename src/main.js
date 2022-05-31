@@ -26,9 +26,22 @@ app.config.globalProperties.$authBase = process.env.VUE_APP_AUTH_SERVER;
 app.config.globalProperties.$bertaOverride = process.env.VUE_APP_BERTA_OVERRIDE;
 app.config.globalProperties.$http = httpAxios;
 
+// Logout the user if he's not logged at loading
+(async() => {
+	if (store.isLogged) {
+		await httpAxios.get(app.config.globalProperties.$authBase + "/api/whoami")
+			.then(() => {
+				store.setLogged(true);
+				router.replace({ name: 'Home' });
+			}).catch(() => {
+				store.setLogged(false);
+				router.replace({ name: 'Login' })
+			});
+	}
+})();
+
 // Enforce auth requirement for the views
 router.beforeEach(async(toRoute, _fromRoute, next) => {
-	// If in debug mode we bypass route restrictions
 	if (toRoute.meta.requireAuth && !store.isLogged) {
 		next({ name: 'Login' });
 	} else if (!toRoute.meta.requireAuth) {

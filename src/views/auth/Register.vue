@@ -120,11 +120,11 @@ export default {
 			console.log("Sending request for email: ", this.emailAddr);
 			await this.$http.post(this.$authBase + "/api/rsso", {
 				email: this.emailAddr
-			}).then((resp) => {
-				console.log("Success", resp);
+			}).then(() => {
 				// Redirect to the wait page
 				this.$router.replace({ name: 'Wait' });
 			}).catch((err) => {
+				// TODO - Handle errors
 				console.log("Error", err);
 			}).finally(() => {
 				this.requestLoading = false;

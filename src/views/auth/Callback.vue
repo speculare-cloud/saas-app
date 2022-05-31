@@ -3,8 +3,15 @@
 </template>
 
 <script>
+import { useMainStore } from '@/stores/main';
+
 export default {
 	name: 'Callback',
+
+	setup () {
+		const store = useMainStore();
+		return { store }
+	},
 
 	beforeCreate() {
 		if (this.$route.query.jwt === undefined) {
@@ -14,13 +21,9 @@ export default {
 		}
 
 		this.$http.get(this.$authBase + "/api/csso?jwt=" + this.$route.query.jwt)
-			.then((resp) => {
-				console.log("Success", resp);
+			.then(() => {
 				// Redirect to the Home page
-				this.$store.commit({
-					type: 'setLogged',
-					isLogged: true
-				});
+				this.store.setLogged(true);
 				this.$router.replace({ name: 'Home' });
 			}).catch((err) => {
 				console.log("Error", err);

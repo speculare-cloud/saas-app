@@ -119,11 +119,14 @@
 </template>
 
 <script>
+import { useMainStore } from '@/stores/main';
+
 export default {
 	name: 'Base',
 
-	data () {
-		return {}
+	setup () {
+		const store = useMainStore();
+		return { store }
 	},
 
 	created: function () {
@@ -142,10 +145,7 @@ export default {
 		logout: async function() {
 			await this.$http.get(this.$authBase + "/api/logout")
 				.then(() => {
-					this.$store.commit({
-						type: 'setLogged',
-						isLogged: false
-					});
+					this.store.setLogged(false);
 					this.$router.replace({ name: 'Login' });
 				}).catch((err) => {
 					console.log(err);
