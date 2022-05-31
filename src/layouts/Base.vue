@@ -11,10 +11,10 @@
 						</svg>
 					</label>
 					<p class="hidden md:block lg:hidden text-xl font-semibold">
-						S<span class="text-accent">peculare</span>
+						S<span class="text-primary">peculare</span>
 					</p>
 					<p class="block md:hidden text-xl font-semibold">
-						S<span class="text-accent">p</span>
+						S<span class="text-primary">p</span>
 					</p>
 				</div>
 				<div class="flex-none">
@@ -62,10 +62,10 @@
 			<div class="flex flex-col p-4 overflow-y-auto w-60 bg-base-300">
 				<div class="flex justify-between items-center">
 					<p class="hidden md:block text-xl font-semibold">
-						S<span class="text-accent">peculare</span>
+						S<span class="text-primary">peculare</span>
 					</p>
 					<p class="block md:hidden text-xl font-semibold">
-						S<span class="text-accent">p</span>
+						S<span class="text-primary">p</span>
 					</p>
 				</div>
 				<ul class="flex-grow -mx-4 menu p-4 pt-8 text-base-content gap-1">
