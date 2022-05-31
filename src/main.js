@@ -30,10 +30,7 @@ app.config.globalProperties.$http = httpAxios;
 (async() => {
 	if (store.isLogged) {
 		await httpAxios.get(app.config.globalProperties.$authBase + "/api/whoami")
-			.then(() => {
-				store.setLogged(true);
-				router.replace({ name: 'Home' });
-			}).catch(() => {
+			.then(() => {}).catch(() => {
 				store.setLogged(false);
 				router.replace({ name: 'Login' })
 			});
