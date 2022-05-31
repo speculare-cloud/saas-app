@@ -1,5 +1,5 @@
 <template>
-	<content>
+	<section>
 		<div class="md:flex justify-between">
 			<div class="prose-sm flex justify-between items-center">
 				<h1>
@@ -15,7 +15,7 @@
 					</svg>
 
 					<input
-						type="text" name="q" id="q" class="form-control font-medium !pl-[34px] h-10 text-neutral-500"
+						type="text" name="q" id="q" class="form-control-search font-medium !pl-[34px] h-10 text-neutral-500"
 						placeholder="Search monitors" data-target="search--base.searchInput" data-action="keyup->search--base#searchKeyUp blur->search--base#searchBlur" autocomplete="off">
 				</div>
 
@@ -28,7 +28,7 @@
 			Nothing yet
 		</div>
 		<div v-if="rawKeys.length !== 0" class="mt-12 bg-base-300 rounded-lg shadow servers-list">
-			<server v-for="item in rawKeys" :key="item.key" class="flex justify-between cursor-pointer pl-4 pr-8 py-2 hover:bg-base-250 gap-4">
+			<div id="servers-item" v-for="item in rawKeys" :key="item.key" class="flex justify-between cursor-pointer pl-4 pr-8 py-2 hover:bg-base-250 gap-4">
 				<div class="flex items-center gap-4">
 					<div class="tooltip tooltip-right md:tooltip-left" data-tip="UP">
 						<span class="block leading-[0]">
@@ -66,9 +66,9 @@
 						</div>
 					</div>
 				</div>
-			</server>
+			</div>
 		</div>
-	</content>
+	</section>
 </template>
 
 <script>

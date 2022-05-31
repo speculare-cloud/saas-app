@@ -1,5 +1,5 @@
 <template>
-	<content>
+	<section>
 		<div class="md:flex justify-between">
 			<div class="prose-sm flex justify-between items-center">
 				<h1>
@@ -15,8 +15,8 @@
 					</svg>
 
 					<input
-						type="text" name="q" id="q" class="form-control font-medium !pl-[34px] h-10 text-neutral-500"
-						placeholder="Search incidents" data-target="search--base.searchInput" data-action="keyup->search--base#searchKeyUp blur->search--base#searchBlur" autocomplete="off">
+						type="text" name="q" id="q" class="form-control-search font-medium !pl-[34px] h-10 text-neutral-500"
+						placeholder="Search incidents" autocomplete="off">
 				</div>
 			</div>
 		</div>
@@ -129,7 +129,7 @@
 				</div>
 			</div>
 		</div>
-	</content>
+	</section>
 </template>
 
 <script>
