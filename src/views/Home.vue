@@ -58,7 +58,7 @@
 								<path d="M14 0C15.103 0 16 0.897 16 2C16 3.103 15.103 4 14 4C12.897 4 12 3.103 12 2C12 0.897 12.897 0 14 0ZM8 0C9.103 0 10 0.897 10 2C10 3.103 9.103 4 8 4C6.897 4 6 3.103 6 2C6 0.897 6.897 0 8 0ZM2 0C3.103 0 4 0.897 4 2C4 3.103 3.103 4 2 4C0.897 4 0 3.103 0 2C0 0.897 0.897 0 2 0Z" />
 							</svg>
 						</label>
-						<div tabindex="0" class="menu menu-compact dropdown-content mt-3 p-2 bg-base-300 shadow rounded-box w-52 gap-1">
+						<div tabindex="0" class="menu menu-compact dropdown-content mt-3 p-2 bg-base-300 shadow rounded-box w-52 gap-1 border border-neutral">
 							<li><a>Configure</a></li>
 							<li><a>Incidents</a></li>
 							<div class="divider h-0 my-0" />
