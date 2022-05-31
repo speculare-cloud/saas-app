@@ -24,11 +24,11 @@
 				</button>
 			</div>
 		</div>
-		<div v-if="rawKeys.length === 0" class="mt-12">
+		<div v-if="store.rawKeys.length === 0" class="mt-12">
 			Nothing yet
 		</div>
-		<div v-if="rawKeys.length !== 0" class="mt-12 bg-base-300 rounded-lg shadow servers-list">
-			<div id="servers-item" v-for="item in rawKeys" :key="item.key" class="flex justify-between cursor-pointer pl-4 pr-8 py-2 hover:bg-base-250 gap-4">
+		<div v-if="store.rawKeys.length !== 0" class="mt-12 bg-base-300 rounded-lg shadow servers-list">
+			<div id="servers-item" v-for="item in store.rawKeys" :key="item.key" class="flex justify-between cursor-pointer pl-4 pr-8 py-2 hover:bg-base-250 gap-4">
 				<div class="flex items-center gap-4">
 					<div class="tooltip tooltip-right md:tooltip-left" data-tip="UP">
 						<span class="block leading-[0]">
@@ -39,7 +39,7 @@
 							</div>
 						</span>
 					</div>
-					<p>{{ item.hostname ?? trunk(item.host) ?? "waiting data..." }}</p>
+					<p>{{ item.hostname ?? trunkKey(item.host) ?? "waiting data..." }}</p>
 				</div>
 				<div class="flex items-center gap-4 text-gray-300">
 					<span class="tooltip hidden md:block" data-tip="Collecting every 3 minutes">
@@ -72,18 +72,16 @@
 </template>
 
 <script>
-import { nextTick, ref } from 'vue'
+import { nextTick } from 'vue';
+import { useHomeStore } from '@/stores/home';
+import { trunkKey } from '@/utils/help';
 
 export default {
 	name: 'Home',
 
-	data () {
-		return {
-			// List of different Bertas hosted user's servers
-			bertas: [],
-			// List of owned keys by the user with info from Bertas.
-			rawKeys: ref([]),
-		}
+	setup () {
+		const store = useHomeStore();
+		return { store, trunkKey }
 	},
 
 	mounted: function () {
@@ -96,69 +94,69 @@ export default {
 
 	methods: {
 		refreshList: async function() {
+			// Helper to refreshList
+			await this.fetchKeys();
+			await this.resolveHostname();
+		},
+		fetchKeys: async function() {
+			// Fetch the API keys
 			await this.$http.get(this.$authBase + "/api/key")
 				.then((resp) => {
-					console.log(resp);
-
 					resp.data.forEach(elem => {
-						if (this.rawKeys.find((e) => e.key == elem.key) !== undefined) {
+						// Skip if the items already exists in our local state
+						if (this.store.rawKeys.find((e) => e.key == elem.key) !== undefined) {
 							return;
 						}
 
-						if (!this.bertas.includes(elem.berta)) {
+						// If the bertas list !includes this server's berta
+						if (!this.store.bertas.includes(elem.berta)) {
 							console.log("Adding new berta", elem.berta);
-							this.bertas.push(elem.berta);
+							this.store.bertas.push(elem.berta);
 						}
 
-						const newObj = {
+						this.store.rawKeys.push({
 							key: elem.key,
 							host: elem.host_uuid,
 							berta: elem.berta,
-							show: false
-						};
-
-						this.rawKeys.push(newObj);
+						});
 					});
 				}).catch((err) => {
+					// TODO - Handle errors
 					console.log(err);
 				});
-
-			this.bertas.forEach(async (elem) => {
+		},
+		resolveHostname: async function() {
+			// For each bertas we had in fetchKeys,
+			// we fetch the servers's hostname and os (if any).
+			this.store.bertas.forEach(async (elem) => {
 				console.log("Gathering for Berta", elem);
 
 				let bertaUrl = this.$bertaOverride ? this.$bertaOverride : "https://" + elem + ".speculare.cloud";
 				await this.$http.get(bertaUrl + "/api/hosts")
 					.then((resp) => {
-						console.log(resp);
-
 						resp.data.forEach(elem => {
-							// TODO - rkey can (maybe?) be undefined
-							let rkey = this.rawKeys.find((e) => e.host == elem.uuid);
+							let rkey = this.store.rawKeys.find((e) => e.host == elem.uuid);
+
+							// This is a edge case, if rkey is not found, this means the server
+							// exists on the berta's database but there's no related API key.
+							if (rkey === undefined) return;
 
 							rkey.hostname = elem.hostname;
 							rkey.os = elem.system;
 						});
 					}).catch((err) => {
+						// TODO - Handle errors
 						console.log(err);
 					});
 			});
 		},
-		trunk: function(text) {
-			if (text === null) return undefined
-
-			return text.slice(0, 6);
-		},
 		generateKey: async function() {
-			if (this.rawKeys.length >= 3) {
-				this.$refs.mlt.checked = true;
-				return;
-			}
-
+			// Create a new API key and refresh the list on success
 			await this.$http.post(this.$authBase + "/api/key", {})
-				.then(async (resp) => {
-					console.log("New key: ", resp);
+				.then(async () => {
 					await this.refreshList();
 				}).catch((err) => {
+					// TODO - Handle errors
 					console.log(err);
 				});
 		}
