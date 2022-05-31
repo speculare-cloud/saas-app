@@ -12,9 +12,10 @@
         "core-js": "^3.21.1",
         "daisyui": "^2.15.1",
         "moment": "^2.29.1",
+        "pinia": "^2.0.14",
+        "pinia-plugin-persistedstate": "^1.6.1",
         "vue": "^3.2.31",
-        "vue-router": "^4.0.14",
-        "vuex": "^4.0.2"
+        "vue-router": "^4.0.14"
     },
     "devDependencies": {
         "@babel/core": "^7.17.8",
@@ -23,7 +24,6 @@
         "@vue/cli-plugin-babel": "~5.0.4",
         "@vue/cli-plugin-eslint": "~5.0.4",
         "@vue/cli-plugin-router": "~5.0.4",
-        "@vue/cli-plugin-vuex": "~5.0.4",
         "@vue/cli-service": "^5.0.4",
         "@vue/compiler-sfc": "^3.2.31",
         "autoprefixer": "^10.4.4",

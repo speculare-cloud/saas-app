@@ -1,6 +1,9 @@
 import { createApp } from 'vue'
 import { router } from '@/router'
-import { store } from '@/store'
+import { createPinia } from 'pinia'
+import { useMainStore } from '@/stores/main'
+
+import PersistedState from 'pinia-plugin-persistedstate'
 import App from '@/App.vue'
 
 import axios from 'axios'
@@ -11,7 +14,13 @@ const httpAxios = axios.create({
 	withCredentials: true
 });
 
+const pinia = createPinia().use(PersistedState);
 const app = createApp(App);
+
+// Init pinia before using it
+app.use(pinia);
+
+const store = useMainStore();
 
 app.config.globalProperties.$authBase = process.env.VUE_APP_AUTH_SERVER;
 app.config.globalProperties.$bertaOverride = process.env.VUE_APP_BERTA_OVERRIDE;
@@ -20,23 +29,15 @@ app.config.globalProperties.$http = httpAxios;
 // Enforce auth requirement for the views
 router.beforeEach(async(toRoute, _fromRoute, next) => {
 	// If in debug mode we bypass route restrictions
-	if (process.env.NODE_ENV !== 'production') {
-		next();
-	} else if (toRoute.meta.requireAuth && !store.state.isLogged) {
+	if (toRoute.meta.requireAuth && !store.isLogged) {
 		next({ name: 'Login' });
 	} else if (!toRoute.meta.requireAuth) {
 		await httpAxios.get(app.config.globalProperties.$authBase + "/api/whoami")
 			.then(() => {
-				store.commit({
-					type: 'setLogged',
-					isLogged: true
-				});
+				store.setLogged(true);
 				next({ name: 'Home' });
 			}).catch(() => {
-				store.commit({
-					type: 'setLogged',
-					isLogged: false
-				});
+				store.setLogged(false);
 				next();
 			});
 	} else {
@@ -46,6 +47,5 @@ router.beforeEach(async(toRoute, _fromRoute, next) => {
 });
 
 app.use(router);
-app.use(store);
 
 app.mount('#app');
