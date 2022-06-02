@@ -15,6 +15,7 @@
 					</svg>
 
 					<input
+						v-model="searchText" @input="filterList"
 						type="text" name="q" id="q" class="form-control-search font-medium !pl-[34px] h-10 text-neutral-500"
 						placeholder="Search monitors" data-target="search--base.searchInput" data-action="keyup->search--base#searchKeyUp blur->search--base#searchBlur" autocomplete="off">
 				</div>
@@ -24,11 +25,14 @@
 				</button>
 			</div>
 		</div>
-		<div v-if="store.rawKeys.length === 0" class="mt-12">
+		<div v-if="store.rawKeys.length === 0 && !searchText" class="mt-12">
 			Nothing yet
 		</div>
+		<div v-if="filteredResult.length === 0 && searchText" class="mt-12">
+			Nothing matches
+		</div>
 		<div v-if="store.rawKeys.length !== 0" class="mt-12 bg-base-300 rounded-lg shadow servers-list">
-			<div id="servers-item" v-for="item in store.rawKeys" :key="item.key" class="flex justify-between cursor-pointer pl-4 pr-8 py-2 hover:bg-base-250 gap-4">
+			<div id="servers-item" v-for="item in (!searchText ? store.rawKeys : filteredResult)" :key="item.key" class="flex justify-between cursor-pointer pl-4 pr-8 py-2 hover:bg-base-250 gap-4">
 				<div class="flex items-center gap-4">
 					<div class="tooltip tooltip-right md:tooltip-left" data-tip="UP">
 						<span class="block leading-[0]">
@@ -84,6 +88,13 @@ export default {
 		return { store, trunkKey }
 	},
 
+	data () {
+		return {
+			filteredResult: [],
+			searchText: ""
+		}
+	},
+
 	mounted: function () {
 		const vm = this
 
@@ -93,6 +104,12 @@ export default {
 	},
 
 	methods: {
+		filterList: function() {
+			console.log("Here");
+			console.log(this.searchText);
+			console.log(this.store.rawKeys.filter((el) => el.hostname.match(this.searchText)));
+			this.filteredResult = this.store.rawKeys.filter((el) => el.hostname.match(this.searchText));
+		},
 		refreshList: async function() {
 			// Helper to refreshList
 			await this.fetchKeys();
