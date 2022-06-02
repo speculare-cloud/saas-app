@@ -25,12 +25,15 @@
 				</button>
 			</div>
 		</div>
+		<!-- In case we don't have keys yet -->
 		<div v-if="store.rawKeys.length === 0 && !searchText" class="mt-12">
 			Nothing yet
 		</div>
+		<!-- If we're searching something but we have no matches -->
 		<div v-if="filteredResult.length === 0 && searchText" class="mt-12">
 			Nothing matches
 		</div>
+		<!-- Other case :) -->
 		<div v-if="store.rawKeys.length !== 0" class="mt-12 bg-base-300 rounded-lg shadow servers-list">
 			<div id="servers-item" v-for="item in (!searchText ? store.rawKeys : filteredResult)" :key="item.key" class="flex justify-between cursor-pointer pl-4 pr-8 py-2 hover:bg-base-250 gap-4">
 				<div class="flex items-center gap-4">
