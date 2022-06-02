@@ -20,9 +20,9 @@
 						placeholder="Search monitors" data-target="search--base.searchInput" data-action="keyup->search--base#searchKeyUp blur->search--base#searchBlur" autocomplete="off">
 				</div>
 
-				<button class="btn btn-info !h-10 !min-h-[2.5rem] normal-case">
-					Create monitor
-				</button>
+				<router-link key="add_server" :to="{ name: 'NewServer' }" class="btn btn-info !h-10 !min-h-[2.5rem] normal-case">
+					Add a server
+				</router-link>
 			</div>
 		</div>
 		<!-- In case we don't have keys yet -->
