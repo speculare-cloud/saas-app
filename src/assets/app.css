@@ -269,3 +269,10 @@ td) {
     height: calc(100 * var(--vh, 1vh));
     height: 100svh;
 }
+
+.menu :where(li:not(.menu-title):not(:empty))> :where(:not(ul).active),
+.menu :where(li:not(.menu-title):not(:empty))> :where(*:not(ul):active) {
+    --tw-bg-opacity: 1;
+    background-color: hsl(var(--p) / var(--tw-bg-opacity));
+    color: currentColor;
+}
