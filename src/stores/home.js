@@ -6,7 +6,9 @@ export const useHomeStore = defineStore('home', {
 			// List of different Bertas hosted user's servers
 			bertas: [],
 			// List of owned keys by the user with info from Bertas.
-			rawKeys: [],
+			unconfiguredKeys: [],
+			// List of owned keys + hostname and basics info of the server
+			configuredKeys: [],
 		}
 	},
 })

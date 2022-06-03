@@ -25,56 +25,91 @@
 				</router-link>
 			</div>
 		</div>
-		<!-- In case we don't have keys yet -->
-		<div v-if="store.rawKeys.length === 0 && !searchText" class="mt-12">
-			Nothing yet
-		</div>
-		<!-- If we're searching something but we have no matches -->
-		<div v-if="filteredResult.length === 0 && searchText" class="mt-12">
-			Nothing matches
-		</div>
-		<!-- Other case :) -->
-		<div v-if="store.rawKeys.length !== 0" class="mt-12 bg-base-300 rounded-lg shadow servers-list">
-			<div id="servers-item" v-for="item in (!searchText ? store.rawKeys : filteredResult)" :key="item.key" class="flex justify-between cursor-pointer pl-4 pr-8 py-2 hover:bg-base-250 gap-4">
-				<div class="flex items-center gap-4">
-					<div class="tooltip tooltip-right md:tooltip-left" data-tip="UP">
-						<span class="block leading-[0]">
-							<div class="status-indicator status-indicator--sm" :class="true ? 'status-indicator--success' : 'status-indicator--danger'">
-								<div class="circle circle--animated circle-main" />
-								<div class="circle circle--animated circle-secondary" />
-								<div class="circle circle--animated circle-tertiary" />
-							</div>
-						</span>
-					</div>
-					<p>{{ item.hostname ?? trunkKey(item.host) ?? "waiting data..." }}</p>
-				</div>
-				<div class="flex items-center gap-4 text-gray-300">
-					<span class="tooltip hidden md:block" data-tip="Collecting every 3 minutes">
-						<div class="btn btn-square btn-ghost h-7 w-16 min-h-[1.75rem] normal-case font-normal flex flex-col gap-1 text-sm">
-							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 330.003 330.003" class="w-6 h-6">
-								<path d="M328.417,208.293l-40-80c-2.541-5.082-7.735-8.292-13.417-8.292c-5.682,0-10.875,3.21-13.416,8.292l-44.868,89.735L158.98,69.565c-2.181-5.609-7.503-9.371-13.519-9.557c-6.006-0.173-11.559,3.243-14.081,8.708L75.402,190.001H15c-8.284,0-15,6.716-15,15c0,8.284,6.716,15,15,15h70c5.851,0,11.168-3.402,13.619-8.714l45.201-97.934l57.2,147.085c2.15,5.53,7.358,9.273,13.285,9.547c0.233,0.011,0.466,0.016,0.699,0.016c5.659,0,10.864-3.194,13.413-8.292L275,168.542l26.584,53.167c3.705,7.41,12.716,10.414,20.124,6.708C329.118,224.713,332.121,215.703,328.417,208.293z" />
-							</svg>
-							3m
+		<!-- In case we have unconfiguredKeys -->
+		<section id="unconfiguredKeys" v-if="store.unconfiguredKeys.length !== 0" class="mt-12">
+			<p class="p-4 text-[#c5c8cb]">
+				Waiting activation...
+			</p>
+			<div class="bg-base-300 rounded-lg shadow servers-list">
+				<div id="servers-item" v-for="item in store.unconfiguredKeys" :key="item.key" class="flex justify-between cursor-pointer pl-4 pr-8 py-2 hover:bg-base-250 gap-4">
+					<div class="flex items-center gap-4">
+						<div class="tooltip tooltip-right md:tooltip-left" data-tip="WAITING">
+							<span class="block leading-[0]">
+								<div class="status-indicator status-indicator--sm status-indicator--warning">
+									<div class="circle circle--animated circle-main" />
+									<div class="circle circle--animated circle-secondary" />
+									<div class="circle circle--animated circle-tertiary" />
+								</div>
+							</span>
 						</div>
-					</span>
-					<div class="dropdown dropdown-end">
-						<label tabindex="0" class="btn btn-square btn-ghost h-7 w-10 min-h-[1.75rem]">
-							<svg
-								xmlns="http://www.w3.org/2000/svg" width="16" height="4" viewBox="0 0 16 4"
-								fill="currentColor">
-								<path d="M14 0C15.103 0 16 0.897 16 2C16 3.103 15.103 4 14 4C12.897 4 12 3.103 12 2C12 0.897 12.897 0 14 0ZM8 0C9.103 0 10 0.897 10 2C10 3.103 9.103 4 8 4C6.897 4 6 3.103 6 2C6 0.897 6.897 0 8 0ZM2 0C3.103 0 4 0.897 4 2C4 3.103 3.103 4 2 4C0.897 4 0 3.103 0 2C0 0.897 0.897 0 2 0Z" />
-							</svg>
-						</label>
-						<div tabindex="0" class="menu menu-compact dropdown-content mt-3 p-2 bg-base-300 shadow rounded-box w-52 gap-1 border border-neutral">
-							<li><a>Configure</a></li>
-							<li><a>Incidents</a></li>
-							<div class="divider h-0 my-0" />
-							<li><a>Delete</a></li>
+						<p>{{ trunkKey(item.key) }}</p>
+					</div>
+					<div class="flex items-center gap-4 text-gray-300">
+						<div class="dropdown dropdown-end">
+							<label tabindex="0" class="btn btn-square btn-ghost h-7 w-10 min-h-[1.75rem]">
+								<svg
+									xmlns="http://www.w3.org/2000/svg" width="16" height="4" viewBox="0 0 16 4"
+									fill="currentColor">
+									<path d="M14 0C15.103 0 16 0.897 16 2C16 3.103 15.103 4 14 4C12.897 4 12 3.103 12 2C12 0.897 12.897 0 14 0ZM8 0C9.103 0 10 0.897 10 2C10 3.103 9.103 4 8 4C6.897 4 6 3.103 6 2C6 0.897 6.897 0 8 0ZM2 0C3.103 0 4 0.897 4 2C4 3.103 3.103 4 2 4C0.897 4 0 3.103 0 2C0 0.897 0.897 0 2 0Z" />
+								</svg>
+							</label>
+							<div tabindex="0" class="menu menu-compact dropdown-content mt-3 p-2 bg-base-300 shadow rounded-box w-52 gap-1 border border-neutral">
+								<li><a>Configure</a></li>
+								<div class="divider h-0 my-0" />
+								<li><a>Delete</a></li>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-		</div>
+		</section>
+		<!-- In case we have configuredKeys -->
+		<section id="configuredKeys" v-if="store.configuredKeys.length !== 0" :class="store.unconfiguredKeys.length !== 0 ? 'mt-6' : 'mt-12'">
+			<p class="p-4 text-[#c5c8cb]">
+				Configured servers
+			</p>
+			<div class="bg-base-300 rounded-lg shadow servers-list">
+				<div id="servers-item" v-for="item in (!searchText ? store.configuredKeys : filteredResult)" :key="item.key" class="flex justify-between cursor-pointer pl-4 pr-8 py-2 hover:bg-base-250 gap-4">
+					<div class="flex items-center gap-4">
+						<div class="tooltip tooltip-right md:tooltip-left" data-tip="UP">
+							<span class="block leading-[0]">
+								<div class="status-indicator status-indicator--sm" :class="true ? 'status-indicator--success' : 'status-indicator--danger'">
+									<div class="circle circle--animated circle-main" />
+									<div class="circle circle--animated circle-secondary" />
+									<div class="circle circle--animated circle-tertiary" />
+								</div>
+							</span>
+						</div>
+						<p>{{ item.hostname ?? trunkKey(item.host) ?? "waiting data..." }}</p>
+					</div>
+					<div class="flex items-center gap-4 text-gray-300">
+						<span class="tooltip hidden md:block" data-tip="Collecting every 3 minutes">
+							<div class="btn btn-square btn-ghost h-7 w-16 min-h-[1.75rem] normal-case font-normal flex flex-col gap-1 text-sm">
+								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 330.003 330.003" class="w-6 h-6">
+									<path d="M328.417,208.293l-40-80c-2.541-5.082-7.735-8.292-13.417-8.292c-5.682,0-10.875,3.21-13.416,8.292l-44.868,89.735L158.98,69.565c-2.181-5.609-7.503-9.371-13.519-9.557c-6.006-0.173-11.559,3.243-14.081,8.708L75.402,190.001H15c-8.284,0-15,6.716-15,15c0,8.284,6.716,15,15,15h70c5.851,0,11.168-3.402,13.619-8.714l45.201-97.934l57.2,147.085c2.15,5.53,7.358,9.273,13.285,9.547c0.233,0.011,0.466,0.016,0.699,0.016c5.659,0,10.864-3.194,13.413-8.292L275,168.542l26.584,53.167c3.705,7.41,12.716,10.414,20.124,6.708C329.118,224.713,332.121,215.703,328.417,208.293z" />
+								</svg>
+								3m
+							</div>
+						</span>
+						<div class="dropdown dropdown-end">
+							<label tabindex="0" class="btn btn-square btn-ghost h-7 w-10 min-h-[1.75rem]">
+								<svg
+									xmlns="http://www.w3.org/2000/svg" width="16" height="4" viewBox="0 0 16 4"
+									fill="currentColor">
+									<path d="M14 0C15.103 0 16 0.897 16 2C16 3.103 15.103 4 14 4C12.897 4 12 3.103 12 2C12 0.897 12.897 0 14 0ZM8 0C9.103 0 10 0.897 10 2C10 3.103 9.103 4 8 4C6.897 4 6 3.103 6 2C6 0.897 6.897 0 8 0ZM2 0C3.103 0 4 0.897 4 2C4 3.103 3.103 4 2 4C0.897 4 0 3.103 0 2C0 0.897 0.897 0 2 0Z" />
+								</svg>
+							</label>
+							<div tabindex="0" class="menu menu-compact dropdown-content mt-3 p-2 bg-base-300 shadow rounded-box w-52 gap-1 border border-neutral">
+								<li><a>Configure</a></li>
+								<li><a>Incidents</a></li>
+								<div class="divider h-0 my-0" />
+								<li><a>Delete</a></li>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
 	</section>
 </template>
 
@@ -108,35 +143,25 @@ export default {
 
 	methods: {
 		filterList: function() {
-			console.log("Here");
-			console.log(this.searchText);
-			console.log(this.store.rawKeys.filter((el) => el.hostname.match(this.searchText)));
-			this.filteredResult = this.store.rawKeys.filter((el) => el.hostname.match(this.searchText));
+			this.filteredResult = this.store.configuredKeys.filter((el) => el.hostname.match(this.searchText));
 		},
 		refreshList: async function() {
-			// Helper to refreshList
-			await this.fetchKeys();
-			await this.resolveHostname();
-		},
-		fetchKeys: async function() {
-			// Fetch the API keys
+			let apiKeys = [];
+			// Fetch the API keys for the current user
+			// - this will give us the list of bertas the user have servers on.
+			// - which will then allow us to query those berta to get the hostname and diverse info.
 			await this.$http.get(this.$authBase + "/api/key")
 				.then((resp) => {
 					resp.data.forEach(elem => {
-						// Skip if the items already exists in our local state
-						if (this.store.rawKeys.find((e) => e.key == elem.key) !== undefined) {
-							return;
-						}
-
 						// If the bertas list !includes this server's berta
 						if (!this.store.bertas.includes(elem.berta)) {
-							console.log("Adding new berta", elem.berta);
+							console.log("Adding new berta: ", elem.berta);
 							this.store.bertas.push(elem.berta);
 						}
 
-						this.store.rawKeys.push({
+						apiKeys.push({
 							key: elem.key,
-							host: elem.host_uuid,
+							uuid: elem.host_uuid,
 							berta: elem.berta,
 						});
 					});
@@ -144,42 +169,55 @@ export default {
 					// TODO - Handle errors
 					console.log(err);
 				});
-		},
-		resolveHostname: async function() {
-			// For each bertas we had in fetchKeys,
-			// we fetch the servers's hostname and os (if any).
-			this.store.bertas.forEach(async (elem) => {
-				console.log("Gathering for Berta", elem);
 
-				let bertaUrl = this.$bertaOverride ? this.$bertaOverride : "https://" + elem + ".speculare.cloud";
+			// For each Bertas, we fetch the servers's hostname and os (if any).
+			for (const berta in this.store.bertas) {
+				const bertaUrl = this.$bertaOverride ? this.$bertaOverride : "https://" + berta + ".speculare.cloud";
 				await this.$http.get(bertaUrl + "/api/hosts")
 					.then((resp) => {
+						// Foreach server we got as response
 						resp.data.forEach(elem => {
-							let rkey = this.store.rawKeys.find((e) => e.host == elem.uuid);
+							// Check if we already have the keys in our configuredKeys.
+							const already = this.store.configuredKeys.findIndex((el) => el.uuid == elem.uuid);
+							// If we already have it, remove and skip
+							if (already !== -1) {
+								apiKeys.splice(already, 1);
+								return;
+							}
 
-							// This is a edge case, if rkey is not found, this means the server
-							// exists on the berta's database but there's no related API key.
-							if (rkey === undefined) return;
+							// Get the corresponding apiKeys entry (from previous call)
+							const index = apiKeys.findIndex((el) => el.uuid === elem.uuid);
+							// If is undefined, it's a edge case that shouldn't happens
+							if (index === -1) {
+								console.error("error: server present on the berta but not on the auth server.", elem.uuid)
+								return
+							}
 
-							rkey.hostname = elem.hostname;
-							rkey.os = elem.system;
+							// Get the item and remove it from the array
+							const rKey = apiKeys.splice(index, 1)[0];
+							// Push the server's info to the store
+							this.store.configuredKeys.push({
+								hostname: elem.hostname,
+								key: rKey.key,
+								uuid: rKey.uuid,
+								berta: rKey.berta,
+							})
 						});
 					}).catch((err) => {
 						// TODO - Handle errors
 						console.log(err);
 					});
+			}
+
+			// Push the unconfiguredKeys (leftover of apiKeys)
+			apiKeys.forEach((elem) => {
+				let already = this.store.unconfiguredKeys.find((e) => e.key == elem.key);
+				// If we already have it, continue
+				if (already !== undefined) return;
+
+				this.store.unconfiguredKeys.push(elem);
 			});
 		},
-		generateKey: async function() {
-			// Create a new API key and refresh the list on success
-			await this.$http.post(this.$authBase + "/api/key", {})
-				.then(async () => {
-					await this.refreshList();
-				}).catch((err) => {
-					// TODO - Handle errors
-					console.log(err);
-				});
-		}
 	}
 }
 </script>
