@@ -280,3 +280,8 @@ td) {
     background-color: hsl(var(--p) / var(--tw-bg-opacity));
     color: currentColor;
 }
+
+.modal {
+	background-color: hsl(var(--nf, var(--n)) / var(--tw-bg-opacity));
+    --tw-bg-opacity: 0.8;
+}
