@@ -45,13 +45,17 @@ router.beforeEach(async(toRoute, _fromRoute, next) => {
 		await httpAxios.get(app.config.globalProperties.$authBase + "/api/whoami")
 			.then(() => {
 				store.setLogged(true);
-				next({ name: 'Home' });
+				if (toRoute.meta.accessibleBoth) {
+					next();
+				} else {
+					next({ name: 'Servers' });
+				}
 			}).catch(() => {
 				store.setLogged(false);
 				next();
 			});
 	} else {
-		window.document.title = toRoute.name + " - Speculare Console";
+		window.document.title = (toRoute.meta.pageName ?? toRoute.name) + " - Speculare Console";
 		next();
 	}
 });

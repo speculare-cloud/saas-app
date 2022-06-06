@@ -15,9 +15,9 @@
 					</svg>
 
 					<input
-						v-model="searchText" @input="filterList"
-						type="text" name="q" id="q" class="form-control-search font-medium !pl-[34px] h-10 text-neutral-500"
-						placeholder="Search monitors" data-target="search--base.searchInput" data-action="keyup->search--base#searchKeyUp blur->search--base#searchBlur" autocomplete="off">
+						v-model="searchText" @input="filterList" type="text"
+						class="form-control-custom font-medium !pl-[34px] h-10 text-neutral-500"
+						placeholder="Search monitors" autocomplete="off">
 				</div>
 
 				<router-link key="add_server" :to="{ name: 'NewServer' }" class="btn btn-info !h-10 !min-h-[2.5rem] normal-case">
@@ -31,9 +31,12 @@
 				Waiting activation...
 			</p>
 			<div class="bg-base-300 rounded-lg shadow servers-list">
-				<div id="servers-item" v-for="item in store.unconfiguredKeys" :key="item.key" class="flex justify-between cursor-pointer pl-4 pr-8 py-2 hover:bg-base-250 gap-4">
+				<router-link
+					:to="{ name: 'NewServer', params: { secretKey: item.key } }" id="servers-item"
+					v-for="item in store.unconfiguredKeys" :key="item.key"
+					class="flex justify-between cursor-pointer pl-4 pr-8 py-2 hover:bg-base-250 gap-4">
 					<div class="flex items-center gap-4">
-						<div class="tooltip tooltip-right md:tooltip-left" data-tip="WAITING">
+						<div class="tooltip tooltip-right lg:tooltip-left" data-tip="WAITING">
 							<span class="block leading-[0]">
 								<div class="status-indicator status-indicator--sm status-indicator--warning">
 									<div class="circle circle--animated circle-main" />
@@ -42,11 +45,11 @@
 								</div>
 							</span>
 						</div>
-						<p>{{ trunkKey(item.key) }}</p>
+						<p>{{ trunkKey(item.key) }}...</p>
 					</div>
 					<div class="flex items-center gap-4 text-gray-300">
 						<div class="dropdown dropdown-end">
-							<label tabindex="0" class="btn btn-square btn-ghost h-7 w-10 min-h-[1.75rem]">
+							<label @click.prevent tabindex="0" class="btn btn-square btn-ghost h-7 w-10 min-h-[1.75rem]">
 								<svg
 									xmlns="http://www.w3.org/2000/svg" width="16" height="4" viewBox="0 0 16 4"
 									fill="currentColor">
@@ -60,7 +63,7 @@
 							</div>
 						</div>
 					</div>
-				</div>
+				</router-link>
 			</div>
 		</section>
 		<!-- In case we have configuredKeys -->
@@ -69,9 +72,12 @@
 				Configured servers
 			</p>
 			<div class="bg-base-300 rounded-lg shadow servers-list">
-				<div id="servers-item" v-for="item in (!searchText ? store.configuredKeys : filteredResult)" :key="item.key" class="flex justify-between cursor-pointer pl-4 pr-8 py-2 hover:bg-base-250 gap-4">
+				<router-link
+					:to="{ name: 'DetailsServer', params: { uuid: item.uuid, hostname: item.hostname } }" id="servers-item"
+					v-for="item in (!searchText ? store.configuredKeys : filteredResult)" :key="item.uuid"
+					class="flex justify-between cursor-pointer pl-4 pr-8 py-2 hover:bg-base-250 gap-4">
 					<div class="flex items-center gap-4">
-						<div class="tooltip tooltip-right md:tooltip-left" data-tip="UP">
+						<div class="tooltip tooltip-right lg:tooltip-left" data-tip="UP">
 							<span class="block leading-[0]">
 								<div class="status-indicator status-indicator--sm" :class="true ? 'status-indicator--success' : 'status-indicator--danger'">
 									<div class="circle circle--animated circle-main" />
@@ -80,11 +86,11 @@
 								</div>
 							</span>
 						</div>
-						<p>{{ item.hostname ?? trunkKey(item.host) ?? "waiting data..." }}</p>
+						<p>{{ item.hostname }}</p>
 					</div>
 					<div class="flex items-center gap-4 text-gray-300">
 						<span class="tooltip hidden md:block" data-tip="Collecting every 3 minutes">
-							<div class="btn btn-square btn-ghost h-7 w-16 min-h-[1.75rem] normal-case font-normal flex flex-col gap-1 text-sm">
+							<div class="btn btn-square btn-ghost h-7 w-16 min-h-[1.75rem] normal-case font-normal flex flex-col gap-1 text-sm cursor-default">
 								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 330.003 330.003" class="w-6 h-6">
 									<path d="M328.417,208.293l-40-80c-2.541-5.082-7.735-8.292-13.417-8.292c-5.682,0-10.875,3.21-13.416,8.292l-44.868,89.735L158.98,69.565c-2.181-5.609-7.503-9.371-13.519-9.557c-6.006-0.173-11.559,3.243-14.081,8.708L75.402,190.001H15c-8.284,0-15,6.716-15,15c0,8.284,6.716,15,15,15h70c5.851,0,11.168-3.402,13.619-8.714l45.201-97.934l57.2,147.085c2.15,5.53,7.358,9.273,13.285,9.547c0.233,0.011,0.466,0.016,0.699,0.016c5.659,0,10.864-3.194,13.413-8.292L275,168.542l26.584,53.167c3.705,7.41,12.716,10.414,20.124,6.708C329.118,224.713,332.121,215.703,328.417,208.293z" />
 								</svg>
@@ -92,7 +98,7 @@
 							</div>
 						</span>
 						<div class="dropdown dropdown-end">
-							<label tabindex="0" class="btn btn-square btn-ghost h-7 w-10 min-h-[1.75rem]">
+							<label @click.prevent tabindex="0" class="btn btn-square btn-ghost h-7 w-10 min-h-[1.75rem]">
 								<svg
 									xmlns="http://www.w3.org/2000/svg" width="16" height="4" viewBox="0 0 16 4"
 									fill="currentColor">
@@ -107,7 +113,7 @@
 							</div>
 						</div>
 					</div>
-				</div>
+				</router-link>
 			</div>
 		</section>
 	</section>

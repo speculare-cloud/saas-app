@@ -3,26 +3,46 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Base from '@/layouts/Base'
 
 const routes = [{
+	path: '/:pathMatch(.*)*',
+	name: '404',
+	component: () =>
+		import ('@/views/404'),
+	meta: {
+		accessibleBoth: true,
+	}
+}, {
 	path: '/',
 	component: Base,
 	redirect: ({
-		name: 'Home'
+		name: 'Servers'
 	}),
 	children: [{
-		path: 'home',
-		name: 'Home',
+		path: 'servers',
+		name: 'Servers',
 		component: () =>
-			import ('@/views/Home'),
+			import ('@/views/Servers'),
 		meta: {
 			requireAuth: true,
 		}
 	}, {
-		path: 'new_server',
+		path: 'servers/:uuid/:hostname',
+		name: 'DetailsServer',
+		component: () =>
+			import ('@/views/server/Details'),
+		meta: {
+			requireAuth: true,
+			child: 'servers',
+			pageName: 'Details server',
+		}
+	}, {
+		path: 'servers/new',
 		name: 'NewServer',
 		component: () =>
 			import ('@/views/NewServer'),
 		meta: {
 			requireAuth: true,
+			child: 'servers',
+			pageName: 'New server',
 		}
 	}, {
 		path: 'incidents',

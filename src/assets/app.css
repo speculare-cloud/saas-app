@@ -28,6 +28,10 @@ body,
     font-family: 'Montserrat', sans-serif;
 }
 
+.flex-2 {
+    flex: 2 2;
+}
+
 .h-screen {
     height: 100vh;
     height: calc(var(--vh, 1vh)*100);
@@ -188,7 +192,7 @@ body,
     }
 }
 
-.form-control-search {
+.form-control-custom {
     width: 100%;
     border-radius: 8px;
     border-width: 1px;

@@ -15,7 +15,7 @@
 					</svg>
 
 					<input
-						type="text" name="q" id="q" class="form-control-search font-medium !pl-[34px] h-10 text-neutral-500"
+						type="text" class="form-control-custom font-medium !pl-[34px] h-10 text-neutral-500"
 						placeholder="Search incidents" autocomplete="off">
 				</div>
 			</div>
