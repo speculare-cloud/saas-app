@@ -194,16 +194,16 @@ export default {
 					.then((resp) => {
 						// Foreach server we got as response
 						resp.data.forEach(elem => {
+							console.log("Checking for configuredKeys", elem.uuid);
 							// Check if we already have the keys in our configuredKeys.
-							const already = this.store.configuredKeys.findIndex((el) => el.uuid == elem.uuid);
+							const already = this.store.configuredKeys.find((el) => el.uuid == elem.uuid);
+							const index = apiKeys.findIndex((el) => el.uuid === elem.uuid);
 							// If we already have it, remove and skip
-							if (already !== -1) {
-								apiKeys.splice(already, 1);
+							if (already !== undefined) {
+								if (index !== -1) apiKeys.splice(index, 1);
 								return;
 							}
 
-							// Get the corresponding apiKeys entry (from previous call)
-							const index = apiKeys.findIndex((el) => el.uuid === elem.uuid);
 							// If is undefined, it's a edge case that shouldn't happens
 							if (index === -1) {
 								console.error("error: server present on the berta but not on the auth server.", elem.uuid)

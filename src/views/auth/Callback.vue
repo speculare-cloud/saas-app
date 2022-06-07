@@ -24,7 +24,7 @@ export default {
 			.then(() => {
 				// Redirect to the Home page
 				this.store.setLogged(true);
-				this.$router.replace({ name: 'Home' });
+				this.$router.replace({ name: 'Servers' });
 			}).catch((err) => {
 				console.log("Error", err);
 				// Redirect to the Login page
