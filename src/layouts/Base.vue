@@ -129,18 +129,6 @@ export default {
 		return { store }
 	},
 
-	created: function () {
-		window.addEventListener("resize", this.resizeHandler);
-	},
-
-	unmounted: function ()  {
-		window.removeEventListener("resize", this.resizeHandler);
-	},
-
-	mounted: function () {
-		this.resizeHandler();
-	},
-
 	methods: {
 		logout: async function() {
 			await this.$http.get(this.$authBase + "/api/logout")
@@ -150,9 +138,6 @@ export default {
 				}).catch((err) => {
 					console.log(err);
 				});
-		},
-		resizeHandler()  {
-			document.documentElement.style.setProperty('--vh', `${(window.innerHeight*.01)}px`);
 		},
 	}
 }
