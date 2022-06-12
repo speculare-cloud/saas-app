@@ -36,16 +36,19 @@
 						:to="{ name: 'NewServer', params: { secretKey: item.key } }" id="servers-item"
 						class="flex justify-between cursor-pointer pl-4 pr-8 py-2 hover:bg-base-250 gap-4">
 						<div class="flex items-center gap-4">
-							<div class="tooltip tooltip-right lg:tooltip-left" data-tip="WAITING">
-								<span class="block leading-[0]">
-									<div class="status-indicator status-indicator--sm status-indicator--warning">
-										<div class="circle circle--animated circle-main" />
-										<div class="circle circle--animated circle-secondary" />
-										<div class="circle circle--animated circle-tertiary" />
-									</div>
-								</span>
+							<div class="status-indicator status-indicator--sm status-indicator--warning">
+								<div class="circle circle--animated circle-main" />
+								<div class="circle circle--animated circle-secondary" />
+								<div class="circle circle--animated circle-tertiary" />
 							</div>
-							<p>{{ trunkKey(item.key) }}...</p>
+							<div class="flex flex-col">
+								<p class="font-medium max-w-[340px] text-sm mb-[2px]">
+									{{ trunkKey(item.key) }}..
+								</p>
+								<p class="text-[13px] text-[#c5c8cb]">
+									Key ready, waiting for data
+								</p>
+							</div>
 						</div>
 						<div class="flex items-center gap-4 text-gray-300">
 							<div class="dropdown dropdown-end">

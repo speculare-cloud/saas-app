@@ -3,7 +3,7 @@ import moment from 'moment';
 export function trunkKey(text) {
 	if (text === null) return undefined
 
-	return text.slice(0, 6);
+	return text.slice(0, 10);
 }
 
 export function fmtDuration(durationinsec) {
