@@ -41,10 +41,13 @@
 				then
 			</div>
 			<div class="flex flex-col xl:flex-row xl:space-x-20 space-y-8 xl:space-y-0">
-				<div class="flex-2 mockup-code">
-					<pre data-prefix="1"><code>curl https://speculare.cloud/some_random_script.sh | bash</code></pre>
-					<pre v-if="host_uuid === null" data-prefix="2" class="bg-warning text-warning-content"><code>Waiting for data...</code></pre>
-					<pre v-if="host_uuid !== null" data-prefix="2" class="bg-success text-success-content"><code>Success!</code></pre>
+				<!-- Workaround to make the scrollbar "rounded" -->
+				<div class="overflow-hidden" style="border-radius: var(--rounded-box, 1rem);">
+					<div class="flex-2 mockup-code">
+						<pre data-prefix="1"><code>curl https://speculare.cloud/some_random_script.sh | bash</code></pre>
+						<pre v-if="host_uuid === null" data-prefix="2" class="bg-warning text-warning-content"><code>Waiting for data...</code></pre>
+						<pre v-if="host_uuid !== null" data-prefix="2" class="bg-success text-success-content"><code>Success!</code></pre>
+					</div>
 				</div>
 				<div class="flex-1 prose-sm xl:flex flex-col justify-center align-middle">
 					<h3>Download and setup the daemon</h3>
