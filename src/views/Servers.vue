@@ -43,7 +43,7 @@
 							</div>
 							<div class="flex flex-col">
 								<p class="font-medium max-w-[340px] text-sm mb-[2px]">
-									{{ trunkKey(item.key) }}..
+									{{ trunkKey(item.key) }}...
 								</p>
 								<p class="text-[13px] text-[#c5c8cb]">
 									Key ready, waiting for data
