@@ -7,6 +7,9 @@ import PersistedState from 'pinia-plugin-persistedstate'
 import App from '@/App.vue'
 
 import axios from 'axios'
+import moment from 'moment'
+
+require("moment-duration-format")(moment);
 
 import '@/assets/app.css'
 

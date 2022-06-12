@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import { useHomeStore } from '@/stores/home';
+import { useServersStore } from '@/stores/servers';
 
 export default {
 	props: {
@@ -46,7 +46,7 @@ export default {
 	},
 
 	setup () {
-		const store = useHomeStore();
+		const store = useServersStore();
 		return { store }
 	},
 

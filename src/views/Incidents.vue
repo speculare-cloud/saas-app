@@ -133,13 +133,31 @@
 </template>
 
 <script>
+import { nextTick } from 'vue';
+import { useIncidentsStore } from '@/stores/incidents';
+import { useServersStore } from '@/stores/servers';
+
 export default {
 	name: 'Incidents',
 
-	data () {
-		return {}
+	setup () {
+		const store = useIncidentsStore();
+		const serverStore = useServersStore();
+		return { store, serverStore }
 	},
 
-	mounted: function () {},
+	mounted: function () {
+		const vm = this
+
+		nextTick(async () => {
+			await vm.refreshList();
+		})
+	},
+
+	methods: {
+		refreshList: async function() {
+			
+		}
+	}
 }
 </script>
