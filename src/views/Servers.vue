@@ -80,7 +80,7 @@
 			<div class="bg-base-300 rounded-lg shadow servers-list">
 				<div v-for="item in (!searchText ? store.configuredKeys : filteredResult)" :key="item.uuid">
 					<router-link
-						:to="{ name: 'DetailsServer', params: { uuid: item.uuid, hostname: item.hostname } }"
+						:to="{ name: 'DetailsServer', params: { berta: item.berta, uuid: item.uuid, hostname: item.hostname } }"
 						id="servers-item" class="flex justify-between cursor-pointer pl-4 pr-8 py-3 hover:bg-base-250 gap-4">
 						<div class="flex items-center gap-4">
 							<div class="status-indicator status-indicator--sm" :class="true ? 'status-indicator--success' : 'status-indicator--danger'">

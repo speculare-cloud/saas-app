@@ -25,7 +25,7 @@ const routes = [{
 			requireAuth: true,
 		}
 	}, {
-		path: 'servers/:uuid/:hostname',
+		path: 'servers/:berta/:uuid/:hostname',
 		name: 'DetailsServer',
 		component: () =>
 			import ('@/views/server/Details'),
