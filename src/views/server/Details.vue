@@ -12,10 +12,50 @@
 					<span>Servers</span>
 				</div>
 			</router-link>
-			<div class="prose-sm flex justify-between items-center mt-4">
-				<h1>
-					{{ $route.params.hostname }}
-				</h1>
+			<div class="prose-sm flex items-center gap-4 mt-4">
+				<div class="status-indicator" :class="true ? 'status-indicator--success' : 'status-indicator--danger'">
+					<div class="circle circle--animated circle-main" />
+					<div class="circle circle--animated circle-secondary" />
+					<div class="circle circle--animated circle-tertiary" />
+				</div>
+				<div class="flex flex-col align-middle gap-1">
+					<h1 class="mb-0">
+						{{ $route.params.hostname }}
+					</h1>
+					<p class="text-sm text-[#c5c8cb] my-0">
+						<span class="text-green-400 mr-1">Up</span> - <span class="ml-1">todo</span>
+					</p>
+				</div>
+			</div>
+		</div>
+		<div class="mt-12">
+			<div data-controller="resources--summary-interval" data-interval="30" data-url="/team/16377/monitors/359018/summary">
+				<div class="flex flex-col md:flex-row md:space-x-4">
+					<div class="mb-5 text-left flex-1 p-5 bg-base-300 shadow-md rounded-lg">
+						<h6 class="text-[#c5c8cb] text-sm">
+							Currently up for
+						</h6>
+						<h4 class="text-lg mt-2 text-white">
+							<span>25 days 23 hours 28 mins</span>
+						</h4>
+					</div>
+					<div class="mb-5 text-left flex-1 p-5 bg-base-300 shadow-md rounded-lg">
+						<h6 class="text-[#c5c8cb]">
+							Last data at
+						</h6>
+						<h4 class="mt-2 text-white">
+							<span>2 minutes ago</span>
+						</h4>
+					</div>
+					<div class="mb-5 text-left flex-1 p-5 bg-base-300 shadow-md rounded-lg">
+						<h6 class="text-[#c5c8cb]">
+							Incidents
+						</h6>
+						<h4 class="mt-2 text-white">
+							4
+						</h4>
+					</div>
+				</div>
 			</div>
 		</div>
 	</section>
@@ -29,6 +69,8 @@ export default {
 		return {}
 	},
 
-	mounted: function () {},
+	mounted: function () {
+
+	},
 }
 </script>
