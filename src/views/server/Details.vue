@@ -62,15 +62,42 @@
 </template>
 
 <script>
+import { nextTick } from 'vue';
+import { initWS, closeWS } from '@/utils/websockets';
+
 export default {
 	name: 'DetailsServer',
 
 	data () {
-		return {}
+		return {
+			host_info: null,
+			connection: null,
+		}
 	},
 
 	mounted: function () {
+		const vm = this
 
+		// Don't setup anything before everything is rendered
+		nextTick(() => {
+			initWS("ws://localhost:8083", "hosts", "update", ":uuid.eq." + this.$route.params.uuid, true, vm);
+		})
 	},
+
+	beforeUnmount: function () {
+		// Close the webSocket connection
+		closeWS("hosts", this);
+	},
+
+	methods: {
+		fetchInit: function() {
+			console.log("Here");
+		},
+		// Function responsible to init the fetching data and the websocket connection
+		wsMessageHandle: function (event) {
+			const json = JSON.parse(event.data)
+			console.log(json);
+		}
+	}
 }
 </script>
