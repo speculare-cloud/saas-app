@@ -27,6 +27,7 @@ const store = useMainStore();
 
 app.config.globalProperties.$authBase = process.env.VUE_APP_AUTH_SERVER;
 app.config.globalProperties.$bertaOverride = process.env.VUE_APP_BERTA_OVERRIDE;
+app.config.globalProperties.$cdcOverride = process.env.VUE_APP_CDC_OVERRIDE;
 app.config.globalProperties.$http = httpAxios;
 
 // Logout the user if he's not logged at loading

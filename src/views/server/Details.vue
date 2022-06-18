@@ -88,7 +88,8 @@ export default {
 
 		// Don't setup anything before everything is rendered
 		nextTick(async () => {
-			initWS("ws://localhost:8083", "hosts", "update", ":uuid.eq." + this.$route.params.uuid, false, vm);
+			const cdcUrl = this.$cdcOverride ? this.$cdcOverride : "wss://" + this.$route.params.berta + ".cdc.speculare.cloud";
+			initWS(cdcUrl, "hosts", "update", ":uuid.eq." + this.$route.params.uuid, false, vm);
 			await this.fetchInit();
 		})
 	},
@@ -110,7 +111,7 @@ export default {
 			}
 		},
 		fetchInit: async function() {
-			const bertaUrl = this.$bertaOverride ? this.$bertaOverride : "https://" + this.$route.params.berta + ".speculare.cloud";
+			const bertaUrl = this.$bertaOverride ? this.$bertaOverride : "https://" + this.$route.params.berta + "server.speculare.cloud";
 			await this.$http.get(bertaUrl + "/api/host?uuid=" + this.$route.params.uuid)
 				.then((resp) => {
 					this.hostInfo = {

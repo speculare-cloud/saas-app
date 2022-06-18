@@ -188,7 +188,7 @@ export default {
 
 			// For each Bertas, we fetch the servers's hostname and os (if any).
 			for (const berta in this.store.bertas) {
-				const bertaUrl = this.$bertaOverride ? this.$bertaOverride : "https://" + berta + ".speculare.cloud";
+				const bertaUrl = this.$bertaOverride ? this.$bertaOverride : "https://" + berta + ".server.speculare.cloud";
 				await this.$http.get(bertaUrl + "/api/hosts")
 					.then((resp) => {
 						// Foreach server we got as response
