@@ -7,7 +7,7 @@ export function trunkKey(text) {
 }
 
 export function fmtDuration(durationinsec) {
-	return moment.duration(durationinsec, 'seconds').format();
+	return moment.duration(durationinsec, 'seconds').format("Y[y] M[m] D[d] HH[h] mm[m]");
 }
 
 export function fmtGranularity(granularity) {

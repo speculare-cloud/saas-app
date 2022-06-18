@@ -1,3 +1,5 @@
+export const CDC_VALUES = "columnvalues"
+
 export function initWS (wsUrl, table, event_type, filter, callback, vm) {
 	console.log('[' + table + '] %cStarting %cconnection to WebSocket Server', 'color:green;', 'color:white;')
 	if (vm.connection == null) {

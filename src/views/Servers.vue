@@ -52,7 +52,7 @@
 						</div>
 						<div class="flex items-center gap-4 text-gray-300">
 							<div class="dropdown dropdown-end">
-								<label @click.prevent tabindex="0" class="btn btn-square btn-ghost h-7 w-10 min-h-[1.75rem]">
+								<label @click.prevent tabindex="0" class="btn btn-square btn-ghost h-7 w-10 min-h-[1.75rem] !bg-opacity-30">
 									<svg
 										xmlns="http://www.w3.org/2000/svg" width="16" height="4" viewBox="0 0 16 4"
 										fill="currentColor">
@@ -99,7 +99,7 @@
 						</div>
 						<div class="flex items-center gap-4 text-gray-300">
 							<div class="dropdown dropdown-end">
-								<label @click.prevent tabindex="0" class="btn btn-square btn-ghost h-7 w-10 min-h-[1.75rem]">
+								<label @click.prevent tabindex="0" class="btn btn-square btn-ghost h-7 w-10 min-h-[1.75rem] !bg-opacity-30">
 									<svg
 										xmlns="http://www.w3.org/2000/svg" width="16" height="4" viewBox="0 0 16 4"
 										fill="currentColor">

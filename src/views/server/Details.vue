@@ -23,7 +23,7 @@
 						{{ $route.params.hostname }}
 					</h1>
 					<p class="text-sm text-[#c5c8cb] my-0">
-						<span class="text-green-400 mr-1">Up</span> - <span class="ml-1">todo</span>
+						<span class="text-green-400 mr-1">Up</span> - <span class="ml-1">Granularity of 3 seconds</span>
 					</p>
 				</div>
 			</div>
@@ -31,28 +31,31 @@
 		<div class="mt-12">
 			<div data-controller="resources--summary-interval" data-interval="30" data-url="/team/16377/monitors/359018/summary">
 				<div class="flex flex-col md:flex-row md:space-x-4">
-					<div class="mb-5 text-left flex-1 p-5 bg-base-300 shadow-md rounded-lg">
+					<div class="flex flex-col align-middle justify-between mb-5 text-left flex-1 p-5 bg-base-300 shadow-md rounded-lg">
 						<h6 class="text-[#c5c8cb] text-sm">
 							Currently up for
 						</h6>
-						<h4 class="text-lg mt-2 text-white">
-							<span>25 days 23 hours 28 mins</span>
+						<h4 class="text-white text-lg">
+							<span v-if="hostInfo">{{ fmtDuration(hostInfo.uptime) }}</span>
+							<div v-else class="animate-pulse bg-slate-600 w-full rounded h-[22px] mt-1" />
 						</h4>
 					</div>
-					<div class="mb-5 text-left flex-1 p-5 bg-base-300 shadow-md rounded-lg">
+					<div class="flex flex-col align-middle justify-between mb-5 text-left flex-1 p-5 bg-base-300 shadow-md rounded-lg">
 						<h6 class="text-[#c5c8cb]">
 							Last data at
 						</h6>
-						<h4 class="mt-2 text-white">
-							<span>2 minutes ago</span>
+						<h4 class="text-white  text-lg">
+							<span v-if="hostInfo">1 second ago</span>
+							<div v-else class="animate-pulse bg-slate-600 w-full rounded h-[22px] mt-1" />
 						</h4>
 					</div>
-					<div class="mb-5 text-left flex-1 p-5 bg-base-300 shadow-md rounded-lg">
+					<div class="flex flex-col align-middle justify-between mb-5 text-left flex-1 p-5 bg-base-300 shadow-md rounded-lg">
 						<h6 class="text-[#c5c8cb]">
 							Incidents
 						</h6>
-						<h4 class="mt-2 text-white">
-							4
+						<h4 class="text-white text-lg">
+							<span v-if="hostInfo">4</span>
+							<div v-else class="animate-pulse bg-slate-600 w-full rounded h-[22px] mt-1" />
 						</h4>
 					</div>
 				</div>
@@ -63,14 +66,19 @@
 
 <script>
 import { nextTick } from 'vue';
-import { initWS, closeWS } from '@/utils/websockets';
+import { initWS, closeWS, CDC_VALUES } from '@/utils/websockets';
+import { fmtDuration } from '@/utils/help';
 
 export default {
 	name: 'DetailsServer',
 
+	setup () {
+		return { fmtDuration }
+	},
+
 	data () {
 		return {
-			host_info: null,
+			hostInfo: null,
 			connection: null,
 		}
 	},
@@ -79,8 +87,9 @@ export default {
 		const vm = this
 
 		// Don't setup anything before everything is rendered
-		nextTick(() => {
-			initWS("ws://localhost:8083", "hosts", "update", ":uuid.eq." + this.$route.params.uuid, true, vm);
+		nextTick(async () => {
+			initWS("ws://localhost:8083", "hosts", "update", ":uuid.eq." + this.$route.params.uuid, false, vm);
+			await this.fetchInit();
 		})
 	},
 
@@ -90,13 +99,44 @@ export default {
 	},
 
 	methods: {
-		fetchInit: function() {
-			console.log("Here");
+		convertToObject: function(jsonValues) {
+			return {
+				system: jsonValues[0],
+				os_version: jsonValues[1],
+				hostname: jsonValues[2],
+				uptime: jsonValues[3],
+				uuid: jsonValues[4],
+				created_at: jsonValues[5],
+			}
+		},
+		fetchInit: async function() {
+			const bertaUrl = this.$bertaOverride ? this.$bertaOverride : "https://" + this.$route.params.berta + ".speculare.cloud";
+			await this.$http.get(bertaUrl + "/api/host?uuid=" + this.$route.params.uuid)
+				.then((resp) => {
+					this.hostInfo = {
+						system: resp.data.system,
+						os_version: resp.data.os_version,
+						hostname: resp.data.hostname,
+						uptime: resp.data.uptime,
+						uuid: resp.data.uuid,
+						created_at: resp.data.created_at,
+					};
+				}).catch((err) => {
+					// TODO - Handle errors
+					console.log(err);
+				});
 		},
 		// Function responsible to init the fetching data and the websocket connection
 		wsMessageHandle: function (event) {
-			const json = JSON.parse(event.data)
-			console.log(json);
+			const jsonValues = JSON.parse(event.data)[CDC_VALUES];
+			this.hostInfo = {
+				system: jsonValues[0],
+				os_version: jsonValues[1],
+				hostname: jsonValues[2],
+				uptime: jsonValues[3],
+				uuid: jsonValues[4],
+				created_at: jsonValues[5],
+			};
 		}
 	}
 }
