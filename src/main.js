@@ -49,7 +49,7 @@ router.beforeEach(async(toRoute, _fromRoute, next) => {
 	} else if (!toRoute.meta.requireAuth) {
 		await httpAxios.get(app.config.globalProperties.$authBase + "/api/whoami")
 			.then((resp) => {
-				this.store.logged(resp.data);
+				store.logged(resp.data);
 				if (toRoute.meta.accessibleBoth) {
 					next();
 				} else {
