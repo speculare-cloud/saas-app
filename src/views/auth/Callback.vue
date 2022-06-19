@@ -21,9 +21,11 @@ export default {
 		}
 
 		this.$http.get(this.$authBase + "/api/csso?jwt=" + this.$route.query.jwt)
-			.then(() => {
+			.then((resp) => {
+				console.log(resp);
 				// Redirect to the Home page
 				this.store.setLogged(true);
+				this.store.setUserId(resp.data);
 				this.$router.replace({ name: 'Servers' });
 			}).catch((err) => {
 				console.log("Error", err);

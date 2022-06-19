@@ -149,10 +149,10 @@ export default {
 	},
 
 	mounted: function () {
-		const vm = this
+		// const vm = this
 
 		nextTick(async () => {
-			await vm.refreshList();
+			// await vm.refreshList();
 		})
 	},
 

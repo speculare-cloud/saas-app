@@ -119,14 +119,42 @@
 </template>
 
 <script>
+import { initWS, closeWS, CDC_VALUES } from '@/utils/websockets';
 import { useMainStore } from '@/stores/main';
+import { useServersStore } from '@/stores/servers';
+import { nextTick } from 'vue';
 
 export default {
 	name: 'Base',
 
 	setup () {
 		const store = useMainStore();
-		return { store }
+		const serversStore = useServersStore();
+		return { store, serversStore }
+	},
+
+	data () {
+		return {
+			connection: null,
+			connections: new Map(),
+		}
+	},
+
+	mounted: function () {
+		const vm = this
+
+		// Don't setup anything before everything is rendered
+		nextTick(async () => {
+			// Populate the list with the berta and all
+			initWS(vm.$authCdc, "apikeys", "*", ":customer_id.eq." + vm.store.userId, false, vm, vm.wsAuthMessageHandle);
+			await vm.serversStore.fetchApiKeysAndBertas(vm);
+			await vm.serversStore.fetchHostsAllBertas(vm);
+		})
+	},
+
+	beforeUnmount: function () {
+		// Close the webSocket connection
+		closeWS("apikeys", this);
 	},
 
 	methods: {
@@ -134,11 +162,64 @@ export default {
 			await this.$http.get(this.$authBase + "/api/logout")
 				.then(() => {
 					this.store.setLogged(false);
+					this.store.setUserId(null);
 					this.$router.replace({ name: 'Login' });
 				}).catch((err) => {
 					console.log(err);
 				});
 		},
+		wsAuthMessageHandle: async function(event) {
+			const json = JSON.parse(event.data);
+			const kind = json["kind"];
+			const jsonValues = json[CDC_VALUES];
+
+			const keyObj = {
+				id: jsonValues[0],
+				key: jsonValues[1],
+				host_uuid: jsonValues[2],
+				customer_id: jsonValues[3],
+				berta: jsonValues[4],
+				granularity: 3000,
+			};
+
+			switch (kind) {
+			case "update": {
+				if (keyObj.host_uuid === null) break;
+				// If the keys is present in unconfiguredKeys
+				// we restart the hosts websocket with the new values
+				// and remove from unconfiguredKeys
+				const index = this.serversStore.unconfiguredKeys.findIndex((el) => el.key === keyObj.key);
+				if (index !== -1) this.serversStore.unconfiguredKeys.splice(index, 1);
+				// Add to bertas list
+				let thisBerta = this.serversStore.bertas.get(keyObj.berta);
+				if (thisBerta === undefined) {
+					if (keyObj.host_uuid !== null) {
+						this.serversStore.bertas.set(keyObj.berta, new Set([keyObj.host_uuid]));
+					} else {
+						this.serversStore.bertas.set(keyObj.berta, new Set());
+					}
+				} else {
+					thisBerta.add(keyObj.host_uuid);
+				}
+				// Init fetch for the host
+				await this.serversStore.fetchSpecificHost(this, keyObj);
+				break;
+			}
+			case "insert": {
+				// Add to the unconfiguredKeys
+				this.serversStore.unconfiguredKeys.push(keyObj);
+				break;
+			}
+			case "delete": {
+				// Delete from the unconfiguredKeys
+				const index = this.serversStore.unconfiguredKeys.findIndex((el) => el.key === keyObj.key);
+				if (index !== -1) this.serversStore.unconfiguredKeys.splice(index, 1);
+				// We don't do anything else because the hosts websocket will stop emitting
+				// so it's not worth restarting it without the hosts
+				break;
+			}
+			}
+		}
 	}
 }
 </script>

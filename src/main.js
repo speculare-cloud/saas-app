@@ -26,6 +26,7 @@ app.use(pinia);
 const store = useMainStore();
 
 app.config.globalProperties.$authBase = process.env.VUE_APP_AUTH_SERVER;
+app.config.globalProperties.$authCdc = process.env.VUE_APP_AUTH_CDC;
 app.config.globalProperties.$bertaOverride = process.env.VUE_APP_BERTA_OVERRIDE;
 app.config.globalProperties.$cdcOverride = process.env.VUE_APP_CDC_OVERRIDE;
 app.config.globalProperties.$http = httpAxios;
@@ -36,6 +37,7 @@ app.config.globalProperties.$http = httpAxios;
 		await httpAxios.get(app.config.globalProperties.$authBase + "/api/whoami")
 			.then(() => {}).catch(() => {
 				store.setLogged(false);
+				store.setUserId(null);
 				router.replace({ name: 'Login' })
 			});
 	}
@@ -47,15 +49,18 @@ router.beforeEach(async(toRoute, _fromRoute, next) => {
 		next({ name: 'Login' });
 	} else if (!toRoute.meta.requireAuth) {
 		await httpAxios.get(app.config.globalProperties.$authBase + "/api/whoami")
-			.then(() => {
+			.then((resp) => {
 				store.setLogged(true);
+				store.setUserId(resp.data);
 				if (toRoute.meta.accessibleBoth) {
 					next();
 				} else {
 					next({ name: 'Servers' });
 				}
-			}).catch(() => {
+			}).catch((err) => {
+				console.log("logged out", err);
 				store.setLogged(false);
+				store.setUserId(null);
 				next();
 			});
 	} else {
