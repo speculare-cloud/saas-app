@@ -8,11 +8,13 @@ export const useMainStore = defineStore('main', {
 		}
 	},
 	actions: {
-		setLogged(newIsLogged) {
-			this.isLogged = newIsLogged;
-		},
-		setUserId(userId) {
+		logged(userId) {
+			this.isLogged = true;
 			this.userId = userId;
+		},
+		logout() {
+			this.isLogged = false;
+			this.userId = null;
 		}
 	},
 	persist: true,

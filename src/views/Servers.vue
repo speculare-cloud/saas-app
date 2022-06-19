@@ -124,7 +124,6 @@
 </template>
 
 <script>
-import { nextTick } from 'vue';
 import { useServersStore } from '@/stores/servers';
 import { trunkKey, fmtDuration, fmtGranularity } from '@/utils/help';
 
@@ -148,93 +147,9 @@ export default {
 		}
 	},
 
-	mounted: function () {
-		// const vm = this
-
-		nextTick(async () => {
-			// await vm.refreshList();
-		})
-	},
-
 	methods: {
 		filterList: function() {
 			this.filteredResult = this.store.configuredKeys.filter((el) => el.hostname.match(this.searchText));
-		},
-		refreshList: async function() {
-			let apiKeys = [];
-			// Fetch the API keys for the current user
-			// - this will give us the list of bertas the user have servers on.
-			// - which will then allow us to query those berta to get the hostname and diverse info.
-			await this.$http.get(this.$authBase + "/api/key")
-				.then((resp) => {
-					resp.data.forEach(elem => {
-						// If the bertas list !includes this server's berta
-						if (!this.store.bertas.includes(elem.berta)) {
-							console.log("Adding new berta: ", elem.berta);
-							this.store.bertas.push(elem.berta);
-						}
-
-						apiKeys.push({
-							key: elem.key,
-							uuid: elem.host_uuid,
-							berta: elem.berta,
-							granularity: 3000
-						});
-					});
-				}).catch((err) => {
-					// TODO - Handle errors
-					console.log(err);
-				});
-
-			// For each Bertas, we fetch the servers's hostname and os (if any).
-			for (const berta in this.store.bertas) {
-				const bertaUrl = this.$bertaOverride ? this.$bertaOverride : "https://" + berta + ".server.speculare.cloud";
-				await this.$http.get(bertaUrl + "/api/hosts")
-					.then((resp) => {
-						// Foreach server we got as response
-						resp.data.forEach(elem => {
-							console.log("Checking for configuredKeys", elem.uuid);
-							// Check if we already have the keys in our configuredKeys.
-							const already = this.store.configuredKeys.find((el) => el.uuid == elem.uuid);
-							const index = apiKeys.findIndex((el) => el.uuid === elem.uuid);
-							// If we already have it, remove and skip
-							if (already !== undefined) {
-								if (index !== -1) apiKeys.splice(index, 1);
-								return;
-							}
-
-							// If is undefined, it's a edge case that shouldn't happens
-							if (index === -1) {
-								console.error("error: server present on the berta but not on the auth server.", elem.uuid)
-								return
-							}
-
-							// Get the item and remove it from the array
-							const rKey = apiKeys.splice(index, 1)[0];
-							// Push the server's info to the store
-							this.store.configuredKeys.push({
-								hostname: elem.hostname,
-								uptime: elem.uptime,
-								key: rKey.key,
-								uuid: rKey.uuid,
-								berta: rKey.berta,
-								granularity: rKey.granularity,
-							})
-						});
-					}).catch((err) => {
-						// TODO - Handle errors
-						console.log(err);
-					});
-			}
-
-			// Push the unconfiguredKeys (leftover of apiKeys)
-			apiKeys.forEach((elem) => {
-				let already = this.store.unconfiguredKeys.find((e) => e.key == elem.key);
-				// If we already have it, continue
-				if (already !== undefined) return;
-
-				this.store.unconfiguredKeys.push(elem);
-			});
 		},
 	}
 }

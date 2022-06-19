@@ -36,8 +36,7 @@ app.config.globalProperties.$http = httpAxios;
 	if (store.isLogged) {
 		await httpAxios.get(app.config.globalProperties.$authBase + "/api/whoami")
 			.then(() => {}).catch(() => {
-				store.setLogged(false);
-				store.setUserId(null);
+				store.logout();
 				router.replace({ name: 'Login' })
 			});
 	}
@@ -50,8 +49,7 @@ router.beforeEach(async(toRoute, _fromRoute, next) => {
 	} else if (!toRoute.meta.requireAuth) {
 		await httpAxios.get(app.config.globalProperties.$authBase + "/api/whoami")
 			.then((resp) => {
-				store.setLogged(true);
-				store.setUserId(resp.data);
+				this.store.logged(resp.data);
 				if (toRoute.meta.accessibleBoth) {
 					next();
 				} else {
@@ -59,8 +57,7 @@ router.beforeEach(async(toRoute, _fromRoute, next) => {
 				}
 			}).catch((err) => {
 				console.log("logged out", err);
-				store.setLogged(false);
-				store.setUserId(null);
+				store.logout();
 				next();
 			});
 	} else {

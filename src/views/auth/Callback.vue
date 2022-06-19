@@ -24,8 +24,7 @@ export default {
 			.then((resp) => {
 				console.log(resp);
 				// Redirect to the Home page
-				this.store.setLogged(true);
-				this.store.setUserId(resp.data);
+				this.store.logged(resp.data);
 				this.$router.replace({ name: 'Servers' });
 			}).catch((err) => {
 				console.log("Error", err);

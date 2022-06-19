@@ -136,7 +136,6 @@ export default {
 	data () {
 		return {
 			connection: null,
-			connections: new Map(),
 		}
 	},
 
@@ -161,8 +160,7 @@ export default {
 		logout: async function() {
 			await this.$http.get(this.$authBase + "/api/logout")
 				.then(() => {
-					this.store.setLogged(false);
-					this.store.setUserId(null);
+					this.store.logout();
 					this.$router.replace({ name: 'Login' });
 				}).catch((err) => {
 					console.log(err);
