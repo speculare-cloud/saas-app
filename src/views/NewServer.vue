@@ -81,6 +81,7 @@
 </template>
 
 <script>
+import { initWS, closeWS, CDC_VALUES } from '@/utils/websockets';
 import { nextTick } from 'vue';
 
 export default {
@@ -88,26 +89,26 @@ export default {
 
 	data () {
 		return {
-			interval: null,
-			secretKey: this.$route.params.secretKey ?? null,
+			connection: null,
 			host_uuid: null,
+			secretKey: this.$route.params.secretKey ?? null,
 		}
-	},
-
-	beforeUnmount: function() {
-		clearInterval(this.interval);
 	},
 
 	mounted: function () {
 		const vm = this
 
-		if (vm.interval === null) {
-			vm.interval = setInterval(vm.getKeyInfo, 5000);
-		}
 		nextTick(async () => {
 			if (vm.secretKey === null) await vm.generateKey();
 			else await vm.getKeyInfo();
+
+			initWS(vm.$authCdc, "apikeys", "update", ":key.eq." + vm.secretKey, false, vm);
 		})
+	},
+
+	beforeUnmount: function () {
+		// Close the webSocket connection
+		closeWS("apikeys", this);
 	},
 
 	methods: {
@@ -115,7 +116,6 @@ export default {
 			// Create a new API key and refresh the list on success
 			await this.$http.post(this.$authBase + "/api/key", {})
 				.then((resp) => {
-					console.log(resp);
 					this.secretKey = resp.data.key;
 				}).catch((err) => {
 					// TODO - Handle errors
@@ -125,13 +125,19 @@ export default {
 		getKeyInfo: async function() {
 			await this.$http.get(this.$authBase + "/api/key", { headers: { "SPTK": this.secretKey } })
 				.then((resp) => {
-					console.log(resp);
 					this.host_uuid = resp.data.host_uuid ?? null;
-					if (this.host_uuid !== null) clearInterval(this.interval);
+					if (this.host_uuid !== null) closeWS("apikeys", this);
 				}).catch((err) => {
 					// TODO - Handle errors
 					console.log(err);
 				});
+		},
+		wsMessageHandle: async function(event) {
+			const json = JSON.parse(event.data);
+			const jsonValues = json[CDC_VALUES];
+
+			console.log(jsonValues);
+			this.host_uuid = jsonValues[2] ?? null;
 		}
 	}
 }

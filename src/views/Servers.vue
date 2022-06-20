@@ -25,6 +25,15 @@
 				</router-link>
 			</div>
 		</div>
+		<div
+			v-if="store.configuredKeys.length === 0 && store.unconfiguredKeys.length === 0"
+			class="mt-12 flex justify-center items-center h-52">
+			<div class="prose-sm max-w-sm">
+				<h1>No servers.</h1>
+				<p>Seems like you just created your account, welcome !</p>
+				<p>You can add a new server with the button on the top, just follow the instructions.</p>
+			</div>
+		</div>
 		<!-- In case we have unconfiguredKeys -->
 		<section id="unconfiguredKeys" v-if="store.unconfiguredKeys.length !== 0" class="mt-12">
 			<p class="p-4 text-[#c5c8cb]">
@@ -77,7 +86,16 @@
 			<p class="p-4 text-[#c5c8cb]">
 				Configured servers
 			</p>
+			<div
+				v-if="searchText && filteredResult.length === 0 && store.configuredKeys.length !== 0"
+				class="flex justify-center items-center h-52">
+				<div class="prose-sm max-w-sm">
+					<h1>No results.</h1>
+					<p>Try another query, we've not found any servers name containing what you entered.</p>
+				</div>
+			</div>
 			<div class="bg-base-300 rounded-lg shadow servers-list">
+				<div v-if="!searchText && store.configuredKeys.length === 0" class="animate-pulse bg-slate-600 w-full rounded-lg h-[65.5px]" />
 				<div v-for="item in (!searchText ? store.configuredKeys : filteredResult)" :key="item.uuid">
 					<router-link
 						:to="{ name: 'DetailsServer', params: { berta: item.berta, uuid: item.uuid, hostname: item.hostname } }"
