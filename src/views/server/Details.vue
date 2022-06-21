@@ -42,19 +42,19 @@
 					</div>
 					<div class="flex flex-col align-middle justify-between mb-5 text-left flex-1 p-5 bg-base-300 shadow-md rounded-lg">
 						<h6 class="text-[#c5c8cb]">
-							Last data at
+							Incidents
 						</h6>
-						<h4 class="text-white  text-lg">
-							<span v-if="hostInfo">1 second ago</span>
+						<h4 class="text-white text-lg">
+							<span v-if="hostInfo">{{ incidentsCount }}</span>
 							<div v-else class="animate-pulse bg-slate-600 w-full rounded h-[22px] mt-1" />
 						</h4>
 					</div>
 					<div class="flex flex-col align-middle justify-between mb-5 text-left flex-1 p-5 bg-base-300 shadow-md rounded-lg">
 						<h6 class="text-[#c5c8cb]">
-							Incidents
+							Empty card
 						</h6>
 						<h4 class="text-white text-lg">
-							<span v-if="hostInfo">4</span>
+							<span v-if="hostInfo">blank space</span>
 							<div v-else class="animate-pulse bg-slate-600 w-full rounded h-[22px] mt-1" />
 						</h4>
 					</div>
@@ -80,6 +80,7 @@ export default {
 		return {
 			hostInfo: null,
 			connection: null,
+			incidentsCount: 0,
 		}
 	},
 
@@ -122,6 +123,13 @@ export default {
 						uuid: resp.data.uuid,
 						created_at: resp.data.created_at,
 					};
+				}).catch((err) => {
+					// TODO - Handle errors
+					console.log(err);
+				});
+			await this.$http.get(bertaUrl + "/api/incidents_count?uuid=" + this.$route.params.uuid)
+				.then((resp) => {
+					this.incidentsCount = resp.data ?? 0;
 				}).catch((err) => {
 					// TODO - Handle errors
 					console.log(err);
