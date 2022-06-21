@@ -16,7 +16,7 @@ export const useServersStore = defineStore('servers', {
 	actions: {
 		async fetchSpecificHost(vm, keyObj) {
 			const bertaUrl = vm.$bertaOverride ? vm.$bertaOverride : "https://" + keyObj.berta + "server.speculare.cloud";
-			await vm.$http.get(bertaUrl + "/api/host?uuid=" + keyObj.host_uuid)
+			return await vm.$http.get(bertaUrl + "/api/host?uuid=" + keyObj.host_uuid)
 				.then((resp) => {
 					const hostObj = {
 						system: resp.data.system,
@@ -43,7 +43,10 @@ export const useServersStore = defineStore('servers', {
 					} else {
 						this.configuredKeys[alreadyIndex] = newObj;
 					}
-				}).catch((err) => {
+				}).catch(async (err) => {
+					if (err.response && err.response.status == 404) {
+						return true;
+					}
 					// TODO - Handle errors
 					console.log(err);
 				});

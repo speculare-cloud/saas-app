@@ -25,7 +25,7 @@
 				</router-link>
 			</div>
 		</div>
-		<div
+		<section
 			v-if="store.configuredKeys.length === 0 && store.unconfiguredKeys.length === 0"
 			class="mt-12 flex justify-center items-center h-52">
 			<div class="prose-sm max-w-sm">
@@ -33,7 +33,7 @@
 				<p>Seems like you just created your account, welcome !</p>
 				<p>You can add a new server with the button on the top, just follow the instructions.</p>
 			</div>
-		</div>
+		</section>
 		<!-- In case we have unconfiguredKeys -->
 		<section id="unconfiguredKeys" v-if="store.unconfiguredKeys.length !== 0" class="mt-12">
 			<p class="p-4 text-[#c5c8cb]">

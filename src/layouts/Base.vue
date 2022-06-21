@@ -199,8 +199,21 @@ export default {
 				} else {
 					thisBerta.add(keyObj.host_uuid);
 				}
-				// Init fetch for the host
-				await this.serversStore.fetchSpecificHost(this, keyObj);
+
+				// Init fetch for the host and retry max 3 times with 150ms delay
+				// - the retry is needed because the host will for the first time
+				//   push but fail because the key won't have the host_uuid yet.
+				//   Thus returning a PRECONDITION FAILED and the client will update
+				//   the key and then repush the metrics (for the first time only).
+				let retry = 0;
+				do {
+					if (await this.serversStore.fetchSpecificHost(this, keyObj) === undefined) {
+						break;
+					}
+					retry += 1;
+					await new Promise(r => setTimeout(r, 150));
+				}
+				while (retry <= 2);
 				break;
 			}
 			case "insert": {

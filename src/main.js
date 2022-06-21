@@ -14,6 +14,7 @@ require("moment-duration-format")(moment);
 import '@/assets/app.css'
 
 const httpAxios = axios.create({
+	timeout: 5000,
 	withCredentials: true
 });
 
