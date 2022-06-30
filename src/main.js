@@ -12,6 +12,7 @@ import moment from 'moment'
 require("moment-duration-format")(moment);
 
 import '@/assets/app.css'
+import '@/assets/uPlot.css'
 
 const httpAxios = axios.create({
 	timeout: 5000,

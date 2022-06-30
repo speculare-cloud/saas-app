@@ -29,48 +29,75 @@
 			</div>
 		</div>
 		<div class="mt-12">
-			<div data-controller="resources--summary-interval" data-interval="30" data-url="/team/16377/monitors/359018/summary">
-				<div class="flex flex-col md:flex-row md:space-x-4">
-					<div class="flex flex-col align-middle justify-between mb-5 text-left flex-1 p-5 bg-base-300 shadow-md rounded-lg">
-						<h6 class="text-[#c5c8cb] text-sm">
-							Currently up for
-						</h6>
-						<h4 class="text-white text-lg">
-							<span v-if="hostInfo">{{ fmtDuration(hostInfo.uptime) }}</span>
-							<div v-else class="animate-pulse bg-slate-600 w-full rounded h-[22px] mt-1" />
-						</h4>
-					</div>
-					<div class="flex flex-col align-middle justify-between mb-5 text-left flex-1 p-5 bg-base-300 shadow-md rounded-lg">
-						<h6 class="text-[#c5c8cb]">
-							Incidents
-						</h6>
-						<h4 class="text-white text-lg">
-							<span v-if="hostInfo">{{ incidentsCount }}</span>
-							<div v-else class="animate-pulse bg-slate-600 w-full rounded h-[22px] mt-1" />
-						</h4>
-					</div>
-					<div class="flex flex-col align-middle justify-between mb-5 text-left flex-1 p-5 bg-base-300 shadow-md rounded-lg">
-						<h6 class="text-[#c5c8cb]">
-							Empty card
-						</h6>
-						<h4 class="text-white text-lg">
-							<span v-if="hostInfo">blank space</span>
-							<div v-else class="animate-pulse bg-slate-600 w-full rounded h-[22px] mt-1" />
-						</h4>
-					</div>
+			<div class="flex flex-col md:flex-row md:space-x-4">
+				<div class="flex flex-col align-middle justify-between mb-5 text-left flex-1 p-5 bg-base-300 shadow-md rounded-lg">
+					<h6 class="text-[#c5c8cb] text-sm">
+						Currently up for
+					</h6>
+					<h4 class="text-white text-lg">
+						<span v-if="hostInfo">{{ fmtDuration(hostInfo.uptime) }}</span>
+						<div v-else class="animate-pulse bg-slate-600 w-full rounded h-[22px] mt-1" />
+					</h4>
+				</div>
+				<div class="flex flex-col align-middle justify-between mb-5 text-left flex-1 p-5 bg-base-300 shadow-md rounded-lg">
+					<h6 class="text-[#c5c8cb]">
+						Incidents
+					</h6>
+					<h4 class="text-white text-lg">
+						<span v-if="hostInfo">{{ incidentsCount }}</span>
+						<div v-else class="animate-pulse bg-slate-600 w-full rounded h-[22px] mt-1" />
+					</h4>
+				</div>
+				<div class="flex flex-col align-middle justify-between mb-5 text-left flex-1 p-5 bg-base-300 shadow-md rounded-lg">
+					<h6 class="text-[#c5c8cb]">
+						Empty card
+					</h6>
+					<h4 class="text-white text-lg">
+						<span v-if="hostInfo">blank space</span>
+						<div v-else class="animate-pulse bg-slate-600 w-full rounded h-[22px] mt-1" />
+					</h4>
 				</div>
 			</div>
+		</div>
+		<div role="section" class="mt-4">
+			<h3 class="text-2xl text-gray-100 mb-4">
+				cpu
+			</h3>
+			<p class="text-sm text-gray-200">
+				Total CPU utilization. 100% here means there is no CPU idle time at all.
+			</p>
+			<CpuTimes :key="this.$route.params.uuid" :uuid="this.$route.params.uuid" :berta="this.$route.params.berta" :graph-range="graphRange" />
+			<h3 class="text-2xl text-gray-100 mb-4 mt-4">
+				load
+			</h3>
+			<p class="text-sm text-gray-200">
+				System load. The 3 metrics refer to 1, 5 and 15 minutes averages. Computed once every 5 seconds.
+			</p>
+			<LoadAvg :key="this.$route.params.uuid" :uuid="this.$route.params.uuid" :graph-range="graphRange" />
 		</div>
 	</section>
 </template>
 
 <script>
+import Skeleton from '@/components/Graphs/Base/Skeleton'
 import { nextTick } from 'vue';
 import { initWS, closeWS, CDC_VALUES } from '@/utils/websockets';
 import { fmtDuration } from '@/utils/help';
+import { defineAsyncComponent } from 'vue'
 
 export default {
 	name: 'DetailsServer',
+
+	components: {
+		CpuTimes: defineAsyncComponent({
+			loader: () => import('@/components/Graphs/cpu/CpuTimes'),
+			loadingComponent: Skeleton
+		}),
+		LoadAvg: defineAsyncComponent({
+			loader: () => import('@/components/Graphs/cpu/LoadAvg'),
+			loadingComponent: Skeleton
+		}),
+	},
 
 	setup () {
 		return { fmtDuration }
@@ -78,6 +105,12 @@ export default {
 
 	data () {
 		return {
+			graphRange: {
+				granularity: 1,
+				scale: 300,
+				start: null,
+				end: null
+			},
 			hostInfo: null,
 			connection: null,
 			incidentsCount: 0,

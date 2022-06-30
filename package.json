@@ -15,6 +15,7 @@
         "moment-duration-format": "^2.3.2",
         "pinia": "^2.0.14",
         "pinia-plugin-persistedstate": "^1.6.1",
+        "uplot": "^1.6.21",
         "vue": "^3.2.31",
         "vue-router": "^4.0.14"
     },
