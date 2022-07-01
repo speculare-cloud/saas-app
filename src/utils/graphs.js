@@ -1,5 +1,46 @@
 import moment from 'moment'
-import uPlot from 'uplot'
+
+function sanitizeGraphData (dataSize, scaleTime, chartLabels, threshold, spliceData, nullData) {
+	// Be sure the date are following in order (by 1s for now)
+	const now = moment().utc().unix()
+	const min = moment.utc().subtract(scaleTime, 'seconds').unix()
+	for (let i = dataSize - 1; i >= 0; i--) {
+		// Iterate in the reverse order, and find if any missing data from the latest we have
+		// Also compare start against current time, if over threshold, might be some missing data
+
+		// If the current data is too old, get rid of it
+		if (chartLabels[i] < min) {
+			spliceData(i, 1)
+			continue
+		}
+
+		if (i === dataSize - 1) {
+			// Check against now to see if we're missing starting data
+			if (!(now - threshold <= chartLabels[i] && chartLabels[i] <= now + threshold)) {
+				// Change last labels by now to ensure gap if no previous data
+				chartLabels[i] = now
+				nullData(i)
+			}
+		} else {
+			if (chartLabels[i + 1] > chartLabels[i] + threshold) {
+				// Don't need to change the Labels, uPlot already handle this
+				nullData(i)
+			}
+		}
+	}
+}
+
+export function getRangeParams (graphRange) {
+	if (graphRange.start != null) {
+		return '&min_date=' + graphRange.start + '&max_date=' + graphRange.end;
+	} else {
+		// Substract vm.scaleTime seconds as this is pretty much the minimum time for the graph
+		const min = moment().utc().subtract(graphRange.scale + 5, 'seconds').format('YYYY-MM-DDTHH:mm:ss.SSS')
+		// Add 5 seconds to minimize the risks of missing data
+		const max = moment().utc().add(5, 'seconds').format('YYYY-MM-DDTHH:mm:ss.SSS')
+		return '&min_date=' + min + '&max_date=' + max
+	}
+}
 
 export function graphScrollObs (fetching, cleaning) {
 	// Observe if the $el is visible or not
@@ -17,7 +58,7 @@ export function graphScrollObs (fetching, cleaning) {
 	})
 }
 
-export function updateGraph (vm, updateValues, sanitizeGraphData) {
+export function updateGraph (vm, updateFunc) {
 	// Sanitize the Data in case of gap
 	// but also remove too old element
 	// TODO - Check the threshold value
@@ -30,10 +71,10 @@ export function updateGraph (vm, updateValues, sanitizeGraphData) {
 		vm.nullData,
 	)
 	// Update the datacollection so that uPlot update the chart
-	updateValues()
+	updateFunc()
 }
 
-export function handleGraphRangeChange (newVal, oldVal, cleaning, fetching, handleWebSocket, isConnectionNull) {
+export function rebuildGraph (newVal, oldVal, cleaning, fetching, handleWebSocket, isConnectionNull) {
 	if (newVal.start != null) {
 		// Clear the data and close the websocket
 		cleaning()
@@ -64,60 +105,4 @@ export function handleGraphRangeChange (newVal, oldVal, cleaning, fetching, hand
 
 export function intValueOrTilde (val, dec) {
 	return val == null ? '-' : val.toFixed(dec)
-}
-
-export function getBaseCDCUrl (cdcOverride, berta) {
-	console.log("Called");
-	console.log("HERE", cdcOverride, berta);
-	return cdcOverride ? cdcOverride : "wss://" + berta + ".cdc.speculare.cloud";
-}
-
-export function getBaseUrl (bertaOverride, berta) {
-	return bertaOverride ? bertaOverride : "https://" + berta + "server.speculare.cloud";
-}
-
-export function getMinMaxString (start, end) {
-	return '&min_date=' + start + '&max_date=' + end
-}
-
-export function getMinMaxNowString (scaleTime) {
-	// Substract vm.scaleTime seconds as this is pretty much the minimum time for the graph
-	const min = moment().utc().subtract(scaleTime + 5, 'seconds').format('YYYY-MM-DDTHH:mm:ss.SSS')
-	// Add 5 seconds to minimize the risks of missing data
-	const max = moment().utc().add(5, 'seconds').format('YYYY-MM-DDTHH:mm:ss.SSS')
-	return '&min_date=' + min + '&max_date=' + max
-}
-
-export function splineGraph (u, seriesIdx, idx0, idx1, extendGap, buildClip) {
-	return uPlot.paths.spline()(u, seriesIdx, idx0, idx1, extendGap, buildClip)
-}
-
-export function sanitizeGraphData (dataSize, scaleTime, chartLabels, threshold, spliceData, nullData) {
-	// Be sure the date are following in order (by 1s for now)
-	const now = moment().utc().unix()
-	const min = moment.utc().subtract(scaleTime, 'seconds').unix()
-	for (let i = dataSize - 1; i >= 0; i--) {
-		// Iterate in the reverse order, and find if any missing data from the latest we have
-		// Also compare start against current time, if over threshold, might be some missing data
-
-		// If the current data is too old, get rid of it
-		if (chartLabels[i] < min) {
-			spliceData(i, 1)
-			continue
-		}
-
-		if (i === dataSize - 1) {
-			// Check against now to see if we're missing starting data
-			if (!(now - threshold <= chartLabels[i] && chartLabels[i] <= now + threshold)) {
-				// Change last labels by now to ensure gap if no previous data
-				chartLabels[i] = now
-				nullData(i)
-			}
-		} else {
-			if (chartLabels[i + 1] > chartLabels[i] + threshold) {
-				// Don't need to change the Labels, uPlot already handle this
-				nullData(i)
-			}
-		}
-	}
 }

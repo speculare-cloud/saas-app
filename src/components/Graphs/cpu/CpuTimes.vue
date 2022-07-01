@@ -9,7 +9,8 @@
 
 <script>
 import { nextTick } from 'vue'
-import { graphScrollObs, updateGraph, handleGraphRangeChange, getBaseCDCUrl, getBaseUrl, getMinMaxString, getMinMaxNowString, sanitizeGraphData } from '@/utils/graphs'
+import { graphScrollObs, updateGraph, rebuildGraph, getRangeParams } from '@/utils/graphs'
+import { series } from '@/utils/graphsCharts'
 import { initWS, closeWS } from '@/utils/websockets'
 import LineChart from '@/components/Graphs/Base/LineChart'
 import moment from 'moment'
@@ -43,16 +44,7 @@ export default {
 			loadingMessage: 'Loading',
 			chartSeries: [
 				{},
-				{
-					label: 'user & system',
-					value: (_, v) => v == null ? '-' : v.toFixed(2),
-					points: {
-						show: false
-					},
-					width: Math.min(Math.max(2 / devicePixelRatio, 1.25), 2),
-					stroke: '#EAB839',
-					fill: '#EAB8391A'
-				}
+				{...series(0, false), label: 'user & system'}
 			],
 			wsBuffer: [],
 			chartLabels: [],
@@ -66,7 +58,7 @@ export default {
 	watch: {
 		graphRange: function (newVal, oldVal) {
 			console.log('[cputimes] graphRange changed')
-			handleGraphRangeChange(newVal, oldVal, this.cleaning, this.fetching, function () { initWS(getBaseCDCUrl(this.$cdcOverride, this.berta), 'cputimes', 'insert', ':host_uuid.eq.' + this.uuid, true, this) }, this.connection === null)
+			rebuildGraph(newVal, oldVal, this.cleaning, this.fetching, this.openSpecificWS, this.connection === null)
 		}
 	},
 
@@ -76,7 +68,7 @@ export default {
 		// Don't setup anything before everything is rendered
 		nextTick(() => {
 			// Setup the IntersectionObserver
-			vm.obs = graphScrollObs(function () { initWS(getBaseCDCUrl(vm.$cdcOverride, vm.berta), 'cputimes', 'insert', ':host_uuid.eq.' + vm.uuid, true, vm) }, vm.cleaning)
+			vm.obs = graphScrollObs(vm.openSpecificWS, vm.cleaning)
 			// Observe the element
 			vm.obs.observe(vm.$el)
 		})
@@ -90,21 +82,20 @@ export default {
 	},
 
 	methods: {
+		// Open the WS if needed (if the scale is not 300, it means we're in the past)
+		openSpecificWS: function() {
+			if (this.graphRange.scale !== 300) {
+				return this.fetchInit();
+			}
+			initWS(this.$cdcBase(this.berta), 'cputimes', 'insert', ':host_uuid.eq.' + this.uuid, true, this)
+		},
 		// Function responsible to init the fetching data and the websocket connection
 		fetchInit: function () {
 			const vm = this
 
-			// Compute the rangeParams in case of start & end or just scale
-			let rangeParams
-			if (vm.graphRange.start != null) {
-				rangeParams = getMinMaxString(vm.graphRange.start, vm.graphRange.end)
-			} else {
-				rangeParams = getMinMaxNowString(vm.graphRange.scale)
-			}
-
 			// Fetching old data with the API
 			vm.$http
-				.get(getBaseUrl(vm.$bertaOverride, vm.$route.params.berta) + "/api/cputimes?uuid=" + vm.uuid + rangeParams)
+				.get(vm.$serverBase(vm.$route.params.berta) + "/api/cputimes?uuid=" + vm.uuid + getRangeParams(vm.graphRange))
 				.then(resp => {
 					const dataLength = resp.data.length
 					// Add data in reverse order (push_back) and uPlot use last as most recent
@@ -112,32 +103,8 @@ export default {
 						vm.fastAddNewData(resp.data[i])
 					}
 
-					if (dataLength > 0) {
-						// If there is data in wsBuffer we merge the data
-						const wsBuffSize = vm.wsBuffer.length
-						if (wsBuffSize > 0) {
-							console.log('[cputimes] >>> Merging wsBuffer with already added data')
-							for (let i = 0; i <= wsBuffSize - 1; i++) {
-								const currItem = vm.wsBuffer[i]
-								const date = moment.utc(currItem[12]).unix()
-								// If the current latest date is lower than the date in the buffer
-								if (vm.chartLabels[vm.chartLabels.length - 1] < date) {
-									// Compute the busy time of the CPU from these params
-									const busy = currItem[1] + currItem[2] + currItem[3] + currItem[6] + currItem[7] + currItem[8]
-									// Compute the idling time of the CPU from these params
-									const idle = currItem[4] + currItem[5]
-									// Get the usage in % computed from busy and idle + prev values
-									const usage = this.getUsageFrom(busy, idle)
-									console.log('[cputimes] >>>> Adding value to the end of the buffer')
-									// Add the new value to the Array
-									vm.pushValue(date, usage, busy, idle)
-								}
-							}
-						}
-						// Update onscreen values
-						updateGraph(vm, function () { vm.datacollection = [vm.chartLabels, vm.chartDataObj] }, sanitizeGraphData)
-					}
-
+					// If data has been received, we drain the wsBuffer
+					vm.drainWsBuffer()
 					// Define the fetching as done
 					vm.fetchingDone = true
 					// Clear the wsBuffer
@@ -149,6 +116,33 @@ export default {
 					vm.loadingMessage = 'No Data'
 				})
 		},
+		drainWsBuffer: function() {
+			const vm = this;
+			// If there is data in wsBuffer we merge the data
+			const wsBuffSize = vm.wsBuffer.length
+			if (wsBuffSize > 0) {
+				console.log('[cputimes] >>> Merging wsBuffer with already added data')
+				for (let i = 0; i <= wsBuffSize - 1; i++) {
+					const currItem = vm.wsBuffer[i]
+					const date = moment.utc(currItem[12]).unix()
+					// If the current latest date is lower than the date in the buffer
+					if (vm.chartLabels[Math.max(0, vm.chartLabels.length - 1)] < date) {
+						// Compute the busy time of the CPU from these params
+						const busy = currItem[1] + currItem[2] + currItem[3] + currItem[6] + currItem[7] + currItem[8]
+						// Compute the idling time of the CPU from these params
+						const idle = currItem[4] + currItem[5]
+						// Get the usage in % computed from busy and idle + prev values
+						const usage = vm.getUsageFrom(busy, idle)
+						console.log('[cputimes] >>>> Adding value to the end of the buffer')
+						// Add the new value to the Array
+						vm.pushValue(date, usage, busy, idle)
+					}
+				}
+			}
+
+			// Update onscreen values
+			updateGraph(vm, function () { vm.datacollection = [vm.chartLabels, vm.chartDataObj] })
+		},
 		// Empty every arrays and close the websocket
 		cleaning: function (ws = true) {
 			this.fetchingDone = false
@@ -157,6 +151,7 @@ export default {
 			this.historyBusyDataObj = []
 			this.historyIdleDataObj = []
 			this.wsBuffer = []
+
 			if (ws) {
 				closeWS('cputimes', this)
 			}
@@ -222,7 +217,6 @@ export default {
 			const idle = elem.idle + elem.iowait
 			// Get the usage in % computed from busy and idle + prev values
 			const usage = this.getUsageFrom(busy, idle)
-
 			// Add the new value to the Array
 			this.pushValue(moment.utc(elem.created_at).unix(), usage, busy, idle)
 		},
@@ -234,12 +228,11 @@ export default {
 			const idle = newValues[4] + newValues[5]
 			// Get the usage in % computed from busy and idle + prev values
 			const usage = vm.getUsageFrom(busy, idle)
-
 			// Add the new value to the Array
 			vm.pushValue(moment.utc(newValues[12]).unix(), usage, busy, idle)
 
 			// Update onscreen values
-			updateGraph(vm, function () { vm.datacollection = [vm.chartLabels, vm.chartDataObj] }, sanitizeGraphData)
+			updateGraph(vm, function () { vm.datacollection = [vm.chartLabels, vm.chartDataObj] })
 		}
 	}
 }

@@ -27,11 +27,21 @@ app.use(pinia);
 
 const store = useMainStore();
 
+const bertaOverride = process.env.VUE_APP_BERTA_OVERRIDE;
+const cdcOverride = process.env.VUE_APP_CDC_OVERRIDE;
+
 app.config.globalProperties.$authBase = process.env.VUE_APP_AUTH_SERVER;
 app.config.globalProperties.$authCdc = process.env.VUE_APP_AUTH_CDC;
-app.config.globalProperties.$bertaOverride = process.env.VUE_APP_BERTA_OVERRIDE;
-app.config.globalProperties.$cdcOverride = process.env.VUE_APP_CDC_OVERRIDE;
+app.config.globalProperties.$bertaOverride = bertaOverride;
+app.config.globalProperties.$cdcOverride = cdcOverride;
 app.config.globalProperties.$http = httpAxios;
+
+app.config.globalProperties.$cdcBase = function getBaseCDCUrl (berta) {
+	return cdcOverride ? cdcOverride : "wss://" + berta + ".cdc.speculare.cloud";
+}
+app.config.globalProperties.$serverBase = function getBaseCDCUrl (berta) {
+	return bertaOverride ? bertaOverride : "https://" + berta + "server.speculare.cloud";
+};
 
 // Logout the user if he's not logged at loading
 (async() => {

@@ -73,7 +73,7 @@
 			<p class="text-sm text-gray-200">
 				System load. The 3 metrics refer to 1, 5 and 15 minutes averages. Computed once every 5 seconds.
 			</p>
-			<LoadAvg :key="this.$route.params.uuid" :uuid="this.$route.params.uuid" :graph-range="graphRange" />
+			<LoadAvg :key="this.$route.params.uuid" :uuid="this.$route.params.uuid" :berta="this.$route.params.berta" :graph-range="graphRange" />
 		</div>
 	</section>
 </template>
