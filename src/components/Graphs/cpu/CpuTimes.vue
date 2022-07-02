@@ -9,9 +9,10 @@
 
 <script>
 import { nextTick } from 'vue'
-import { graphScrollObs, updateGraph, rebuildGraph, getRangeParams } from '@/utils/graphs'
+import { graphScrollObs, rebuildGraph } from '@/utils/graphs'
+import { updateGraph } from '@/utils/graphsData'
 import { series } from '@/utils/graphsCharts'
-import { initWS, closeWS } from '@/utils/websockets'
+import { closeWS } from '@/utils/websockets'
 import LineChart from '@/components/Graphs/Base/LineChart'
 import moment from 'moment'
 
@@ -37,6 +38,7 @@ export default {
 
 	data () {
 		return {
+			table: 'cputimes',
 			unit: 'percentage',
 			connection: null,
 			fetchingDone: false,
@@ -57,8 +59,7 @@ export default {
 
 	watch: {
 		graphRange: function (newVal, oldVal) {
-			console.log('[cputimes] graphRange changed')
-			rebuildGraph(newVal, oldVal, this.cleaning, this.fetching, this.openSpecificWS, this.connection === null)
+			rebuildGraph(this, newVal, oldVal)
 		}
 	},
 
@@ -68,7 +69,7 @@ export default {
 		// Don't setup anything before everything is rendered
 		nextTick(() => {
 			// Setup the IntersectionObserver
-			vm.obs = graphScrollObs(vm.openSpecificWS, vm.cleaning)
+			vm.obs = graphScrollObs(vm)
 			// Observe the element
 			vm.obs.observe(vm.$el)
 		})
@@ -82,67 +83,6 @@ export default {
 	},
 
 	methods: {
-		// Open the WS if needed (if the scale is not 300, it means we're in the past)
-		openSpecificWS: function() {
-			if (this.graphRange.scale !== 300) {
-				return this.fetchInit();
-			}
-			initWS(this.$cdcBase(this.berta), 'cputimes', 'insert', ':host_uuid.eq.' + this.uuid, true, this)
-		},
-		// Function responsible to init the fetching data and the websocket connection
-		fetchInit: function () {
-			const vm = this
-
-			// Fetching old data with the API
-			vm.$http
-				.get(vm.$serverBase(vm.$route.params.berta) + "/api/cputimes?uuid=" + vm.uuid + getRangeParams(vm.graphRange))
-				.then(resp => {
-					const dataLength = resp.data.length
-					// Add data in reverse order (push_back) and uPlot use last as most recent
-					for (let i = dataLength - 1; i >= 0; i--) {
-						vm.fastAddNewData(resp.data[i])
-					}
-
-					// If data has been received, we drain the wsBuffer
-					vm.drainWsBuffer()
-					// Define the fetching as done
-					vm.fetchingDone = true
-					// Clear the wsBuffer
-					vm.wsBuffer = []
-				})
-				.catch(error => {
-					console.log('[cputimes] Failed to fetch previous data', error)
-				}).finally(() => {
-					vm.loadingMessage = 'No Data'
-				})
-		},
-		drainWsBuffer: function() {
-			const vm = this;
-			// If there is data in wsBuffer we merge the data
-			const wsBuffSize = vm.wsBuffer.length
-			if (wsBuffSize > 0) {
-				console.log('[cputimes] >>> Merging wsBuffer with already added data')
-				for (let i = 0; i <= wsBuffSize - 1; i++) {
-					const currItem = vm.wsBuffer[i]
-					const date = moment.utc(currItem[12]).unix()
-					// If the current latest date is lower than the date in the buffer
-					if (vm.chartLabels[Math.max(0, vm.chartLabels.length - 1)] < date) {
-						// Compute the busy time of the CPU from these params
-						const busy = currItem[1] + currItem[2] + currItem[3] + currItem[6] + currItem[7] + currItem[8]
-						// Compute the idling time of the CPU from these params
-						const idle = currItem[4] + currItem[5]
-						// Get the usage in % computed from busy and idle + prev values
-						const usage = vm.getUsageFrom(busy, idle)
-						console.log('[cputimes] >>>> Adding value to the end of the buffer')
-						// Add the new value to the Array
-						vm.pushValue(date, usage, busy, idle)
-					}
-				}
-			}
-
-			// Update onscreen values
-			updateGraph(vm, function () { vm.datacollection = [vm.chartLabels, vm.chartDataObj] })
-		},
 		// Empty every arrays and close the websocket
 		cleaning: function (ws = true) {
 			this.fetchingDone = false
@@ -153,7 +93,7 @@ export default {
 			this.wsBuffer = []
 
 			if (ws) {
-				closeWS('cputimes', this)
+				closeWS(this.table, this)
 			}
 		},
 		// Null the data of an index (without nulling the Labels)
@@ -179,19 +119,44 @@ export default {
 		wsMessageHandle: function (event) {
 			// Parse the data and extract newValue
 			const json = JSON.parse(event.data)
-			const newValues = json.columnvalues
+			const obj = {
+				cuser: json.columnvalues[1],
+				nice: json.columnvalues[2],
+				system: json.columnvalues[3],
+				irq: json.columnvalues[6],
+				softirq: json.columnvalues[7],
+				steal: json.columnvalues[8],
+				idle: json.columnvalues[4],
+				iowait: json.columnvalues[5],
+				created_at: json.columnvalues[12],
+			}
 
 			if (this.fetchingDone) {
 				// Add the new data to the graph
-				this.addNewData(newValues)
+				this.addNewData(obj, true)
 			} else {
 				// Add the value to the wsBuffer
-				console.log('[cputimes] >> Adding value to the wsBuffer (WS opened but fetching not done yet)')
-				this.wsBuffer.push(newValues)
+				console.log('[' + this.table + '] >> Adding value to the wsBuffer (WS opened but fetching not done yet)')
+				this.wsBuffer.push(obj)
+			}
+		},
+		addNewData: function (elem, update=false) {
+			const vm = this
+			// Compute the busy time of the CPU from these params
+			const busy = elem.cuser + elem.nice + elem.system + elem.irq + elem.softirq + elem.steal
+			// Compute the idling time of the CPU from these params
+			const idle = elem.idle + elem.iowait
+			// Get the usage in % computed from busy and idle + prev values
+			const usage = this.getUsageFrom(busy, idle)
+			// Add the new value to the Array
+			this.pushValue(moment.utc(elem.created_at).unix(), usage, busy, idle)
+
+			// Update onscreen values
+			if (update) {
+				updateGraph(vm, function () { vm.datacollection = [vm.chartLabels, vm.chartDataObj] })
 			}
 		},
 		getUsageFrom: function (busy, idle) {
-			let usage = null
 			// If the previous does not exist, we can't compute the percent
 			const prevIndex = this.chartLabels.length - 1
 			if (!(this.historyBusyDataObj[prevIndex] == null)) {
@@ -205,35 +170,11 @@ export default {
 				const totald = total - prevTotal
 				const idled = idle - prevIdle
 				// Get the value as percent
-				usage = (totald - idled) / totald * 100
+				return (totald - idled) / totald * 100
 			}
 
-			return usage
+			return null
 		},
-		fastAddNewData: function (elem) {
-			// Compute the busy time of the CPU from these params
-			const busy = elem.cuser + elem.nice + elem.system + elem.irq + elem.softirq + elem.steal
-			// Compute the idling time of the CPU from these params
-			const idle = elem.idle + elem.iowait
-			// Get the usage in % computed from busy and idle + prev values
-			const usage = this.getUsageFrom(busy, idle)
-			// Add the new value to the Array
-			this.pushValue(moment.utc(elem.created_at).unix(), usage, busy, idle)
-		},
-		addNewData: function (newValues) {
-			const vm = this
-			// Compute the busy time of the CPU from these params
-			const busy = newValues[1] + newValues[2] + newValues[3] + newValues[6] + newValues[7] + newValues[8]
-			// Compute the idling time of the CPU from these params
-			const idle = newValues[4] + newValues[5]
-			// Get the usage in % computed from busy and idle + prev values
-			const usage = vm.getUsageFrom(busy, idle)
-			// Add the new value to the Array
-			vm.pushValue(moment.utc(newValues[12]).unix(), usage, busy, idle)
-
-			// Update onscreen values
-			updateGraph(vm, function () { vm.datacollection = [vm.chartLabels, vm.chartDataObj] })
-		}
 	}
 }
 </script>

@@ -1,54 +1,13 @@
-import moment from 'moment'
+import { openSpecificWS } from '@/utils/graphsWebsockets'
+import { fetchInit } from '@/utils/graphsData'
 
-function sanitizeGraphData (dataSize, scaleTime, chartLabels, threshold, spliceData, nullData) {
-	// Be sure the date are following in order (by 1s for now)
-	const now = moment().utc().unix()
-	const min = moment.utc().subtract(scaleTime, 'seconds').unix()
-	for (let i = dataSize - 1; i >= 0; i--) {
-		// Iterate in the reverse order, and find if any missing data from the latest we have
-		// Also compare start against current time, if over threshold, might be some missing data
-
-		// If the current data is too old, get rid of it
-		if (chartLabels[i] < min) {
-			spliceData(i, 1)
-			continue
-		}
-
-		if (i === dataSize - 1) {
-			// Check against now to see if we're missing starting data
-			if (!(now - threshold <= chartLabels[i] && chartLabels[i] <= now + threshold)) {
-				// Change last labels by now to ensure gap if no previous data
-				chartLabels[i] = now
-				nullData(i)
-			}
-		} else {
-			if (chartLabels[i + 1] > chartLabels[i] + threshold) {
-				// Don't need to change the Labels, uPlot already handle this
-				nullData(i)
-			}
-		}
-	}
-}
-
-export function getRangeParams (graphRange) {
-	if (graphRange.start != null) {
-		return '&min_date=' + graphRange.start + '&max_date=' + graphRange.end;
-	} else {
-		// Substract vm.scaleTime seconds as this is pretty much the minimum time for the graph
-		const min = moment().utc().subtract(graphRange.scale + 5, 'seconds').format('YYYY-MM-DDTHH:mm:ss.SSS')
-		// Add 5 seconds to minimize the risks of missing data
-		const max = moment().utc().add(5, 'seconds').format('YYYY-MM-DDTHH:mm:ss.SSS')
-		return '&min_date=' + min + '&max_date=' + max
-	}
-}
-
-export function graphScrollObs (fetching, cleaning) {
+export function graphScrollObs (vm) {
 	// Observe if the $el is visible or not
 	return new IntersectionObserver((entries) => {
 		if (entries[0].intersectionRatio > 0) {
-			fetching()
+			openSpecificWS(vm)
 		} else {
-			cleaning()
+			vm.cleaning()
 		}
 	}, {
 		// Trigger 100px before and after
@@ -58,51 +17,32 @@ export function graphScrollObs (fetching, cleaning) {
 	})
 }
 
-export function updateGraph (vm, updateFunc) {
-	// Sanitize the Data in case of gap
-	// but also remove too old element
-	// TODO - Check the threshold value
-	sanitizeGraphData(
-		vm.chartLabels.length,
-		vm.graphRange.scale,
-		vm.chartLabels,
-		vm.graphRange.scale / 60 + 5,
-		vm.spliceData,
-		vm.nullData,
-	)
-	// Update the datacollection so that uPlot update the chart
-	updateFunc()
-}
-
-export function rebuildGraph (newVal, oldVal, cleaning, fetching, handleWebSocket, isConnectionNull) {
+export function rebuildGraph (vm, newVal, oldVal) {
+	console.log('[' + vm.table + '] graphRange changed')
 	if (newVal.start != null) {
 		// Clear the data and close the websocket
-		cleaning()
+		vm.cleaning()
 		// Refetch the data
-		fetching()
+		fetchInit(vm)
 	} else {
 		if (newVal.scale != null) {
 			// Clear the data and close the websocket if needed
-			cleaning(newVal.scale !== 300)
+			vm.cleaning(newVal.scale !== 300)
 			// Check if we have to open the WS (if we're trying to get the last 5 minutes)
-			if (newVal.scale === 300 && isConnectionNull) {
+			if (newVal.scale === 300 && vm.connection === null) {
 				// Open the websocket and refetch the data
-				handleWebSocket()
+				openSpecificWS(vm)
 			} else {
 				// Refetch the data
-				fetching()
+				fetchInit(vm)
 			}
 		} else {
 			// If we're here, this means that we cleared the selection and so we fallback to the default value for scale.
 			// We have to check if previous scale was 300, if it is we don't do anything, else we clean + handle/fetch.
 			if (oldVal.scale !== null && oldVal.scale !== 300) {
-				cleaning()
-				handleWebSocket()
+				vm.cleaning()
+				openSpecificWS(vm)
 			}
 		}
 	}
-}
-
-export function intValueOrTilde (val, dec) {
-	return val == null ? '-' : val.toFixed(dec)
 }

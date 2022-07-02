@@ -3,15 +3,15 @@ import uPlot from 'uplot'
 const strokeColors = ["#EAB839", "#008080", "#DA70D6"]
 const fillColors = ["#EAB8391A", "#0080801A", "#DA70D61A"]
 
-function serie(idx) {
+function serie(idx, dec=2) {
 	return {
-		value: (_, v) => v.toFixed(2),
+		value: (_, v) => v == null ? "-" : v.toFixed(dec),
 		points: {
 			show: false
 		},
 		width: Math.min(Math.max(2 / devicePixelRatio, 1.25), 2),
 		stroke: strokeColors[idx],
-		fill: fillColors[idx]
+		fill: fillColors[idx],
 	}
 }
 

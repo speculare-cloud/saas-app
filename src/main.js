@@ -15,7 +15,7 @@ import '@/assets/app.css'
 import '@/assets/uPlot.css'
 
 const httpAxios = axios.create({
-	timeout: 5000,
+	timeout: 10000,
 	withCredentials: true
 });
 

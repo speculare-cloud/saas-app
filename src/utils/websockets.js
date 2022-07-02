@@ -1,6 +1,6 @@
 export const CDC_VALUES = "columnvalues"
 
-export function initWS (wsUrl, table, event_type, filter, callback, vm, handle=null) {
+export function initWS (wsUrl, table, event_type, filter, callback=null, vm, handle=null) {
 	console.log('[' + table + '] %cStarting %cconnection to WebSocket Server', 'color:green;', 'color:black;')
 	if (vm.connection == null) {
 		vm.connection = new WebSocket(wsUrl + '/ws?query=' + event_type + ':' + table + (filter ?? ''))
@@ -8,7 +8,7 @@ export function initWS (wsUrl, table, event_type, filter, callback, vm, handle=n
 
 	vm.connection.addEventListener('open', function () {
 		console.log('[' + table + '] >> webSocket opened')
-		if (callback) vm.fetchInit()
+		callback && callback(vm);
 	})
 
 	// Setup onmessage listener
