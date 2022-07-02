@@ -30,3 +30,15 @@ export function series(idx, spline = false) {
 		return serie(idx)
 	}
 }
+
+export const axies = {
+	stroke: '#c7d0d9',
+	grid: {
+		width: 1 / devicePixelRatio,
+		stroke: '#2c3235'
+	},
+	ticks: {
+		width: 1 / devicePixelRatio,
+		stroke: '#2c3235'
+	}
+}

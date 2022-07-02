@@ -3,6 +3,8 @@
 </template>
 
 <script>
+import { nextTick } from 'vue'
+import { axies } from '@/utils/graphsCharts'
 import uPlot from 'uplot'
 
 export default {
@@ -35,22 +37,21 @@ export default {
 
 	watch: {
 		chartdata: function (newData, oldData) {
+			// TODO - Export
 			if (oldData == null || !this.chart) {
 				this.createChart(newData)
 			} else if (!this.hovered && this.chart) {
 				this.chart.setData(newData)
 			}
 
-			if (!this.hovered) {
-				// Update the legend to the latest value
-				this.chart.setLegend({ idx: newData[1].length - 1 }, false)
-			}
+			// Update the legend to the latest value
+			if (!this.hovered) this.chart.setLegend({ idx: newData[1].length - 1 }, false)
 		}
 	},
 
 	mounted () {
 		// Add the event after the page has been rendered
-		this.$nextTick(function () {
+		nextTick(() => {
 			window.addEventListener('resize', this.setChartSize)
 		})
 	},
@@ -62,52 +63,50 @@ export default {
 	methods: {
 		customLegend: function () {
 			const vm = this
-
-			function init (u, ) {
-				const legendEl = u.root.querySelector('.u-legend')
-				// Get the u-series corresponding to the Timestamp
-				const time = legendEl.getElementsByClassName('u-series')[0]
-				// Remove first elem of time, which is just the label "Time"
-				time.firstChild.remove()
-				// Assign some style change
-				uPlot.assign(time.firstChild.style, {
-					fontSize: '14px',
-					color: 'rgb(189, 189, 193)'
-				})
-				// Create unit item - and insert it before time.firstChild
-				const unit = document.createElement('td')
-				const content = document.createTextNode(vm.unit)
-				unit.appendChild(content)
-				time.insertBefore(unit, time.firstChild)
-
-				// Assign some style change
-				uPlot.assign(time.style, {
-					width: '100%',
-					display: 'flex',
-					webkitBoxPack: 'justify',
-					justifyContent: 'space-between'
-				})
-				uPlot.assign(time.firstChild.style, {
-					fontSize: '14px',
-					color: 'rgb(189, 189, 193)'
-				})
-				uPlot.assign(legendEl.style, {
-					paddingLeft: '35px',
-					paddingRight: '25px'
-				})
-			}
-
 			return {
 				hooks: {
-					init: init
+					init: function (u, ) {
+						const legendEl = u.root.querySelector('.u-legend')
+						// Get the u-series corresponding to the Timestamp
+						const time = legendEl.getElementsByClassName('u-series')[0]
+						// Remove first elem of time, which is just the label "Time"
+						time.firstChild.remove()
+						// Assign some style change
+						uPlot.assign(time.firstChild.style, {
+							fontSize: '14px',
+							color: 'rgb(189, 189, 193)'
+						})
+						// Create unit item - and insert it before time.firstChild
+						const unit = document.createElement('td')
+						const content = document.createTextNode(vm.unit)
+						unit.appendChild(content)
+						time.insertBefore(unit, time.firstChild)
+
+						// Assign some style change
+						uPlot.assign(time.style, {
+							width: '100%',
+							display: 'flex',
+							webkitBoxPack: 'justify',
+							justifyContent: 'space-between'
+						})
+						uPlot.assign(time.firstChild.style, {
+							fontSize: '14px',
+							color: 'rgb(189, 189, 193)'
+						})
+						uPlot.assign(legendEl.style, {
+							paddingLeft: '35px',
+							paddingRight: '25px'
+						})
+					}
 				}
 			}
 		},
+		// TODO - Export
 		initMouseEvent: function () {
 			const vm = this
-
 			// get the over part of the Graph as per uPlot doc
 			const elems = this.$el.getElementsByClassName('u-over')
+
 			// Add mouseleave event
 			elems.item(0).addEventListener('mouseleave', () => {
 				vm.hovered = false
@@ -140,28 +139,8 @@ export default {
 				},
 				series: this.$props.chartseries,
 				axes: [
-					{
-						stroke: '#c7d0d9',
-						grid: {
-							width: 1 / devicePixelRatio,
-							stroke: '#2c3235'
-						},
-						ticks: {
-							width: 1 / devicePixelRatio,
-							stroke: '#2c3235'
-						}
-					},
-					{
-						stroke: '#c7d0d9',
-						grid: {
-							width: 1 / devicePixelRatio,
-							stroke: '#2c3235'
-						},
-						ticks: {
-							width: 1 / devicePixelRatio,
-							stroke: '#2c3235'
-						}
-					}
+					axies,
+					axies
 				],
 				scales: {
 					x: {
@@ -185,9 +164,7 @@ export default {
 			}
 		},
 		setChartSize: function () {
-			if (this.chart) {
-				this.chart.setSize(this.getSize())
-			}
+			if (this.chart) this.chart.setSize(this.getSize())
 		}
 	}
 }
