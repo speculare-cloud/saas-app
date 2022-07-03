@@ -53,7 +53,7 @@
 				</div>
 			</nav>
 			<!-- Page content -->
-			<main class="container px-5 max-w-[1040px] mx-auto py-10">
+			<main class="container px-5 max-w-[1040px] mx-auto pt-10">
 				<router-view />
 			</main>
 		</div>

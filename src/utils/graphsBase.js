@@ -44,8 +44,8 @@ export function customLegend (vm) {
 					color: 'rgb(189, 189, 193)'
 				})
 				uPlot.assign(legendEl.style, {
-					paddingLeft: '35px',
-					paddingRight: '25px'
+					paddingLeft: '38px',
+					paddingRight: '20px'
 				})
 			}
 		}
