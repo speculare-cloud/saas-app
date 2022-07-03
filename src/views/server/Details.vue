@@ -77,6 +77,15 @@
 		</div>
 		<div role="section" class="mt-4">
 			<h3 class="text-2xl text-gray-100 mb-4">
+				disks
+			</h3>
+			<p class="text-sm text-gray-200">
+				Total Disk I/O for all physical disks. Physical are disks present in <code>/sys/block</code> but don't have a <code>{}/device</code> in it.
+			</p>
+			<IoBlocksOverall :key="this.$route.params.uuid" :uuid="this.$route.params.uuid" :berta="this.$route.params.berta" :graph-range="graphRange" />
+		</div>
+		<div role="section" class="mt-4">
+			<h3 class="text-2xl text-gray-100 mb-4">
 				ram
 			</h3>
 			<p class="text-sm text-gray-200">
@@ -91,7 +100,16 @@
 			<p class="text-sm text-gray-200">
 				System swap memory usage. Swap space is used when the RAM if full.
 			</p>
-			<Swap :key="this.$route.params.uuid" :uuid="this.$route.params.uuid" :graph-range="graphRange" />
+			<Swap :key="this.$route.params.uuid" :uuid="this.$route.params.uuid" :berta="this.$route.params.berta" :graph-range="graphRange" />
+		</div>
+		<div role="section" class="mt-4 mb-16">
+			<h3 class="text-2xl text-gray-100 mb-4">
+				network
+			</h3>
+			<p class="text-sm text-gray-200">
+				Total bandwidth of all physical network interfaces. Physical are all the network interfaces that are listed in <code>/proc/net/dev</code>, but do not exist in <code>/sys/devices/virtual/net</code>.
+			</p>
+			<IoNetsOverall :key="this.$route.params.uuid" :uuid="this.$route.params.uuid" :berta="this.$route.params.berta" :graph-range="graphRange" />
 		</div>
 	</section>
 </template>
@@ -115,6 +133,10 @@ export default {
 			loader: () => import('@/components/Graphs/cpu/LoadAvg'),
 			loadingComponent: Skeleton
 		}),
+		IoBlocksOverall: defineAsyncComponent({
+			loader: () => import('@/components/Graphs/disks/IoBlocksOverall'),
+			loadingComponent: Skeleton
+		}),
 		Ram: defineAsyncComponent({
 			loader: () => import('@/components/Graphs/memory/Ram'),
 			loadingComponent: Skeleton
@@ -123,6 +145,10 @@ export default {
 			loader: () => import('@/components/Graphs/memory/Swap'),
 			loadingComponent: Skeleton
 		}),
+		IoNetsOverall: defineAsyncComponent({
+			loader: () => import('@/components/Graphs/net/IoNetsOverall'),
+			loadingComponent: Skeleton
+		})
 	},
 
 	setup () {

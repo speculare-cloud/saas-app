@@ -1,11 +1,11 @@
 import { openSpecificWS } from '@/utils/graphsWebsockets'
 import { fetchInit } from '@/utils/graphsData'
 
-export function graphScrollObs (vm) {
+export function graphScrollObs (vm, grouped=false) {
 	// Observe if the $el is visible or not
 	return new IntersectionObserver((entries) => {
 		if (entries[0].intersectionRatio > 0) {
-			openSpecificWS(vm)
+			openSpecificWS(vm, grouped)
 		} else {
 			vm.cleaning()
 		}
@@ -17,13 +17,13 @@ export function graphScrollObs (vm) {
 	})
 }
 
-export function rebuildGraph (vm, newVal, oldVal) {
+export function rebuildGraph (vm, newVal, oldVal, grouped=false) {
 	console.log('[' + vm.table + '] graphRange changed')
 	if (newVal.start != null) {
 		// Clear the data and close the websocket
 		vm.cleaning()
 		// Refetch the data
-		fetchInit(vm)
+		fetchInit(vm, grouped)
 	} else {
 		if (newVal.scale != null) {
 			// Clear the data and close the websocket if needed
@@ -31,17 +31,17 @@ export function rebuildGraph (vm, newVal, oldVal) {
 			// Check if we have to open the WS (if we're trying to get the last 5 minutes)
 			if (newVal.scale === 300 && vm.connection === null) {
 				// Open the websocket and refetch the data
-				openSpecificWS(vm)
+				openSpecificWS(vm, grouped)
 			} else {
 				// Refetch the data
-				fetchInit(vm)
+				fetchInit(vm, grouped)
 			}
 		} else {
 			// If we're here, this means that we cleared the selection and so we fallback to the default value for scale.
 			// We have to check if previous scale was 300, if it is we don't do anything, else we clean + handle/fetch.
 			if (oldVal.scale !== null && oldVal.scale !== 300) {
 				vm.cleaning()
-				openSpecificWS(vm)
+				openSpecificWS(vm, grouped)
 			}
 		}
 	}

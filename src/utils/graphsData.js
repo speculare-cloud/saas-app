@@ -43,16 +43,39 @@ function getRangeParams (graphRange) {
 	}
 }
 
-export function fetchInit (vm) {
+function basicRespHandler (vm, data) {
+	const dataLength = data.length
+	// - data in reverse order (push_back) as uPlot use last as most recent
+	for (let i = dataLength - 1; i >= 0; i--) {
+		vm.addNewData(data[i], i == 0)
+	}
+}
+
+function groupedRespHandler (vm, data) {
+	const dataLength = data.length
+	// - data in reverse order (push_back) as uPlot use last as most recent
+	// - skip intNumber by intNumber
+	for (let i = dataLength - 1; i >= 0; i -= vm.groupedSkip) {
+		if (vm.groupedSkip > 1) {
+			const currentData = []
+			for (let y = 0; y < vm.groupedSkip; y++) {
+				currentData.push(data[i - y])
+			}
+			vm.addNewData(currentData, i == 0 || i == 1)
+		} else {
+			vm.addNewData(data[i], i == 0)
+		}
+	}
+}
+
+export function fetchInit (vm, grouped) {
+	console.log("fetchInit: " + vm.table + " is grouped: " + grouped)
 	// Fetching old data with the API
 	vm.$http
 		.get(vm.$serverBase(vm.$route.params.berta) + "/api/" + vm.table + "?uuid=" + vm.uuid + getRangeParams(vm.graphRange))
 		.then(resp => {
-			const dataLength = resp.data.length
-			// Add data in reverse order (push_back) and uPlot use last as most recent
-			for (let i = dataLength - 1; i >= 0; i--) {
-				vm.addNewData(resp.data[i], i == 0)
-			}
+			if (!grouped) basicRespHandler(vm, resp.data)
+			else groupedRespHandler(vm, resp.data)
 
 			// If data has been received, we drain the wsBuffer
 			drainWsBuffer(vm)

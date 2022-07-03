@@ -3,11 +3,11 @@ import { initWS } from '@/utils/websockets'
 import moment from 'moment'
 
 // Open the WS if needed (if the scale is not 300, it means we're in the past)
-export function openSpecificWS (vm) {
+export function openSpecificWS (vm, grouped) {
 	if (vm.graphRange.scale !== 300) {
-		return fetchInit(vm);
+		return fetchInit(vm, grouped);
 	}
-	initWS(vm.$cdcBase(vm.berta), vm.table, 'insert', ':host_uuid.eq.' + vm.uuid, fetchInit, vm)
+	initWS(vm.$cdcBase(vm.berta), vm.table, 'insert', ':host_uuid.eq.' + vm.uuid, fetchInit, vm, null, grouped)
 }
 
 // Drain the WS buffer by merging existing data with the new from the buffer
