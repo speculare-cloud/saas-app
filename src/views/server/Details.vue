@@ -60,14 +60,14 @@
 			</div>
 		</div>
 		<div role="section" class="mt-4">
-			<h3 class="text-2xl text-gray-100 mb-4">
+			<h3 class="text-2xl text-gray-100 mb-4" id="cputimes">
 				cpu
 			</h3>
 			<p class="text-sm text-gray-200">
 				Total CPU utilization. 100% here means there is no CPU idle time at all.
 			</p>
 			<CpuTimes :key="this.$route.params.uuid" :uuid="this.$route.params.uuid" :berta="this.$route.params.berta" :graph-range="graphRange" />
-			<h3 class="text-2xl text-gray-100 mb-4 mt-4">
+			<h3 class="text-2xl text-gray-100 mb-4 mt-4" id="loadavg">
 				load
 			</h3>
 			<p class="text-sm text-gray-200">
@@ -76,7 +76,7 @@
 			<LoadAvg :key="this.$route.params.uuid" :uuid="this.$route.params.uuid" :berta="this.$route.params.berta" :graph-range="graphRange" />
 		</div>
 		<div role="section" class="mt-4">
-			<h3 class="text-2xl text-gray-100 mb-4">
+			<h3 class="text-2xl text-gray-100 mb-4" id="ioblocks">
 				disks
 			</h3>
 			<p class="text-sm text-gray-200">
@@ -85,7 +85,7 @@
 			<IoBlocksOverall :key="this.$route.params.uuid" :uuid="this.$route.params.uuid" :berta="this.$route.params.berta" :graph-range="graphRange" />
 		</div>
 		<div role="section" class="mt-4">
-			<h3 class="text-2xl text-gray-100 mb-4">
+			<h3 class="text-2xl text-gray-100 mb-4" id="ram">
 				ram
 			</h3>
 			<p class="text-sm text-gray-200">
@@ -94,7 +94,7 @@
 			<Ram :key="this.$route.params.uuid" :uuid="this.$route.params.uuid" :berta="this.$route.params.berta" :graph-range="graphRange" />
 		</div>
 		<div role="section" class="mt-4">
-			<h3 class="text-2xl text-gray-100 mb-4">
+			<h3 class="text-2xl text-gray-100 mb-4" id="swap">
 				swap
 			</h3>
 			<p class="text-sm text-gray-200">
@@ -103,7 +103,7 @@
 			<Swap :key="this.$route.params.uuid" :uuid="this.$route.params.uuid" :berta="this.$route.params.berta" :graph-range="graphRange" />
 		</div>
 		<div role="section" class="mt-4 mb-16">
-			<h3 class="text-2xl text-gray-100 mb-4">
+			<h3 class="text-2xl text-gray-100 mb-4" id="ionets">
 				network
 			</h3>
 			<p class="text-sm text-gray-200">
