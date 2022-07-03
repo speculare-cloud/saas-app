@@ -6,7 +6,7 @@ const fillColors = ["#EAB839", "#008080", "#DA70D6", "#EAB839"]
 
 function serie(idx, alpha=true) {
 	return {
-		value: (_, v) => v == null ? "-" : v.toFixed(2),
+		value: (_, v) => intValueOrTilde(v),
 		points: {
 			show: false
 		},
@@ -18,6 +18,10 @@ function serie(idx, alpha=true) {
 
 function splineGraph (u, seriesIdx, idx0, idx1, extendGap, buildClip) {
 	return uPlot.paths.spline()(u, seriesIdx, idx0, idx1, extendGap, buildClip)
+}
+
+export function intValueOrTilde (v) {
+	return v == null ? "-" : v.toFixed(2)
 }
 
 export function series(idx, spline=false, alpha=true) {

@@ -11,7 +11,7 @@
 import { nextTick } from 'vue'
 import { graphScrollObs, rebuildGraph } from '@/utils/graphs'
 import { updateGraph } from '@/utils/graphsData'
-import { series } from '@/utils/graphsCharts'
+import { series, intValueOrTilde } from '@/utils/graphsCharts'
 import { closeWS } from '@/utils/websockets'
 import Stacked from '@/components/Graphs/Base/Stacked'
 import moment from 'moment'
@@ -46,8 +46,8 @@ export default {
 			loadingMessage: 'Loading',
 			chartSeries: [
 				{},
-				{...series(0, true, false), label: 'free'},
-				{...series(1, true, false), label: 'used'}
+				{...series(0, true, false), label: 'free', value: (_u, _v, _s, i) => intValueOrTilde(this.chartDataObjFree[i])},
+				{...series(1, true, false), label: 'used', value: (_u, _v, _s, i) => intValueOrTilde(this.chartDataObjUsed[i])}
 			],
 			wsBuffer: [],
 			chartLabels: [],
