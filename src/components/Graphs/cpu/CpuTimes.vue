@@ -116,6 +116,13 @@ export default {
 			this.historyBusyDataObj.push(busy)
 			this.historyIdleDataObj.push(idle)
 		},
+		// Add a null first item with the specified date
+		unshiftEmpty: function (date) {
+			this.chartLabels.unshift(date)
+			this.chartDataObj.unshift(null)
+			this.historyBusyDataObj.unshift(null)
+			this.historyIdleDataObj.unshift(null)
+		},
 		wsMessageHandle: function (event) {
 			// Parse the data and extract newValue
 			const json = JSON.parse(event.data)

@@ -147,6 +147,15 @@ export default {
 			this.historyDataRecv.push(histrecv)
 			this.historyDataSent.push(histSent)
 		},
+		// Add a null first item with the specified date
+		unshiftEmpty: function (date) {
+			this.chartLabels.unshift(date)
+			this.chartDataObjRecv.unshift(null)
+			this.chartDataObjSent.unshift(null)
+			this.historyDataDate.unshift(null)
+			this.historyDataRecv.unshift(null)
+			this.historyDataSent.unshift(null)
+		},
 		wsMessageHandle: function (event) {
 			// Parse the data and extract newValue
 			const json = JSON.parse(event.data)

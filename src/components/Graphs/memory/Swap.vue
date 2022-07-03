@@ -112,6 +112,12 @@ export default {
 			this.chartDataObjFree.push(free)
 			this.chartDataObjUsed.push(used)
 		},
+		// Add a null first item with the specified date
+		unshiftEmpty: function (date) {
+			this.chartLabels.unshift(date)
+			this.chartDataObjFree.unshift(null)
+			this.chartDataObjUsed.unshift(null)
+		},
 		wsMessageHandle: function (event) {
 			// Parse the data and extract newValue
 			const json = JSON.parse(event.data)

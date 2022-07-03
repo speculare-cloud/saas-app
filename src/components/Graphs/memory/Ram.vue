@@ -124,6 +124,14 @@ export default {
 			this.chartDataObjCached.push(cached)
 			this.chartDataObjBuffers.push(buffers)
 		},
+		// Add a null first item with the specified date
+		unshiftEmpty: function (date) {
+			this.chartLabels.unshift(date)
+			this.chartDataObjFree.unshift(null)
+			this.chartDataObjUsed.unshift(null)
+			this.chartDataObjCached.unshift(null)
+			this.chartDataObjBuffers.unshift(null)
+		},
 		wsMessageHandle: function (event) {
 			// Parse the data and extract newValue
 			const json = JSON.parse(event.data)

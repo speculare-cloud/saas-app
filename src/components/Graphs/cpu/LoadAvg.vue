@@ -119,6 +119,13 @@ export default {
 			this.chartDataObjFive.push(Math.round(five * 100) / 100)
 			this.chartDataObjFitheen.push(Math.round(fith * 100) / 100)
 		},
+		// Add a null first item with the specified date
+		unshiftEmpty: function (date) {
+			this.chartLabels.unshift(date)
+			this.chartDataObjOne.unshift(null)
+			this.chartDataObjFive.unshift(null)
+			this.chartDataObjFitheen.unshift(null)
+		},
 		wsMessageHandle: function (event) {
 			// Parse the data and extract newValue
 			const json = JSON.parse(event.data)
