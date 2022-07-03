@@ -176,7 +176,7 @@ export default {
 			let total_read = 0
 			let total_write = 0
 			// Compute total read and write from all disks
-			for (let i = 0; i < this.groupedSkip; i++) {
+			for (let i = 0; i < elem.length; i++) {
 				total_read += elem[i].read_bytes
 				total_write += elem[i].write_bytes
 			}

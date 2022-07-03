@@ -63,7 +63,7 @@ function groupedRespHandler (vm, data) {
 			}
 			vm.addNewData(currentData, i == 0 || i == 1)
 		} else {
-			vm.addNewData(data[i], i == 0)
+			vm.addNewData([data[i]], i == 0)
 		}
 	}
 }

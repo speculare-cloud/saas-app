@@ -176,7 +176,7 @@ export default {
 			let total_recv = 0
 			let total_sent = 0
 			// Compute total read and write from all disks
-			for (let i = 0; i < this.groupedSkip; i++) {
+			for (let i = 0; i < elem.length; i++) {
 				total_recv += elem[i].rx_bytes
 				total_sent += elem[i].tx_bytes
 			}
