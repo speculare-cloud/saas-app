@@ -1,17 +1,18 @@
 import uPlot from 'uplot'
 
-const strokeColors = ["#EAB839", "#008080", "#DA70D6"]
-const fillColors = ["#EAB8391A", "#0080801A", "#DA70D61A"]
+const strokeColors = ["#EAB839", "#008080", "#DA70D6", "#EAB839"]
+const fillColorsAlpha = ["#EAB8391A", "#0080801A", "#DA70D61A", "#EAB8391A"]
+const fillColors = ["#EAB839", "#008080", "#DA70D6", "#EAB839"]
 
-function serie(idx, dec=2) {
+function serie(idx, alpha=true) {
 	return {
-		value: (_, v) => v == null ? "-" : v.toFixed(dec),
+		value: (_, v) => v == null ? "-" : v.toFixed(2),
 		points: {
 			show: false
 		},
 		width: Math.min(Math.max(2 / devicePixelRatio, 1.25), 2),
 		stroke: strokeColors[idx],
-		fill: fillColors[idx],
+		fill: alpha ? fillColorsAlpha[idx] : fillColors[idx],
 	}
 }
 
@@ -19,9 +20,9 @@ function splineGraph (u, seriesIdx, idx0, idx1, extendGap, buildClip) {
 	return uPlot.paths.spline()(u, seriesIdx, idx0, idx1, extendGap, buildClip)
 }
 
-export function series(idx, spline = false) {
+export function series(idx, spline=false, alpha=true) {
 	if (spline) {
-		return {...serie(idx), ...{
+		return {...serie(idx, alpha), ...{
 			drawStyle: 2,
 			lineInterpolation: 1,
 			paths: splineGraph,

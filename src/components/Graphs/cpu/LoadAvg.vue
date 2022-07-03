@@ -145,7 +145,14 @@ export default {
 
 			// Update onscreen values
 			if (update) {
-				updateGraph(vm, function() { vm.datacollection = [vm.chartLabels, vm.chartDataObjOne, vm.chartDataObjFive, vm.chartDataObjFitheen] })
+				updateGraph(vm, function() {
+					vm.datacollection = [
+						vm.chartLabels,
+						vm.chartDataObjOne,
+						vm.chartDataObjFive,
+						vm.chartDataObjFitheen
+					]
+				})
 			}
 		}
 	}

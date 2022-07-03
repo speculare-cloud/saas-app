@@ -75,6 +75,24 @@
 			</p>
 			<LoadAvg :key="this.$route.params.uuid" :uuid="this.$route.params.uuid" :berta="this.$route.params.berta" :graph-range="graphRange" />
 		</div>
+		<div role="section" class="mt-4">
+			<h3 class="text-2xl text-gray-100 mb-4">
+				ram
+			</h3>
+			<p class="text-sm text-gray-200">
+				System Random Access Memory (i.e. physical memory) usage.
+			</p>
+			<Ram :key="this.$route.params.uuid" :uuid="this.$route.params.uuid" :berta="this.$route.params.berta" :graph-range="graphRange" />
+		</div>
+		<div role="section" class="mt-4">
+			<h3 class="text-2xl text-gray-100 mb-4">
+				swap
+			</h3>
+			<p class="text-sm text-gray-200">
+				System swap memory usage. Swap space is used when the RAM if full.
+			</p>
+			<Swap :key="this.$route.params.uuid" :uuid="this.$route.params.uuid" :graph-range="graphRange" />
+		</div>
 	</section>
 </template>
 
@@ -95,6 +113,14 @@ export default {
 		}),
 		LoadAvg: defineAsyncComponent({
 			loader: () => import('@/components/Graphs/cpu/LoadAvg'),
+			loadingComponent: Skeleton
+		}),
+		Ram: defineAsyncComponent({
+			loader: () => import('@/components/Graphs/memory/Ram'),
+			loadingComponent: Skeleton
+		}),
+		Swap: defineAsyncComponent({
+			loader: () => import('@/components/Graphs/memory/Swap'),
 			loadingComponent: Skeleton
 		}),
 	},

@@ -5,6 +5,7 @@
 <script>
 import { nextTick } from 'vue'
 import { axies } from '@/utils/graphsCharts'
+import { customLegend, initMouseEvent, reactDataChange } from '@/utils/graphsBase'
 import uPlot from 'uplot'
 
 export default {
@@ -37,16 +38,7 @@ export default {
 
 	watch: {
 		chartdata: function (newData, oldData) {
-			// TODO - Export
-			if (oldData == null || !this.chart) {
-				this.createChart(newData)
-			} else if (!this.hovered && this.chart) {
-				const stacked = this.stack(newData, i => !this.chart.series[i].show)
-				this.chart.setData(stacked.data)
-			}
-
-			// Update the legend to the latest value
-			if (!this.hovered) this.chart.setLegend({ idx: newData[1].length - 1 }, false)
+			reactDataChange(this, oldData, newData, true)
 		}
 	},
 
@@ -62,63 +54,6 @@ export default {
 	},
 
 	methods: {
-		// TODO - Export
-		customLegend: function () {
-			const vm = this
-			return {
-				hooks: {
-					init: function (u, ) {
-						const legendEl = u.root.querySelector('.u-legend')
-						// Get the u-series corresponding to the Timestamp
-						const time = legendEl.getElementsByClassName('u-series')[0]
-						// Remove first elem of time, which is just the label "Time"
-						time.firstChild.remove()
-						// Assign some style change
-						uPlot.assign(time.firstChild.style, {
-							fontSize: '14px',
-							color: 'rgb(189, 189, 193)'
-						})
-						// Create unit item - and insert it before time.firstChild
-						const unit = document.createElement('td')
-						const content = document.createTextNode(vm.unit)
-						unit.appendChild(content)
-						time.insertBefore(unit, time.firstChild)
-
-						// Assign some style change
-						uPlot.assign(time.style, {
-							width: '100%',
-							display: 'flex',
-							webkitBoxPack: 'justify',
-							justifyContent: 'space-between'
-						})
-						uPlot.assign(time.firstChild.style, {
-							fontSize: '14px',
-							color: 'rgb(189, 189, 193)'
-						})
-						uPlot.assign(legendEl.style, {
-							paddingLeft: '35px',
-							paddingRight: '25px'
-						})
-					}
-				}
-			}
-		},
-		// TODO - Export
-		initMouseEvent: function () {
-			const vm = this
-			// get the over part of the Graph as per uPlot doc
-			const elems = this.$el.getElementsByClassName('u-over')
-
-			// Add mouseleave event
-			elems.item(0).addEventListener('mouseleave', () => {
-				vm.hovered = false
-				this.chart.setLegend({ idx: this.chartdata[1].length - 1 }, false)
-			})
-			// Add mouseenter event
-			elems.item(0).addEventListener('mouseenter', () => {
-				vm.hovered = true
-			})
-		},
 		stack: function (data, omit) {
 			const d0Length = data[0].length
 			const accum = Array(d0Length)
@@ -167,7 +102,7 @@ export default {
 			const opts = {
 				...this.getSize(),
 				plugins: [
-					this.customLegend()
+					customLegend(this)
 				],
 				bands: stacked.bands,
 				cursor: {
@@ -215,8 +150,7 @@ export default {
 			}
 			this.chart = new uPlot(opts, stacked.data, this.$refs.uniqueName)
 			// Init mouseenter and mouseleave event for freezing the charts
-			// and setting the legend correctly
-			this.initMouseEvent()
+			initMouseEvent(this)
 		},
 		getSize: function () {
 			return {

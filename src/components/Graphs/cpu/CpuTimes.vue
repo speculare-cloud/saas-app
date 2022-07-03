@@ -147,13 +147,18 @@ export default {
 			// Compute the idling time of the CPU from these params
 			const idle = elem.idle + elem.iowait
 			// Get the usage in % computed from busy and idle + prev values
-			const usage = this.getUsageFrom(busy, idle)
+			const usage = vm.getUsageFrom(busy, idle)
 			// Add the new value to the Array
-			this.pushValue(moment.utc(elem.created_at).unix(), usage, busy, idle)
+			vm.pushValue(moment.utc(elem.created_at).unix(), usage, busy, idle)
 
 			// Update onscreen values
 			if (update) {
-				updateGraph(vm, function () { vm.datacollection = [vm.chartLabels, vm.chartDataObj] })
+				updateGraph(vm, function () {
+					vm.datacollection = [
+						vm.chartLabels,
+						vm.chartDataObj
+					]
+				})
 			}
 		},
 		getUsageFrom: function (busy, idle) {
