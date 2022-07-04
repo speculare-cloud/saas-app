@@ -191,6 +191,7 @@ export default {
 			}
 			const currDate = moment.utc(elem[0].created_at).unix();
 			const { recv, sent } = vm.getReadWriteFrom(currDate, total_recv, total_sent)
+			console.log("At index " + vm.chartLabels.length + ": recv[" + recv + "] and total_recv[" + total_recv + "]");
 
 			// Add the new value to the Array
 			vm.pushValue(currDate, recv, sent, total_recv, total_sent)
@@ -211,14 +212,17 @@ export default {
 			let sent = null
 			// If the previous does not exist, we can't compute the percent
 			const prevIndex = this.chartLabels.length - 1
-			if (!(this.historyDataRecv[prevIndex] == null) &&
-				!(this.historyDataDate[prevIndex] < currDate - (this.graphRange.scale / 60 + 5))) {
+			if (this.historyDataRecv[prevIndex] != null && this.historyDataDate[prevIndex] >= currDate - (this.graphRange.scale / 60 + 15)) {
+				// Elapsed is used to work around the network latency and keep a correct scale
+				// - the time between two data point can be greater than the harvest time configured,
+				//   thus falsing the scale. Dividing by the diff can fix this.
+				const elapsed = currDate - this.chartLabels[prevIndex]
 				// Get the previous values
 				const prevRecv = this.historyDataRecv[prevIndex]
 				const prevSent = this.historyDataSent[prevIndex]
 				// TODO - Auto scale to kb/mb/gb depending on the values
-				recv = (total_recv - prevRecv) / BYTES_TO_MB
-				sent = -((total_sent - prevSent) / BYTES_TO_MB)
+				recv = ((total_recv - prevRecv) / BYTES_TO_MB) / elapsed
+				sent = -((total_sent - prevSent) / BYTES_TO_MB) / elapsed
 			}
 			return { recv, sent }
 		},

@@ -210,14 +210,17 @@ export default {
 			let write = null
 			// If the previous does not exist, we can't compute the percent
 			const prevIndex = this.chartLabels.length - 1
-			if (!(this.historyDataRead[prevIndex] == null) &&
-				!(this.historyDataDate[prevIndex] < currDate - (this.graphRange.scale / 60 + 5))) {
+			if (this.historyDataRead[prevIndex] != null && this.historyDataDate[prevIndex] >= currDate - (this.graphRange.scale / 60 + 15)) {
+				// Elapsed is used to work around the network latency and keep a correct scale
+				// - the time between two data point can be greater than the harvest time configured,
+				//   thus falsing the scale. Dividing by the diff can fix this.
+				const elapsed = currDate - this.chartLabels[prevIndex]
 				// Get the previous values
 				const prevRead = this.historyDataRead[prevIndex]
 				const prevWrite = this.historyDataWrite[prevIndex]
 				// TODO - Auto scale to kb/mb/gb depending on the values
-				read = (total_read - prevRead) / BYTES_TO_MB
-				write = -((total_write - prevWrite) / BYTES_TO_MB)
+				read = ((total_read - prevRead) / BYTES_TO_MB) / elapsed
+				write = -((total_write - prevWrite) / BYTES_TO_MB) / elapsed
 			}
 			return { read, write }
 		},
