@@ -10,11 +10,11 @@
 							<path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM9 15a1 1 0 011-1h6a1 1 0 110 2h-6a1 1 0 01-1-1z" clip-rule="evenodd" />
 						</svg>
 					</label>
-					<p class="hidden md:block lg:hidden text-xl font-semibold">
-						S<span class="text-primary">peculare</span>
+					<p class="hidden md:block lg:hidden">
+						<img class="max-h-[30px] min-h-[30px]" src="@/assets/logo.svg">
 					</p>
-					<p class="block md:hidden text-xl font-semibold">
-						S<span class="text-primary">p</span>
+					<p class="block md:hidden">
+						<img class="max-h-[30px] min-h-[30px]" src="@/assets/logo_small.svg">
 					</p>
 				</div>
 				<div class="flex-none">
@@ -60,15 +60,15 @@
 		<aside class="drawer-side">
 			<label for="side-drawer" class="drawer-overlay" />
 			<div class="flex flex-col p-4 overflow-y-auto w-60 bg-base-300">
-				<div class="flex justify-between items-center">
-					<p class="hidden md:block text-xl font-semibold">
-						S<span class="text-primary">peculare</span>
+				<div class="h-[48px] flex justify-start md:justify-center items-center pl-[14px] md:pl-0">
+					<p class="hidden md:block">
+						<img class="max-h-[30px] min-h-[30px]" src="@/assets/logo.svg">
 					</p>
-					<p class="block md:hidden text-xl font-semibold">
-						S<span class="text-primary">p</span>
+					<p class="block md:hidden">
+						<img class="max-h-[30px] min-h-[30px]" src="@/assets/logo_small.svg">
 					</p>
 				</div>
-				<ul class="flex-grow -mx-4 menu p-4 pt-8 text-base-content gap-1">
+				<ul class="flex-grow -mx-4 menu p-4 text-base-content gap-1">
 					<li>
 						<router-link key="servers" :to="{ name: 'Servers' }" :class="$route.meta.child === 'servers' ? 'router-link-active' : ''">
 							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="h-5 w-5" fill="currentColor">
