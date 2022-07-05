@@ -24,7 +24,7 @@
 								<img src="https://ui-avatars.com/api/?name=John+Doe">
 							</div>
 						</label>
-						<ul tabindex="0" class="menu menu-compact dropdown-content mt-3 p-2 bg-base-300 shadow rounded-box w-52 gap-1 border border-neutral">
+						<ul tabindex="0" class="menu menu-compact dropdown-content mt-3 p-2 bg-base-300 shadow rounded-lg w-52 gap-1 border border-neutral">
 							<li>
 								<router-link key="account" :to="{ name: 'Account' }">
 									<svg class="h-5 w-5" viewBox="0 0 28 28" fill="currentColor" xmlns="http://www.w3.org/2000/svg">

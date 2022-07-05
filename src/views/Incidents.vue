@@ -15,14 +15,15 @@
 					</svg>
 
 					<input
-						type="text" class="form-control-custom font-medium !pl-[34px] h-10 text-neutral-500"
-						placeholder="Search incidents" autocomplete="off">
+						type="text" placeholder="Search monitors"
+						class="input input-bordered w-full bg-base-300 !pl-[34px] h-10"
+						style="font-size: 0.875rem;">
 				</div>
 			</div>
 		</div>
 		<div class="mt-12">
 			<div class="overflow-x-auto no-scrollbar rounded-lg shadow">
-				<table class="table w-full">
+				<table class="table w-full text-[#c5c8cb]">
 					<thead>
 						<tr>
 							<th>Monitor</th>
@@ -45,15 +46,15 @@
 									<circle cx="31.75" cy="29.9904" r="8.625" fill="#3B4254" />
 									<path fill-rule="evenodd" clip-rule="evenodd" d="M31.85 36.8904C33.6799 36.8904 35.435 36.1634 36.729 34.8694C38.023 33.5754 38.75 31.8204 38.75 29.9904C38.75 28.1604 38.023 26.4054 36.729 25.1114C35.435 23.8174 33.6799 23.0904 31.85 23.0904C30.02 23.0904 28.2649 23.8174 26.9709 25.1114C25.6769 26.4054 24.95 28.1604 24.95 29.9904C24.95 31.8204 25.6769 33.5754 26.9709 34.8694C28.2649 36.1634 30.02 36.8904 31.85 36.8904V36.8904ZM35.0472 28.8752C35.2044 28.7125 35.2913 28.4946 35.2893 28.2685C35.2874 28.0424 35.1966 27.826 35.0367 27.6661C34.8768 27.5062 34.6605 27.4155 34.4343 27.4135C34.2082 27.4116 33.9903 27.4985 33.8277 27.6556L30.9875 30.4958L29.8722 29.3806C29.7096 29.2235 29.4917 29.1366 29.2656 29.1385C29.0394 29.1405 28.8231 29.2312 28.6632 29.3911C28.5033 29.551 28.4125 29.7674 28.4106 29.9935C28.4086 30.2196 28.4956 30.4375 28.6527 30.6002L30.3777 32.3252C30.5394 32.4869 30.7587 32.5777 30.9875 32.5777C31.2162 32.5777 31.4355 32.4869 31.5972 32.3252L35.0472 28.8752V28.8752Z" fill="#10C97A" />
 								</svg>
-								<div class="flex flex-col text-sm">
-									speculare-server
-									<span class="text-slate-400">little description of the issue</span>
+								<div class="flex flex-col text-[13px]">
+									<span class="text-white text-sm">speculare-server</span>
+									little description of the issue
 								</div>
 							</td>
-							<td class="text-sm text-slate-400">
+							<td class="text-[13px]">
 								22 May at 08:09pm CEST
 							</td>
-							<td class="text-sm text-slate-400">
+							<td class="text-[13px]">
 								5 minutes
 							</td>
 						</tr>
@@ -71,15 +72,15 @@
 									<circle cx="31.75" cy="29.9904" r="8.625" fill="#3B4254" />
 									<path fill-rule="evenodd" clip-rule="evenodd" d="M31.85 36.8904C33.6799 36.8904 35.435 36.1634 36.729 34.8694C38.023 33.5754 38.75 31.8204 38.75 29.9904C38.75 28.1604 38.023 26.4054 36.729 25.1114C35.435 23.8174 33.6799 23.0904 31.85 23.0904C30.02 23.0904 28.2649 23.8174 26.9709 25.1114C25.6769 26.4054 24.95 28.1604 24.95 29.9904C24.95 31.8204 25.6769 33.5754 26.9709 34.8694C28.2649 36.1634 30.02 36.8904 31.85 36.8904V36.8904ZM35.0472 28.8752C35.2044 28.7125 35.2913 28.4946 35.2893 28.2685C35.2874 28.0424 35.1966 27.826 35.0367 27.6661C34.8768 27.5062 34.6605 27.4155 34.4343 27.4135C34.2082 27.4116 33.9903 27.4985 33.8277 27.6556L30.9875 30.4958L29.8722 29.3806C29.7096 29.2235 29.4917 29.1366 29.2656 29.1385C29.0394 29.1405 28.8231 29.2312 28.6632 29.3911C28.5033 29.551 28.4125 29.7674 28.4106 29.9935C28.4086 30.2196 28.4956 30.4375 28.6527 30.6002L30.3777 32.3252C30.5394 32.4869 30.7587 32.5777 30.9875 32.5777C31.2162 32.5777 31.4355 32.4869 31.5972 32.3252L35.0472 28.8752V28.8752Z" fill="#10C97A" />
 								</svg>
-								<div class="flex flex-col text-sm">
-									wireguard-ng
-									<span class="text-slate-400">little description of the issue</span>
+								<div class="flex flex-col text-[13px]">
+									<span class="text-white text-sm">wireguard-ng</span>
+									little description of the issue
 								</div>
 							</td>
-							<td class="text-sm text-slate-400">
+							<td class="text-[13px]">
 								22 May at 08:09pm CEST
 							</td>
-							<td class="text-sm text-slate-400">
+							<td class="text-[13px]">
 								5 minutes
 							</td>
 						</tr>
@@ -97,15 +98,15 @@
 									<circle cx="31.75" cy="29.9904" r="8.625" fill="#3B4254" />
 									<path fill-rule="evenodd" clip-rule="evenodd" d="M31.85 36.8904C33.6799 36.8904 35.435 36.1634 36.729 34.8694C38.023 33.5754 38.75 31.8204 38.75 29.9904C38.75 28.1604 38.023 26.4054 36.729 25.1114C35.435 23.8174 33.6799 23.0904 31.85 23.0904C30.02 23.0904 28.2649 23.8174 26.9709 25.1114C25.6769 26.4054 24.95 28.1604 24.95 29.9904C24.95 31.8204 25.6769 33.5754 26.9709 34.8694C28.2649 36.1634 30.02 36.8904 31.85 36.8904V36.8904ZM35.0472 28.8752C35.2044 28.7125 35.2913 28.4946 35.2893 28.2685C35.2874 28.0424 35.1966 27.826 35.0367 27.6661C34.8768 27.5062 34.6605 27.4155 34.4343 27.4135C34.2082 27.4116 33.9903 27.4985 33.8277 27.6556L30.9875 30.4958L29.8722 29.3806C29.7096 29.2235 29.4917 29.1366 29.2656 29.1385C29.0394 29.1405 28.8231 29.2312 28.6632 29.3911C28.5033 29.551 28.4125 29.7674 28.4106 29.9935C28.4086 30.2196 28.4956 30.4375 28.6527 30.6002L30.3777 32.3252C30.5394 32.4869 30.7587 32.5777 30.9875 32.5777C31.2162 32.5777 31.4355 32.4869 31.5972 32.3252L35.0472 28.8752V28.8752Z" fill="#10C97A" />
 								</svg>
-								<div class="flex flex-col text-sm">
-									rtin
-									<span class="text-slate-400">little description of the issue</span>
+								<div class="flex flex-col text-[13px]">
+									<span class="text-white text-sm">rtin</span>
+									little description of the issue
 								</div>
 							</td>
-							<td class="text-sm text-slate-400">
+							<td class="text-[13px]">
 								22 May at 08:09pm CEST
 							</td>
-							<td class="text-sm text-slate-400">
+							<td class="text-[13px]">
 								5 minutes
 							</td>
 						</tr>

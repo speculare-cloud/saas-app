@@ -196,23 +196,6 @@ body,
     }
 }
 
-.form-control-custom {
-    width: 100%;
-    border-radius: 8px;
-    border-width: 1px;
-    --tw-border-opacity: 1;
-    border-color: rgb(78 87 110/var(--tw-border-opacity));
-    --tw-bg-opacity: 1;
-    background-color: hsl(var(--n) / var(--tw-bg-opacity));
-    padding-left: 0.75rem;
-    padding-right: 0.75rem;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    font-size: 14px;
-    line-height: 143%;
-    --tw-text-opacity: 1;
-}
-
 .router-link-active {
     --tw-bg-opacity: 1;
     background-color: hsl(var(--p) / var(--tw-bg-opacity));

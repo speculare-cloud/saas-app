@@ -15,9 +15,9 @@
 					</svg>
 
 					<input
-						v-model="searchText" @input="filterList" type="text"
-						class="form-control-custom font-medium !pl-[34px] h-10 text-neutral-500"
-						placeholder="Search monitors" autocomplete="off">
+						type="text" placeholder="Search monitors"
+						class="input input-bordered w-full bg-base-300 !pl-[34px] h-10"
+						v-model="searchText" @input="filterList" style="font-size: 0.875rem;">
 				</div>
 
 				<router-link key="add_server" :to="{ name: 'NewServer' }" class="btn btn-info !h-10 !min-h-[2.5rem] normal-case">
@@ -43,7 +43,7 @@
 				<div v-for="item in store.unconfiguredKeys" :key="item.key">
 					<router-link
 						:to="{ name: 'NewServer', params: { secretKey: item.key } }" id="servers-item"
-						class="flex justify-between cursor-pointer pl-4 pr-8 py-3 hover:bg-[#414559] gap-4 rounded-lg text-[#c5c8cb] hover:text-[#d3d3d3] transition duration-300">
+						class="flex justify-between cursor-pointer pl-4 pr-8 py-3 hover:bg-neutral-focus gap-4 rounded-lg text-[#c5c8cb] hover:text-[#d3d3d3] transition duration-300">
 						<div class="flex items-center gap-4">
 							<div class="status-indicator status-indicator--sm status-indicator--warning">
 								<div class="circle circle--animated circle-main" />
@@ -99,7 +99,7 @@
 				<div v-for="item in (!searchText ? store.configuredKeys : filteredResult)" :key="item.uuid">
 					<router-link
 						:to="{ name: 'DetailsServer', params: { berta: item.berta, uuid: item.uuid, hostname: item.hostname } }"
-						class="flex justify-between cursor-pointer pl-4 pr-8 py-3 hover:bg-[#414559] gap-4 rounded-lg text-[#c5c8cb] hover:text-[#d3d3d3] transition duration-300">
+						class="flex justify-between cursor-pointer pl-4 pr-8 py-3 hover:bg-neutral-focus gap-4 rounded-lg text-[#c5c8cb] hover:text-[#d3d3d3] transition duration-300">
 						<div class="flex items-center gap-4">
 							<div class="status-indicator status-indicator--sm" :class="true ? 'status-indicator--success' : 'status-indicator--danger'">
 								<div class="circle circle--animated circle-main" />
@@ -111,7 +111,7 @@
 									{{ item.hostname }}
 								</p>
 								<p class="text-[13px]">
-									<span class="text-green-400 mr-1">Up</span> - <span class="ml-1">{{ fmtDuration(item.uptime) }}</span>
+									<span class="text-success mr-1">Up</span> - <span class="ml-1">{{ fmtDuration(item.uptime) }}</span>
 								</p>
 							</div>
 						</div>
