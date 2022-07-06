@@ -191,7 +191,6 @@ export default {
 			}
 			const currDate = moment.utc(elem[0].created_at).unix();
 			const { recv, sent } = vm.getReadWriteFrom(currDate, total_recv, total_sent)
-			console.log("At index " + vm.chartLabels.length + ": recv[" + recv + "] and total_recv[" + total_recv + "]");
 
 			// Add the new value to the Array
 			vm.pushValue(currDate, recv, sent, total_recv, total_sent)
