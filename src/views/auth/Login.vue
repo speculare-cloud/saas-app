@@ -60,7 +60,7 @@
 			</div>
 		</div>
 
-		<div class="bg-primary relative hidden sm:block w-full md:w-1/2 xl:w-2/3 h-screen">
+		<div class="relative hidden sm:block w-full md:w-1/2 xl:w-2/3 h-screen">
 			<img src="https://source.unsplash.com/random/?city,night" class="w-full h-full object-cover" loading="lazy">
 			<div class="absolute bottom-0 text-sm right-0 p-2 m-2 rounded-md bg-black bg-opacity-50">
 				credit: <a href="https://unsplash.com">unsplash.com</a>
