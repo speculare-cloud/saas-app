@@ -289,3 +289,11 @@ td) {
     --tw-text-opacity: 0.2;
 	pointer-events: none;
 }
+
+.code-unstyled {
+	color: inherit;
+    background-color: inherit;
+    padding: inherit;
+    font-size: inherit;
+    border-radius: inherit;
+}

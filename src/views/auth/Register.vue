@@ -1,5 +1,5 @@
 <template>
-	<section class="flex flex-col sm:flex-row h-screen items-center text-white">
+	<section class="flex flex-col sm:flex-row h-screen items-center">
 		<header class="hidden lg:block absolute z-10 top-0 left-0 right-0 px-2 mx-auto">
 			<img class="w-48 mt-12 ml-8" src="@/assets/logo.svg">
 		</header>
@@ -64,8 +64,11 @@
 			</div>
 		</div>
 
-		<div class="bg-primary hidden sm:block w-full md:w-1/2 xl:w-2/3 h-screen">
-			<img src="https://source.unsplash.com/random" class="w-full h-full object-cover" loading="lazy">
+		<div class="bg-primary relative hidden sm:block w-full md:w-1/2 xl:w-2/3 h-screen">
+			<img src="https://source.unsplash.com/random/?city,night" class="w-full h-full object-cover" loading="lazy">
+			<div class="absolute bottom-0 text-sm right-0 p-2 m-2 rounded-md bg-black bg-opacity-50">
+				credit: <a href="https://unsplash.com">unsplash.com</a>
+			</div>
 		</div>
 	</section>
 </template>
