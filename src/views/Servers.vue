@@ -21,7 +21,7 @@
 				</div>
 
 				<router-link key="add_server" :to="{ name: 'NewServer' }" class="btn btn-info !h-10 !min-h-[2.5rem] normal-case">
-					Add a server
+					add a server
 				</router-link>
 			</div>
 		</div>
