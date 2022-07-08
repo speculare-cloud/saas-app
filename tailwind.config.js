@@ -9,7 +9,7 @@ module.exports = {
 				"base-300": "#121212",
 				"neutral-focus": "#383838",
 				"info": "#3b82f6",
-				"warning": "#e1e16f",
+				"warning": "#e7d756",
 				"error": "#d96f6f",
 				"success": "#71c76b",
 				"--rounded-box": "0.5rem",
