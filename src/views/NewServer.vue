@@ -44,7 +44,7 @@
 				<!-- Workaround to make the scrollbar "rounded" -->
 				<div class="overflow-hidden" style="border-radius: var(--rounded-box, 1rem);">
 					<div class="flex-2 mockup-code">
-						<pre data-prefix="1"><code>curl https://speculare.cloud/some_random_script.sh | bash</code></pre>
+						<pre data-prefix="1"><code class="code-unstyled">curl https://speculare.cloud/some_random_script.sh | bash</code></pre>
 						<pre v-if="host_uuid === null" data-prefix="2" class="bg-warning text-warning-content"><code class="code-unstyled">Waiting for data...</code></pre>
 						<pre v-if="host_uuid !== null" data-prefix="2" class="bg-success text-success-content"><code class="code-unstyled">Success!</code></pre>
 					</div>
