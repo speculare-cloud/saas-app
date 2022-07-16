@@ -37,9 +37,9 @@ app.config.globalProperties.$cdcOverride = cdcOverride;
 app.config.globalProperties.$http = httpAxios;
 
 app.config.globalProperties.$cdcBase = function getBaseCDCUrl (berta) {
-	return cdcOverride ? cdcOverride : "wss://rt." + berta + ".speculare.cloud";
+	return cdcOverride ? cdcOverride : "wss://rt." + berta + ".speculare.cloud:9641";
 }
-app.config.globalProperties.$serverBase = function getBaseCDCUrl (berta) {
+app.config.globalProperties.$serverBase = function getBaseServer (berta) {
 	return bertaOverride ? bertaOverride : "https://" + berta + ".speculare.cloud";
 };
 

@@ -15,8 +15,7 @@ export const useServersStore = defineStore('servers', {
 	},
 	actions: {
 		async fetchSpecificHost(vm, keyObj) {
-			const bertaUrl = vm.$bertaOverride ? vm.$bertaOverride : "https://" + keyObj.berta + "server.speculare.cloud";
-			return await vm.$http.get(bertaUrl + "/api/host?uuid=" + keyObj.host_uuid)
+			return await vm.$http.get(vm.$serverBase(keyObj.berta) + "/api/host?uuid=" + keyObj.host_uuid)
 				.then((resp) => {
 					const hostObj = {
 						system: resp.data.system,

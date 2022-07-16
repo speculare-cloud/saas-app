@@ -174,8 +174,7 @@ export default {
 
 		// Don't setup anything before everything is rendered
 		nextTick(async () => {
-			const cdcUrl = this.$cdcOverride ? this.$cdcOverride : "wss://" + this.$route.params.berta + ".cdc.speculare.cloud";
-			initWS(cdcUrl, "hosts", "update", ":uuid.eq." + this.$route.params.uuid, false, vm);
+			initWS(vm.$cdcBase(this.$route.params.berta), "hosts", "update", ":uuid.eq." + this.$route.params.uuid, false, vm);
 			await this.fetchInit();
 		})
 	},
@@ -197,8 +196,7 @@ export default {
 			}
 		},
 		fetchInit: async function() {
-			const bertaUrl = this.$bertaOverride ? this.$bertaOverride : "https://" + this.$route.params.berta + "server.speculare.cloud";
-			await this.$http.get(bertaUrl + "/api/host?uuid=" + this.$route.params.uuid)
+			await this.$http.get(this.$serverBase(this.$route.params.berta) + "/api/host?uuid=" + this.$route.params.uuid)
 				.then((resp) => {
 					this.hostInfo = {
 						system: resp.data.system,
@@ -212,7 +210,7 @@ export default {
 					// TODO - Handle errors
 					console.log(err);
 				});
-			await this.$http.get(bertaUrl + "/api/incidents_count?uuid=" + this.$route.params.uuid)
+			await this.$http.get(this.$serverBase(this.$route.params.berta) + "/api/incidents_count?uuid=" + this.$route.params.uuid)
 				.then((resp) => {
 					this.incidentsCount = resp.data ?? 0;
 				}).catch((err) => {
