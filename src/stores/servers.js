@@ -95,8 +95,7 @@ export const useServersStore = defineStore('servers', {
 		},
 		async fetchHostsAllBertas(vm) {
 			for (const berta of this.bertas.keys()) {
-				const bertaUrl = vm.$bertaOverride ? vm.$bertaOverride : "https://" + berta + ".server.speculare.cloud";
-				await vm.$http.get(bertaUrl + "/api/hosts")
+				await vm.$http.get(vm.$serverBase(berta) + "/api/hosts")
 					.then((resp) => {
 						// Foreach server we got as response
 						resp.data.forEach(elem => {
