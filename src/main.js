@@ -37,10 +37,10 @@ app.config.globalProperties.$cdcOverride = cdcOverride;
 app.config.globalProperties.$http = httpAxios;
 
 app.config.globalProperties.$cdcBase = function getBaseCDCUrl (berta) {
-	return cdcOverride ? cdcOverride : "wss://" + berta + ".cdc.speculare.cloud";
+	return cdcOverride ? cdcOverride : "wss://rt." + berta + ".speculare.cloud";
 }
 app.config.globalProperties.$serverBase = function getBaseCDCUrl (berta) {
-	return bertaOverride ? bertaOverride : "https://" + berta + "server.speculare.cloud";
+	return bertaOverride ? bertaOverride : "https://" + berta + ".speculare.cloud";
 };
 
 // Logout the user if he's not logged at loading
