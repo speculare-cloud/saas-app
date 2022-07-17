@@ -47,18 +47,6 @@ function sanitizeGraphData (vm) {
 	}
 }
 
-function getRangeParams (graphRange) {
-	if (graphRange.start != null) {
-		return '&min_date=' + graphRange.start + '&max_date=' + graphRange.end;
-	} else {
-		// Substract vm.scaleTime seconds as this is pretty much the minimum time for the graph
-		const min = moment().utc().subtract(graphRange.scale + 5, 'seconds').format('YYYY-MM-DDTHH:mm:ss.SSS')
-		// Add 5 seconds to minimize the risks of missing data
-		const max = moment().utc().add(5, 'seconds').format('YYYY-MM-DDTHH:mm:ss.SSS')
-		return '&min_date=' + min + '&max_date=' + max
-	}
-}
-
 function basicRespHandler (vm, data) {
 	const dataLength = data.length
 	// - data in reverse order (push_back) as uPlot use last as most recent
@@ -81,6 +69,18 @@ function groupedRespHandler (vm, data) {
 		} else {
 			vm.addNewData([data[i]], i == 0)
 		}
+	}
+}
+
+export function getRangeParams (graphRange) {
+	if (graphRange.start != null) {
+		return '&min_date=' + graphRange.start + '&max_date=' + graphRange.end;
+	} else {
+		// Substract vm.scaleTime seconds as this is pretty much the minimum time for the graph
+		const min = moment().utc().subtract(graphRange.scale + 5, 'seconds').format('YYYY-MM-DDTHH:mm:ss.SSS')
+		// Add 5 seconds to minimize the risks of missing data
+		const max = moment().utc().add(5, 'seconds').format('YYYY-MM-DDTHH:mm:ss.SSS')
+		return '&min_date=' + min + '&max_date=' + max
 	}
 }
 

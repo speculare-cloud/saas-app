@@ -10,7 +10,7 @@
 <script>
 import { nextTick } from 'vue'
 import { graphScrollObs, rebuildGraph } from '@/utils/graphs'
-import { updateGraph } from '@/utils/graphsData'
+import { updateGraph, getRangeParams } from '@/utils/graphsData'
 import { series } from '@/utils/graphsCharts'
 import { closeWS } from '@/utils/websockets'
 import LineChart from '@/components/Graphs/Base/LineChart'
@@ -78,7 +78,7 @@ export default {
 		nextTick(() => {
 			// Await the first call to iostats_count cause it's needed for the next
 			vm.$http
-				.get(vm.$serverBase(vm.$route.params.berta) + "/api/ioblocks_count?uuid=" + vm.uuid)
+				.get(vm.$serverBase(vm.$route.params.berta) + "/api/ioblocks_count?uuid=" + vm.uuid + getRangeParams(vm.graphRange))
 				.then(resp => (vm.groupedSkip = resp.data))
 				.catch(err => {
 					console.log('[ionets] Failed to fetch number of disks', err)
