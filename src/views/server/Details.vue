@@ -50,10 +50,17 @@
 				</div>
 				<div class="flex flex-col align-middle justify-between mb-5 text-left flex-1 p-5 bg-base-300 shadow-md rounded-lg">
 					<h6 class="text-[#c5c8cb]">
-						Empty card
+						Alerts
 					</h6>
-					<h4 class="text-white text-lg">
-						<span v-if="hostInfo">blank space</span>
+					<h4 class="text-white">
+						<span v-if="hostInfo" class="flex gap-4 justify-between overflow-hidden whitespace-nowrap">
+							<div class="badge badge-success p-2 text-[15px] w-full">
+								{{ alertsCount }} enabled
+							</div>
+							<div class="badge badge-warning p-2 text-[15px] w-full">
+								?? paused
+							</div>
+						</span>
 						<div v-else class="animate-pulse bg-slate-600 w-full rounded h-[22px] mt-1" />
 					</h4>
 				</div>
@@ -166,6 +173,7 @@ export default {
 			hostInfo: null,
 			connection: null,
 			incidentsCount: 0,
+			alertsCount: 0,
 		}
 	},
 
@@ -213,6 +221,13 @@ export default {
 			await this.$http.get(this.$serverBase(this.$route.params.berta) + "/api/incidents_count?uuid=" + this.$route.params.uuid)
 				.then((resp) => {
 					this.incidentsCount = resp.data ?? 0;
+				}).catch((err) => {
+					// TODO - Handle errors
+					console.log(err);
+				});
+			await this.$http.get(this.$serverBase(this.$route.params.berta) + "/api/alerts_count?uuid=" + this.$route.params.uuid)
+				.then((resp) => {
+					this.alertsCount = resp.data ?? 0;
 				}).catch((err) => {
 					// TODO - Handle errors
 					console.log(err);
