@@ -70,13 +70,21 @@
 </template>
 
 <script>
+import { useMainStore } from '@/stores/main';
+
 export default {
 	name: 'Login',
+
+	setup () {
+		const store = useMainStore();
+		return { store }
+	},
+
 	data () {
 		return {
 			emailAddr: "",
-			emailEmpty: true,
-			emailValid: false,
+			emailEmpty: false,
+			emailValid: true,
 			requestLoading: false,
 		}
 	},
@@ -89,10 +97,10 @@ export default {
 				);
 		},
 		checkEmail: function() {
-			this.emailEmpty = this.emailAddr == "";
 			this.emailValid = this.validateEmail(this.emailAddr);
 		},
 		sendRequest: async function() {
+			this.emailEmpty = this.emailAddr == "";
 			// If the email is not valid, don't send
 			if (this.requestLoading || !this.validateEmail(this.emailAddr)) return;
 			this.requestLoading = true;
@@ -103,8 +111,19 @@ export default {
 				// Redirect to the wait page
 				this.$router.replace({ name: 'Wait' });
 			}).catch((err) => {
-				// TODO - Handle errors
-				console.log("Error", err);
+				if (err.response) {
+					switch (err.response.status) {
+					case 404:
+						this.store.showToast("We didn't recognize this e-mail.\nDo you want to sign up instead?", "error");
+						break;
+					default:
+						this.store.showToast("Please, verify your information and try again...", "error");
+						break;
+					}
+				} else {
+					console.error(err);
+					this.store.showToast("Unknown error, try again later...", "error");
+				}
 			}).finally(() => {
 				this.requestLoading = false;
 			});

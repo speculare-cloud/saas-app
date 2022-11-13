@@ -12,6 +12,10 @@
 					Create Your Speculare Account
 				</h1>
 
+				<h2 class="mb-6 text-base">
+					Registration are currently closed but you can subscribe to the waiting list.
+				</h2>
+
 				<div class="mt-6">
 					<div class="form-control w-full">
 						<label class="label">
@@ -47,10 +51,10 @@
 					</button>
 
 					<div class="flex items-center text-base-content mt-2">
-						<svg class="w-8 h-8 align-top mr-2" style="fill: currentcolor;" viewBox="0 0 24 24">
+						<svg class="w-12 h-12 align-top mr-4" style="fill: currentcolor;" viewBox="0 0 24 24">
 							<path d="M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z" />
 						</svg>
-						<p class="text-xs">
+						<p class="text-sm">
 							To learn more about how we protect your personal data and how to exercise your rights, please visit our <a class="text-info" href="#">Privacy Policy</a>.
 						</p>
 					</div>
@@ -74,13 +78,21 @@
 </template>
 
 <script>
+import { useMainStore } from '@/stores/main';
+
 export default {
 	name: 'Register',
+
+	setup () {
+		const store = useMainStore();
+		return { store }
+	},
+
 	data () {
 		return {
 			emailAddr: "",
-			emailEmpty: true,
-			emailValid: false,
+			emailEmpty: false,
+			emailValid: true,
 			requestLoading: false,
 		}
 	},
@@ -93,10 +105,10 @@ export default {
 				);
 		},
 		checkEmail: function() {
-			this.emailEmpty = this.emailAddr == "";
 			this.emailValid = this.validateEmail(this.emailAddr);
 		},
 		sendRequest: async function() {
+			this.emailEmpty = this.emailAddr == "";
 			// If the email is not valid, don't send
 			if (this.requestLoading || !this.validateEmail(this.emailAddr)) return;
 			this.requestLoading = true;
@@ -106,9 +118,20 @@ export default {
 			}).then(() => {
 				// Redirect to the wait page
 				this.$router.replace({ name: 'Wait' });
-			}).catch((err) => {
-				// TODO - Handle errors
-				console.log("Error", err);
+			}).catch(() => {
+				// TODO - Open registration once the MAIL system is prepared.
+				return this.store.showToast("Successfully added to the waiting list.", "success");
+
+				/*if (err.response) {
+					if (400 <= err.response.status < 500) {
+						this.store.showToast("Please, verify your information and\nmake sure you don't already have an account.", "error");
+					} else {
+						this.store.showToast("Unknown error, please try again later...", "error");
+					}
+				} else {
+					console.error(err);
+					this.store.showToast("Unknown error, try again later...", "error");
+				}*/
 			}).finally(() => {
 				this.requestLoading = false;
 			});

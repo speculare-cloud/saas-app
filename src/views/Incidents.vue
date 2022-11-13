@@ -156,9 +156,7 @@ export default {
 	},
 
 	methods: {
-		refreshList: async function() {
-			
-		}
+		refreshList: async function() {}
 	}
 }
 </script>

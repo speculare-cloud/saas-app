@@ -11,6 +11,9 @@ import moment from 'moment'
 
 require("moment-duration-format")(moment);
 
+import Toast from "vue-toastification";
+import "vue-toastification/dist/index.css";
+
 import '@/assets/app.css'
 import '@/assets/uPlot.css'
 
@@ -79,5 +82,7 @@ router.beforeEach(async(toRoute, _fromRoute, next) => {
 });
 
 app.use(router);
+
+app.use(Toast);
 
 app.mount('#app');
