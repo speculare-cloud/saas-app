@@ -7,22 +7,22 @@ export const useMainStore = defineStore('main', {
 	state: () => {
 		return {
 			isLogged: false,
-			userId: null,
+			userId: null
 		}
 	},
 	actions: {
-		logged(userId) {
-			this.isLogged = true;
-			this.userId = userId;
+		logged (userId) {
+			this.isLogged = true
+			this.userId = userId
 		},
-		logout() {
-			this.isLogged = false;
-			this.userId = null;
+		logout () {
+			this.isLogged = false
+			this.userId = null
 		},
-		showToast(message, type=TYPE.SUCCESS, position=POSITION.TOP_LEFT) {
+		showToast (message, type = TYPE.SUCCESS, position = POSITION.TOP_LEFT) {
 			toast(message, {
-				type: type,
-				position: position,
+				type,
+				position,
 				timeout: 5000,
 				closeOnClick: true,
 				pauseOnFocusLoss: true,
@@ -31,10 +31,10 @@ export const useMainStore = defineStore('main', {
 				draggablePercent: 0.6,
 				showCloseButtonOnHover: true,
 				hideProgressBar: true,
-				closeButton: "button",
-				icon: true,
-			});
+				closeButton: 'button',
+				icon: true
+			})
 		}
 	},
-	persist: true,
+	persist: true
 })

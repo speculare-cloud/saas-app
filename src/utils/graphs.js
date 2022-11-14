@@ -1,7 +1,7 @@
 import { openSpecificWS } from '@/utils/graphsWebsockets'
 import { fetchInit } from '@/utils/graphsData'
 
-export function graphScrollObs (vm, grouped=false) {
+export function graphScrollObs (vm, grouped = false) {
 	// Observe if the $el is visible or not
 	return new IntersectionObserver((entries) => {
 		if (entries[0].intersectionRatio > 0) {
@@ -17,7 +17,7 @@ export function graphScrollObs (vm, grouped=false) {
 	})
 }
 
-export function rebuildGraph (vm, newVal, oldVal, grouped=false) {
+export function rebuildGraph (vm, newVal, oldVal, grouped = false) {
 	console.log('[' + vm.table + '] graphRange changed')
 	if (newVal.start != null) {
 		// Clear the data and close the websocket

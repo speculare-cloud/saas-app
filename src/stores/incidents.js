@@ -5,5 +5,5 @@ export const useIncidentsStore = defineStore('incidents', {
 		return {
 			incidents: []
 		}
-	},
+	}
 })

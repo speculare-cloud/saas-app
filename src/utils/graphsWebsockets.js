@@ -5,7 +5,7 @@ import moment from 'moment'
 // Open the WS if needed (if the scale is not 300, it means we're in the past)
 export function openSpecificWS (vm, grouped) {
 	if (vm.graphRange.scale !== 300) {
-		return fetchInit(vm, grouped);
+		return fetchInit(vm, grouped)
 	}
 	initWS(vm.$cdcBase(vm.berta), vm.table, 'insert', ':host_uuid.eq.' + vm.uuid, fetchInit, vm, null, grouped)
 }
@@ -22,7 +22,7 @@ export function drainWsBuffer (vm) {
 			if (vm.chartLabels[Math.max(0, vm.chartLabels.length - 1)] < date) {
 				console.log('[' + vm.table + '] >>>> Adding value to the end of the buffer')
 				// Add the new value to the Array
-				vm.addNewData(currItem, i == wsBuffSize - 1)
+				vm.addNewData(currItem, i === wsBuffSize - 1)
 			}
 		}
 	}

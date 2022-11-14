@@ -1,6 +1,6 @@
 import uPlot from 'uplot'
 
-export function reactDataChange (vm, oldData, newData, stack=false) {
+export function reactDataChange (vm, oldData, newData, stack = false) {
 	if (oldData == null || !vm.chart) {
 		vm.createChart(newData)
 	} else if (!vm.hovered && vm.chart) {
@@ -15,7 +15,7 @@ export function reactDataChange (vm, oldData, newData, stack=false) {
 export function customLegend (vm) {
 	return {
 		hooks: {
-			init: function (u, ) {
+			init: function (u) {
 				const legendEl = u.root.querySelector('.u-legend')
 				// Get the u-series corresponding to the Timestamp
 				const time = legendEl.getElementsByClassName('u-series')[0]

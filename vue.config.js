@@ -3,7 +3,7 @@ const MomentLocalesPlugin = require('moment-locales-webpack-plugin')
 module.exports = {
 	lintOnSave: false,
 	devServer: {
-		host: 'localhost',
+		host: 'localhost'
 	},
 	configureWebpack: {
 		plugins: [

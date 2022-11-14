@@ -2,19 +2,19 @@ import { drainWsBuffer } from '@/utils/graphsWebsockets'
 import moment from 'moment'
 
 function sanitizeGraphData (vm) {
-	const dataSize = vm.chartLabels.length;
-	const threshold = dataSize / 60 + 15;
+	const dataSize = vm.chartLabels.length
+	const threshold = dataSize / 60 + 15
 	// Be sure the date are following in order (by 1s for now)
 	const now = moment().utc().unix()
 	const min = moment.utc().subtract(vm.graphRange.scale, 'seconds').unix()
 	// Add the first item as the oldest to avoid big blank.
-	if (vm.chartLabels.length == 0 || vm.chartLabels[0] >= min + threshold) {
-		console.log(vm.table + ": first triggered");
+	if (vm.chartLabels.length === 0 || vm.chartLabels[0] >= min + threshold) {
+		console.log(vm.table + ': first triggered')
 		vm.unshiftEmpty(min + threshold - 1, null)
 	}
 	// Set the newest as null in case it does not exists.
 	// TODO - Review
-	if (vm.chartLabels.length == 0 || vm.chartLabels[vm.chartLabels.length - 1] <= now - threshold) {
+	if (vm.chartLabels.length === 0 || vm.chartLabels[vm.chartLabels.length - 1] <= now - threshold) {
 		vm.pushValue(now)
 		vm.nullData(vm.chartLabels.length)
 	}
@@ -51,7 +51,7 @@ function basicRespHandler (vm, data) {
 	const dataLength = data.length
 	// - data in reverse order (push_back) as uPlot use last as most recent
 	for (let i = dataLength - 1; i >= 0; i--) {
-		vm.addNewData(data[i], i == 0)
+		vm.addNewData(data[i], i === 0)
 	}
 }
 
@@ -65,16 +65,16 @@ function groupedRespHandler (vm, data) {
 			for (let y = 0; y < vm.groupedSkip; y++) {
 				currentData.push(data[i - y])
 			}
-			vm.addNewData(currentData, i == 0 || i == 1)
+			vm.addNewData(currentData, i === 0 || i === 1)
 		} else {
-			vm.addNewData([data[i]], i == 0)
+			vm.addNewData([data[i]], i === 0)
 		}
 	}
 }
 
 export function getRangeParams (graphRange) {
 	if (graphRange.start != null) {
-		return '&min_date=' + graphRange.start + '&max_date=' + graphRange.end;
+		return '&min_date=' + graphRange.start + '&max_date=' + graphRange.end
 	} else {
 		// Substract vm.scaleTime seconds as this is pretty much the minimum time for the graph
 		const min = moment().utc().subtract(graphRange.scale + 5, 'seconds').format('YYYY-MM-DDTHH:mm:ss.SSS')
@@ -85,10 +85,10 @@ export function getRangeParams (graphRange) {
 }
 
 export function fetchInit (vm, grouped) {
-	console.log("fetchInit: " + vm.table + " is grouped: " + grouped)
+	console.log('fetchInit: ' + vm.table + ' is grouped: ' + grouped)
 	// Fetching old data with the API
 	vm.$http
-		.get(vm.$serverBase(vm.$route.params.berta) + "/api/" + vm.table + "?uuid=" + vm.uuid + getRangeParams(vm.graphRange))
+		.get(vm.$serverBase(vm.$route.params.berta) + '/api/' + vm.table + '?uuid=' + vm.uuid + getRangeParams(vm.graphRange))
 		.then(resp => {
 			if (!grouped) basicRespHandler(vm, resp.data)
 			else groupedRespHandler(vm, resp.data)

@@ -1,20 +1,20 @@
-import moment from 'moment';
+import moment from 'moment'
 
-export function trunkKey(text) {
+export function trunkKey (text) {
 	if (text === null) return undefined
 
-	return text.slice(0, 10);
+	return text.slice(0, 10)
 }
 
-export function fmtDuration(durationinsec) {
-	return moment.duration(durationinsec, 'seconds').format("Y[y] M[m] D[d] HH[h] mm[m] ss[s]");
+export function fmtDuration (durationinsec) {
+	return moment.duration(durationinsec, 'seconds').format('Y[y] M[m] D[d] HH[h] mm[m] ss[s]')
 }
 
-export function fmtGranularity(granularity) {
+export function fmtGranularity (granularity) {
 	if (granularity > 1000) {
-		return granularity / 1000 + "s";
+		return granularity / 1000 + 's'
 	} else {
-		return granularity + "ms";
+		return granularity + 'ms'
 	}
 }
 
@@ -22,23 +22,23 @@ export const FieldState = {
 	None: 0,
 	Success: 1,
 	Error: 2,
-	Empty: 3,
+	Empty: 3
 }
 
-export function getInputStyle(field) {
+export function getInputStyle (field) {
 	switch (field) {
 	case FieldState.Success:
-		return "input-success"
+		return 'input-success'
 	case FieldState.Error:
-		return "input-error"
+		return 'input-error'
 	case FieldState.Empty:
-		return "input-error"
+		return 'input-error'
 	default:
-		return ""
+		return ''
 	}
 }
 
-export function validateEmail(email) {
+export function validateEmail (email) {
 	return String(email)
 		.toLowerCase()
 		.match(
