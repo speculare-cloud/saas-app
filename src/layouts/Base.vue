@@ -21,7 +21,7 @@
 					<div class="dropdown dropdown-end">
 						<label tabindex="0" class="btn btn-ghost btn-circle avatar">
 							<div class="w-10 rounded-full">
-								<img src="https://ui-avatars.com/api/?name=John+Doe">
+								<img :src="'https://source.boringavatars.com/beam/40/' + store.userId">
 							</div>
 						</label>
 						<ul tabindex="0" class="menu menu-compact dropdown-content mt-3 p-2 bg-base-300 shadow rounded-lg w-52 gap-1 border border-neutral">

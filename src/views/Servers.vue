@@ -3,7 +3,7 @@
 		<div class="md:flex justify-between">
 			<div class="prose-sm flex justify-between items-center">
 				<h1>
-					Greetings, Martin
+					Greetings!
 				</h1>
 			</div>
 			<div class="mt-4 md:mt-0 flex flex-col items-start sm:flex-row sm:space-x-4">
