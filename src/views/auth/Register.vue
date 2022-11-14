@@ -24,11 +24,11 @@
 						<input
 							ref="emailField" autocomplete="on" name="email" type="email"
 							placeholder="john.doe@speculare.cloud"
-							class="input input-bordered w-full bg-base-300" :class="(emailEmpty || !emailValid) ? 'input-error' : 'input-success'"
+							class="input input-bordered w-full bg-base-300" :class="getInputStyle(emailState)"
 							v-model="emailAddr" @input="checkEmail" style="font-size: 0.875rem;">
-						<div class="input-error mt-2 text-error" :class="(emailEmpty || !emailValid) ? 'block' : 'hidden'">
-							<span v-if="emailEmpty">Email address cannot be empty.</span>
-							<span v-if="!emailEmpty && !emailValid">Email is not valid.</span>
+						<div class="input-error mt-2 text-error" :class="emailState >= 2 ? 'block' : 'hidden'">
+							<span v-if="emailState == 3">Email address cannot be empty.</span>
+							<span v-if="emailState == 2">Email is not valid.</span>
 						</div>
 					</div>
 
@@ -79,39 +79,32 @@
 
 <script>
 import { useMainStore } from '@/stores/main';
+import { FieldState, getInputStyle, validateEmail } from '@/utils/help';
 
 export default {
 	name: 'Register',
 
 	setup () {
 		const store = useMainStore();
-		return { store }
+		return { store, getInputStyle }
 	},
 
 	data () {
 		return {
 			emailAddr: "",
-			emailEmpty: false,
-			emailValid: true,
+			emailState: FieldState.None,
 			requestLoading: false,
 		}
 	},
 	methods: {
-		validateEmail: function(email) {
-			return String(email)
-				.toLowerCase()
-				.match(
-					/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-				);
-		},
-		checkEmail: function() {
-			this.emailValid = this.validateEmail(this.emailAddr);
-		},
 		sendRequest: async function() {
-			this.emailEmpty = this.emailAddr == "";
-			// If the email is not valid, don't send
-			if (this.requestLoading || !this.validateEmail(this.emailAddr)) return;
+			if (this.requestLoading) return;
+			if (this.emailAddr == "") return this.emailState = FieldState.Empty;
+			if (!validateEmail(this.emailAddr)) return this.emailState = FieldState.Error;
+
+			this.emailState = FieldState.Success;
 			this.requestLoading = true;
+
 			console.log("Sending request for email: ", this.emailAddr);
 			await this.$http.post(this.$authBase + "/api/rsso", {
 				email: this.emailAddr

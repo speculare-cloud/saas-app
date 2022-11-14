@@ -15,7 +15,7 @@ export default {
 
 	beforeCreate() {
 		if (this.$route.query.jwt === undefined) {
-			// TODO - Pass error as state
+			this.store.showToast("Incorrect request, try again...", "error");
 			this.$router.replace({ name: 'Login' });
 			return;
 		}
@@ -27,9 +27,9 @@ export default {
 				this.store.logged(resp.data);
 				this.$router.replace({ name: 'Servers' });
 			}).catch((err) => {
-				console.log("Error", err);
+				console.error("Error", err);
 				// Redirect to the Login page
-				// TODO - Pass error as state
+				this.store.showToast("Failed to authenticate, try again...", "error");
 				this.$router.replace({ name: 'Login' });
 			});
 	}
