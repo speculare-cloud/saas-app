@@ -8,8 +8,8 @@
 					<path d="M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z" />
 				</svg>
 				<div class="flex flex-col items-start">
-					<span class="text-base-content/50 hidden text-xs font-normal md:block">Prev</span>
-					<span>Servers</span>
+					<span class="text-base-content hidden text-xs font-normal md:block">Prev</span>
+					<span class="text-white">Servers</span>
 				</div>
 			</router-link>
 			<div class="prose-sm flex justify-between items-center mt-4 mb-6 md:mb-12">

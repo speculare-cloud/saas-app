@@ -125,7 +125,7 @@ import { useServersStore } from '@/stores/servers';
 import { nextTick } from 'vue';
 
 export default {
-	name: 'Base',
+	name: 'Based',
 
 	setup () {
 		const store = useMainStore();

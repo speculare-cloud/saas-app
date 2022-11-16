@@ -5,7 +5,8 @@
     "scripts": {
         "serve": "vue-cli-service serve",
         "build": "vue-cli-service build",
-        "lint": "npx standard --fix || vue-cli-service lint"
+        "lint": "npx standard --fix || vue-cli-service lint",
+		"lint_no_fix": "vue-cli-service lint --no-fix"
     },
     "dependencies": {
         "axios": "^1.1.3",

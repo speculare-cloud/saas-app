@@ -8,8 +8,8 @@
 					<path d="M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z" />
 				</svg>
 				<div class="flex flex-col items-start">
-					<span class="text-base-content/50 hidden text-xs font-normal md:block">Prev</span>
-					<span>Servers</span>
+					<span class="text-base-content hidden text-xs font-normal md:block">Prev</span>
+					<span class="text-white">Servers</span>
 				</div>
 			</router-link>
 			<div class="prose-sm flex items-center gap-4 mt-4">
@@ -36,7 +36,7 @@
 					</h6>
 					<h4 class="text-white text-lg">
 						<span v-if="hostInfo">{{ fmtDuration(hostInfo.uptime) }}</span>
-						<div v-else class="animate-pulse bg-slate-600 w-full rounded h-[22px] mt-1" />
+						<div v-else class="animate-pulse bg-slate-600 w-full rounded h-[22px] mt-3" />
 					</h4>
 				</div>
 				<div class="flex flex-col align-middle justify-between mb-5 text-left flex-1 p-5 bg-base-300 shadow-md rounded-lg">
@@ -45,23 +45,23 @@
 					</h6>
 					<h4 class="text-white text-lg">
 						<span v-if="hostInfo">{{ incidentsCount }}</span>
-						<div v-else class="animate-pulse bg-slate-600 w-full rounded h-[22px] mt-1" />
+						<div v-else class="animate-pulse bg-slate-600 w-full rounded h-[22px] mt-3" />
 					</h4>
 				</div>
 				<div class="flex flex-col align-middle justify-between mb-5 text-left flex-1 p-5 bg-base-300 shadow-md rounded-lg">
 					<h6 class="text-[#c5c8cb]">
 						Alerts
 					</h6>
-					<h4 class="text-white">
+					<h4 class="text-white mt-2">
 						<span v-if="hostInfo" class="flex gap-4 justify-between overflow-hidden whitespace-nowrap">
-							<div class="badge badge-success p-2 text-[15px] w-full">
+							<div class="badge p-4 text-white text-[15px] w-full">
 								{{ alertsCount }} enabled
 							</div>
-							<div class="badge badge-warning p-2 text-[15px] w-full">
+							<div class="badge p-4 text-white text-[15px] w-full">
 								?? paused
 							</div>
 						</span>
-						<div v-else class="animate-pulse bg-slate-600 w-full rounded h-[22px] mt-1" />
+						<div v-else class="animate-pulse bg-slate-600 w-full rounded h-[22px] mt-3" />
 					</h4>
 				</div>
 			</div>

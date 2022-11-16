@@ -22,5 +22,5 @@ module.exports = {
 		require('tailwindcss/colors'),
 		require('@tailwindcss/typography'),
 		require('daisyui')
-	],
+	]
 }
