@@ -53,13 +53,8 @@
 						Alerts
 					</h6>
 					<h4 class="text-white mt-2">
-						<span v-if="hostInfo" class="flex gap-4 justify-between overflow-hidden whitespace-nowrap">
-							<div class="badge p-4 text-white text-[15px] w-full">
-								{{ alertsCount }} enabled
-							</div>
-							<div class="badge p-4 text-white text-[15px] w-full">
-								?? paused
-							</div>
+						<span v-if="hostInfo" class="badge p-4 text-white text-[15px] w-full">
+							{{ alertsCount }} {{ alertsCount > 1 ? 'actives' : 'active'}}
 						</span>
 						<div v-else class="animate-pulse bg-slate-600 w-full rounded h-[22px] mt-3" />
 					</h4>
