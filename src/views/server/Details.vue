@@ -13,7 +13,7 @@
 				</div>
 			</router-link>
 			<div class="prose-sm flex items-center gap-4 mt-4">
-				<div class="status-indicator" :class="true ? 'status-indicator--success' : 'status-indicator--danger'">
+				<div class="status-indicator" :class="getStatus() == 2 ? 'status-indicator--success' : getStatus() == 1 ? 'status-indicator--warning' : 'status-indicator--danger'">
 					<div class="circle circle--animated circle-main" />
 					<div class="circle circle--animated circle-secondary" />
 					<div class="circle circle--animated circle-tertiary" />
@@ -23,7 +23,11 @@
 						{{ $route.params.hostname }}
 					</h1>
 					<p class="text-sm text-[#c5c8cb] my-0">
-						<span class="text-green-400 mr-1">Up</span> - <span class="ml-1">Granularity of 3 seconds</span>
+						<span v-if="getStatus() == 2" class="text-green-400 mr-1">Up</span>
+						<span v-else-if="getStatus() == 1" class="text-[#ffb400] mr-1">??</span>
+						<span v-else class="text-[#f21700] mr-1">Down</span>
+						-
+						<span class="ml-1">Granularity of 3 seconds</span>
 					</p>
 				</div>
 			</div>
@@ -54,7 +58,7 @@
 					</h6>
 					<h4 class="text-white mt-2">
 						<span v-if="hostInfo" class="badge p-4 text-white text-[15px] w-full">
-							{{ alertsCount }} {{ alertsCount > 1 ? 'actives' : 'active'}}
+							{{ alertsCount }} {{ alertsCount > 1 ? 'actives' : 'active' }}
 						</span>
 						<div v-else class="animate-pulse bg-slate-600 w-full rounded h-[22px] mt-3" />
 					</h4>
@@ -117,6 +121,7 @@
 </template>
 
 <script>
+import moment from 'moment'
 import Skeleton from '@/components/Graphs/Base/Skeleton'
 import { nextTick } from 'vue';
 import { initWS, closeWS, CDC_VALUES } from '@/utils/websockets';
@@ -188,6 +193,11 @@ export default {
 	},
 
 	methods: {
+		getStatus: function() {
+			if (!this.hostInfo) return 1; //unknown
+			if (moment.utc(this.hostInfo.updated_at).isBefore(moment.utc().subtract(5, 'minutes'))) return 0; // offline
+			return 2; // online
+		},
 		convertToObject: function(jsonValues) {
 			return {
 				system: jsonValues[0],
@@ -196,6 +206,7 @@ export default {
 				uptime: jsonValues[3],
 				uuid: jsonValues[4],
 				created_at: jsonValues[5],
+				updated_at: jsonValues[6],
 			}
 		},
 		fetchInit: async function() {
@@ -208,6 +219,7 @@ export default {
 						uptime: resp.data.uptime,
 						uuid: resp.data.uuid,
 						created_at: resp.data.created_at,
+						updated_at: resp.data.updated_at,
 					};
 				}).catch((err) => {
 					// TODO - Handle errors
@@ -238,6 +250,7 @@ export default {
 				uptime: jsonValues[3],
 				uuid: jsonValues[4],
 				created_at: jsonValues[5],
+				updated_at: jsonValues[6],
 			};
 		}
 	}
