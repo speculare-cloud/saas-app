@@ -38,7 +38,17 @@ const routes = [{
 		path: 'servers/new',
 		name: 'NewServer',
 		component: () =>
-			import('@/views/NewServer'),
+			import('@/views/server/NewServer'),
+		meta: {
+			requireAuth: true,
+			child: 'servers',
+			pageName: 'New server'
+		}
+	}, {
+		path: 'servers/new/:secretKey',
+		name: 'NewDetails',
+		component: () =>
+			import('@/views/server/NewServer'),
 		meta: {
 			requireAuth: true,
 			child: 'servers',

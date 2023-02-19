@@ -99,6 +99,7 @@ export default {
 		const vm = this
 
 		nextTick(async () => {
+			console.log(this.$route.path);
 			if (vm.secretKey === null) await vm.generateKey();
 			else await vm.getKeyInfo();
 
@@ -117,6 +118,7 @@ export default {
 			await this.$http.post(this.$authBase + "/api/key", {})
 				.then((resp) => {
 					this.secretKey = resp.data.key;
+					this.$router.replace({ name: 'NewDetails', params: { secretKey: this.secretKey }})
 				}).catch((err) => {
 					// TODO - Handle errors
 					console.log(err);
