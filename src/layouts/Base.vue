@@ -2,7 +2,7 @@
 	<div class="drawer drawer-mobile">
 		<input id="side-drawer" type="checkbox" class="drawer-toggle">
 		<div class="drawer-content flex flex-col">
-			<nav class="px-4 py-4 navbar justify-between">
+			<nav class="px-4 py-4 navbar justify-between min-h-[83px]">
 				<span class="hidden lg:block" />
 				<div class="flex gap-2">
 					<label for="side-drawer" class="btn btn-square btn-ghost drawer-button lg:hidden">
