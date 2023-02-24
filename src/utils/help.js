@@ -10,8 +10,13 @@ export function fmtDuration (durationinsec) {
 	return moment.duration(durationinsec, 'seconds').format('Y[y] M[m] D[d] HH[h] mm[m] ss[s]')
 }
 
+// Granularity can either be in minutes, seconds or in ms.
 export function fmtGranularity (granularity) {
-	if (granularity > 1000) {
+	if (!granularity) return 'unknown'
+
+	if (granularity > 60000) {
+		return Math.floor(granularity / 60000) + 'm ' + ((granularity % 60000) / 1000).toFixed(0) + 's'
+	} else if (granularity > 1000) {
 		return granularity / 1000 + 's'
 	} else {
 		return granularity + 'ms'
@@ -25,8 +30,11 @@ export const FieldState = {
 	Empty: 3
 }
 
-export function getInputStyle (field) {
-	switch (field) {
+/*
+ * Return the appropriate style for the input based on the state
+ */
+export function getInputStyle (fieldState) {
+	switch (fieldState) {
 	case FieldState.Success:
 		return 'input-success'
 	case FieldState.Error:
@@ -44,4 +52,13 @@ export function validateEmail (email) {
 		.match(
 			/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 		)
+}
+
+/*
+ * Return the status of the server (online, unknown or offline)
+ */
+export function isServerOnline (updated_at) {
+	if (!updated_at) return 1 // unknown
+	if (moment.utc(updated_at).isBefore(moment.utc().subtract(5, 'minutes'))) return 0 // offline
+	return 2 // online
 }

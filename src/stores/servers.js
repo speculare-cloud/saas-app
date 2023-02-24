@@ -17,26 +17,18 @@ export const useServersStore = defineStore('servers', {
 		async fetchSpecificHost (vm, keyObj) {
 			return await vm.$http.get(vm.$serverBase(keyObj.berta) + '/api/host?uuid=' + keyObj.host_uuid)
 				.then((resp) => {
-					const hostObj = {
-						system: resp.data.system,
-						os_version: resp.data.os_version,
+					const newObj = {
 						hostname: resp.data.hostname,
 						uptime: resp.data.uptime,
-						uuid: resp.data.uuid,
-						created_at: resp.data.created_at
-					}
-
-					const newObj = {
-						hostname: hostObj.hostname,
-						uptime: hostObj.uptime,
 						key: keyObj.key,
-						uuid: hostObj.uuid,
+						uuid: resp.data.uuid,
 						berta: keyObj.berta,
-						granularity: keyObj.granularity
+						granularity: keyObj.granularity,
+						updated_at: resp.data.updated_at
 					}
 
 					// Check if we already have the keys in our configuredKeys.
-					const alreadyIndex = this.configuredKeys.findIndex((obj) => obj.uuid === hostObj.uuid)
+					const alreadyIndex = this.configuredKeys.findIndex((obj) => obj.uuid === resp.data.uuid)
 					if (alreadyIndex === -1) {
 						this.configuredKeys.push(newObj)
 					} else {
@@ -101,9 +93,11 @@ export const useServersStore = defineStore('servers', {
 							// console.log("Checking for configuredKeys", elem.uuid);
 
 							// Check if we already have the keys in our configuredKeys.
-							const already = this.configuredKeys.find((el) => el.uuid === elem.uuid)
-							// If we already have it, skip
-							if (already !== undefined) {
+							const already = this.configuredKeys.findIndex((el) => el.uuid === elem.uuid)
+							// If we already have it, update it
+							if (already !== -1) {
+								this.configuredKeys[already].uptime = elem.uptime
+								this.configuredKeys[already].updated_at = elem.updated_at
 								return
 							}
 
@@ -116,7 +110,8 @@ export const useServersStore = defineStore('servers', {
 								key: rKey.key,
 								uuid: rKey.uuid,
 								berta: rKey.berta,
-								granularity: rKey.granularity
+								granularity: rKey.granularity,
+								updated_at: elem.updated_at
 							})
 						})
 					}).catch((err) => {

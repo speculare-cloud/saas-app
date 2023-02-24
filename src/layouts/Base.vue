@@ -136,6 +136,7 @@ export default {
 	data () {
 		return {
 			connection: null,
+			polling: null,
 		}
 	},
 
@@ -148,12 +149,18 @@ export default {
 			initWS(vm.$authCdc, "apikeys", "*", ":customer_id.eq." + vm.store.userId, false, vm, vm.wsAuthMessageHandle);
 			await vm.serversStore.fetchApiKeysAndBertas(vm);
 			await vm.serversStore.fetchHostsAllBertas(vm);
+
+			// Polling to update the uptime & latest info from hosts
+			vm.polling = setInterval(async () => {
+				await vm.serversStore.fetchHostsAllBertas(vm);
+			}, 5000)
 		})
 	},
 
 	beforeUnmount: function () {
 		// Close the webSocket connection
 		closeWS("apikeys", this);
+		clearInterval(this.polling);
 	},
 
 	methods: {

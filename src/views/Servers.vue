@@ -101,7 +101,7 @@
 						:to="{ name: 'DetailsServer', params: { berta: item.berta, uuid: item.uuid, hostname: item.hostname } }"
 						class="flex justify-between cursor-pointer pl-4 pr-8 py-3 hover:bg-neutral-focus gap-4 rounded-lg text-[#c5c8cb] hover:text-[#d3d3d3] transition duration-300">
 						<div class="flex items-center gap-4">
-							<div class="status-indicator status-indicator--sm" :class="true ? 'status-indicator--success' : 'status-indicator--danger'">
+							<div class="status-indicator status-indicator--sm" :class="isServerOnline(item.updated_at) == 2 ? 'status-indicator--success' : isServerOnline(item.updated_at) == 1 ? 'status-indicator--warning' : 'status-indicator--danger'">
 								<div class="circle circle--animated circle-main" />
 								<div class="circle circle--animated circle-secondary" />
 								<div class="circle circle--animated circle-tertiary" />
@@ -143,7 +143,7 @@
 
 <script>
 import { useServersStore } from '@/stores/servers';
-import { trunkKey, fmtDuration, fmtGranularity } from '@/utils/help';
+import { trunkKey, fmtDuration, fmtGranularity, isServerOnline } from '@/utils/help';
 
 import DeleteKeyModal from '@/components/DeleteKeyModal'
 
@@ -155,7 +155,7 @@ export default {
 
 	setup () {
 		const store = useServersStore();
-		return { store, trunkKey, fmtDuration, fmtGranularity }
+		return { store, trunkKey, fmtDuration, fmtGranularity, isServerOnline }
 	},
 
 	data () {

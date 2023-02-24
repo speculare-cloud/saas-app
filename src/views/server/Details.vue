@@ -13,7 +13,7 @@
 				</div>
 			</router-link>
 			<div class="prose-sm flex items-center gap-4 mt-4">
-				<div class="status-indicator" :class="getStatus() == 2 ? 'status-indicator--success' : getStatus() == 1 ? 'status-indicator--warning' : 'status-indicator--danger'">
+				<div class="status-indicator" :class="isServerOnline(hostInfo?.updated_at) == 2 ? 'status-indicator--success' : isServerOnline(hostInfo?.updated_at) == 1 ? 'status-indicator--warning' : 'status-indicator--danger'">
 					<div class="circle circle--animated circle-main" />
 					<div class="circle circle--animated circle-secondary" />
 					<div class="circle circle--animated circle-tertiary" />
@@ -23,11 +23,11 @@
 						{{ $route.params.hostname }}
 					</h1>
 					<p class="text-sm text-[#c5c8cb] my-0">
-						<span v-if="getStatus() == 2" class="text-green-400 mr-1">Up</span>
-						<span v-else-if="getStatus() == 1" class="text-[#ffb400] mr-1">??</span>
+						<span v-if="isServerOnline(hostInfo?.updated_at) == 2" class="text-green-400 mr-1">Up</span>
+						<span v-else-if="isServerOnline(hostInfo?.updated_at) == 1" class="text-[#ffb400] mr-1">??</span>
 						<span v-else class="text-[#f21700] mr-1">Down</span>
 						-
-						<span class="ml-1">Granularity of 3 seconds</span>
+						<span class="ml-1">Granularity of {{ fmtGranularity(granularity) }}</span>
 					</p>
 				</div>
 			</div>
@@ -121,11 +121,11 @@
 </template>
 
 <script>
-import moment from 'moment'
 import Skeleton from '@/components/Graphs/Base/Skeleton'
+import { useServersStore } from '@/stores/servers';
 import { nextTick } from 'vue';
 import { initWS, closeWS, CDC_VALUES } from '@/utils/websockets';
-import { fmtDuration } from '@/utils/help';
+import { fmtDuration, fmtGranularity, isServerOnline } from '@/utils/help';
 import { defineAsyncComponent } from 'vue'
 
 export default {
@@ -159,7 +159,8 @@ export default {
 	},
 
 	setup () {
-		return { fmtDuration }
+		const store = useServersStore();
+		return { store, fmtDuration, isServerOnline, fmtGranularity }
 	},
 
 	data () {
@@ -174,6 +175,7 @@ export default {
 			connection: null,
 			incidentsCount: 0,
 			alertsCount: 0,
+			granularity: null,
 		}
 	},
 
@@ -182,8 +184,22 @@ export default {
 
 		// Don't setup anything before everything is rendered
 		nextTick(async () => {
-			initWS(vm.$cdcBase(this.$route.params.berta), "hosts", "update", ":uuid.eq." + this.$route.params.uuid, false, vm);
-			await this.fetchInit();
+			initWS(vm.$cdcBase(vm.$route.params.berta), "hosts", "update", ":uuid.eq." + vm.$route.params.uuid, false, vm);
+			await vm.fetchInit();
+
+			// The first few attempts can fails because the Base.vue WS may not have
+			// already had the time to fetch all hosts/servers info.
+			let retry = 0;
+			do {
+				const rkey = vm.store.configuredKeys.find((obj) => obj.uuid === vm.$route.params.uuid);
+				if (rkey !== undefined) {
+					vm.granularity = rkey.granularity;
+					break;
+				}
+				retry += 1;
+				await new Promise(r => setTimeout(r, 150));
+			}
+			while (retry <= 5);
 		})
 	},
 
@@ -193,11 +209,6 @@ export default {
 	},
 
 	methods: {
-		getStatus: function() {
-			if (!this.hostInfo) return 1; //unknown
-			if (moment.utc(this.hostInfo.updated_at).isBefore(moment.utc().subtract(5, 'minutes'))) return 0; // offline
-			return 2; // online
-		},
 		convertToObject: function(jsonValues) {
 			return {
 				system: jsonValues[0],
