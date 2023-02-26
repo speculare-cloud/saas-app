@@ -1,10 +1,8 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import path from 'path'
-import removeConsole from "vite-plugin-remove-console";
 
 export default defineConfig(({command, mode, ssrBuild}) => {
-	console.log("Current mode:", mode);
 	return {
 		plugins: [vue()],
 		server: {
