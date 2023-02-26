@@ -10,11 +10,11 @@
     <meta name="author" content="Martin Andre">
 
 	<!-- Favicon -->
-	<link rel="apple-touch-icon" sizes="180x180" href="<%= BASE_URL %>apple-touch-icon.png">
-	<link rel="icon" type="image/png" sizes="32x32" href="<%= BASE_URL %>favicon-32x32.png">
-	<link rel="icon" type="image/png" sizes="16x16" href="<%= BASE_URL %>favicon-16x16.png">
-	<link rel="manifest" href="<%= BASE_URL %>site.webmanifest">
-	<link rel="mask-icon" href="<%= BASE_URL %>safari-pinned-tab.svg" color="#272935">
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#272935">
 	<meta name="msapplication-TileColor" content="#272935">
 	<meta name="theme-color" content="#272935">
 
@@ -27,11 +27,11 @@
 
 <body class="antialiased">
     <noscript>
-		<strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
+		<strong>We're sorry but Speculare Console doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
 	</noscript>
     <div id="app"></div>
     <script defer data-domain="console.speculare.cloud" src="https://analytics.speculare.cloud/js/plausible.js"></script>
-    <!-- built files will be auto injected -->
+    <script type="module" src="/src/main.js"></script>
 </body>
 
 </html>

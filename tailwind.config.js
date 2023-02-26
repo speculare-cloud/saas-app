@@ -1,6 +1,17 @@
+const colors = require('tailwindcss/colors');
+
+delete colors['lightBlue'];
+delete colors['warmGray'];
+delete colors['trueGray'];
+delete colors['coolGray'];
+delete colors['blueGray'];
+
 module.exports = {
 	content: ['./public/index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
 	variants: {},
+	themes: {
+		...colors
+	},
 	daisyui: {
 		themes: [{
 			custom: {

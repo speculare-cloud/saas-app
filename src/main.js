@@ -15,7 +15,8 @@ import 'vue-toastification/dist/index.css'
 import '@/assets/app.css'
 import '@/assets/uPlot.css'
 
-require('moment-duration-format')(moment)
+import momentDurationFormatSetup from 'moment-duration-format';
+momentDurationFormatSetup(moment);
 
 const httpAxios = axios.create({
 	timeout: 10000,
@@ -30,11 +31,11 @@ app.use(pinia)
 
 const store = useMainStore()
 
-const bertaOverride = process.env.VUE_APP_BERTA_OVERRIDE
-const cdcOverride = process.env.VUE_APP_CDC_OVERRIDE
+const bertaOverride = import.meta.env.VITE_BERTA_OVERRIDE
+const cdcOverride = import.meta.env.VITE_CDC_OVERRIDE
 
-app.config.globalProperties.$authBase = process.env.VUE_APP_AUTH_SERVER
-app.config.globalProperties.$authCdc = process.env.VUE_APP_AUTH_CDC
+app.config.globalProperties.$authBase = import.meta.env.VITE_AUTH_SERVER
+app.config.globalProperties.$authCdc = import.meta.env.VITE_AUTH_CDC
 app.config.globalProperties.$bertaOverride = bertaOverride
 app.config.globalProperties.$cdcOverride = cdcOverride
 app.config.globalProperties.$http = httpAxios
@@ -70,8 +71,7 @@ router.beforeEach(async (toRoute, _fromRoute, next) => {
 				} else {
 					next({ name: 'Servers' })
 				}
-			}).catch((err) => {
-				console.log('logged out', err)
+			}).catch(() => {
 				store.logout()
 				next()
 			})
