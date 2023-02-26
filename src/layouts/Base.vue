@@ -11,17 +11,17 @@
 						</svg>
 					</label>
 					<p class="hidden md:block lg:hidden">
-						<img class="max-h-[30px] min-h-[30px]" src="@/assets/logo.svg">
+						<img class="max-h-[30px] min-h-[30px]" src="@/assets/logo.svg" alt="speculare logo">
 					</p>
 					<p class="block md:hidden">
-						<img class="max-h-[30px] min-h-[30px]" src="@/assets/logo_small.svg">
+						<img class="max-h-[30px] min-h-[30px]" src="@/assets/logo_small.svg" alt="speculare logo">
 					</p>
 				</div>
 				<div class="flex-none">
 					<div class="dropdown dropdown-end">
 						<label tabindex="0" class="btn btn-ghost btn-circle avatar">
 							<div class="w-10 rounded-full">
-								<img :src="'https://source.boringavatars.com/beam/40/' + store.userId">
+								<img :src="'https://source.boringavatars.com/beam/40/' + store.userId" alt="profile picture">
 							</div>
 						</label>
 						<ul tabindex="0" class="menu menu-compact dropdown-content mt-3 p-2 bg-base-300 shadow rounded-lg w-52 gap-1 border border-neutral">
@@ -62,10 +62,10 @@
 			<div class="flex flex-col p-4 overflow-y-auto w-60 bg-base-300">
 				<div class="h-[48px] flex justify-start md:justify-center items-center pl-[14px] md:pl-0">
 					<p class="hidden md:block">
-						<img class="max-h-[30px] min-h-[30px]" src="@/assets/logo.svg">
+						<img class="max-h-[30px] min-h-[30px]" src="@/assets/logo.svg" alt="speculare logo">
 					</p>
 					<p class="block md:hidden">
-						<img class="max-h-[30px] min-h-[30px]" src="@/assets/logo_small.svg">
+						<img class="max-h-[30px] min-h-[30px]" src="@/assets/logo_small.svg" alt="speculare logo">
 					</p>
 				</div>
 				<ul class="flex-grow -mx-4 menu p-4 text-base-content gap-1">
