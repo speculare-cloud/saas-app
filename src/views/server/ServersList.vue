@@ -25,8 +25,15 @@
 				</router-link>
 			</div>
 		</div>
+		<Error v-if="store.error && !store.initialLoading" />
+		<section v-if="store.initialLoading" class="mt-12 flex justify-center items-center h-52">
+			<div class="prose-sm max-w-sm">
+				<h1>Loading...</h1>
+				<p>We are retrieving your servers, please allow us a moment.</p>
+			</div>
+		</section>
 		<section
-			v-if="store.configuredKeys.length === 0 && store.unconfiguredKeys.length === 0"
+			v-if="!store.error && !store.initialLoading && store.configuredKeys.length === 0 && store.unconfiguredKeys.length === 0"
 			class="mt-12 flex justify-center items-center h-52">
 			<div class="prose-sm max-w-sm">
 				<h1>No servers.</h1>
@@ -35,7 +42,7 @@
 			</div>
 		</section>
 		<!-- In case we have unconfiguredKeys -->
-		<section id="unconfiguredKeys" v-if="store.unconfiguredKeys.length !== 0" class="mt-12">
+		<section id="unconfiguredKeys" v-if="!store.error && !store.initialLoading && store.unconfiguredKeys.length !== 0" class="mt-12">
 			<p class="p-4 text-[#c5c8cb]">
 				Waiting activation...
 			</p>
@@ -82,7 +89,7 @@
 			</div>
 		</section>
 		<!-- In case we have configuredKeys -->
-		<section id="configuredKeys" v-if="store.configuredKeys.length !== 0" :class="store.unconfiguredKeys.length !== 0 ? 'mt-6' : 'mt-12'">
+		<section id="configuredKeys" v-if="!store.error && !store.initialLoading && store.configuredKeys.length !== 0" :class="store.unconfiguredKeys.length !== 0 ? 'mt-6' : 'mt-12'">
 			<p class="p-4 text-[#c5c8cb]">
 				Configured servers
 			</p>
@@ -146,11 +153,12 @@ import { useServersStore } from '@/stores/servers';
 import { trunkKey, fmtDuration, fmtGranularity, isServerOnline } from '@/utils/help';
 
 import DeleteKeyModal from '@/components/DeleteKeyModal'
+import Error from '@/components/Error'
 
 export default {
 	name: 'Home',
 	components: {
-		DeleteKeyModal,
+		DeleteKeyModal, Error
 	},
 
 	setup () {

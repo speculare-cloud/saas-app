@@ -20,7 +20,7 @@ const routes = [{
 		path: 'servers',
 		name: 'Servers',
 		component: () =>
-			import('@/views/Servers'),
+			import('@/views/server/ServersList'),
 		meta: {
 			requireAuth: true
 		}

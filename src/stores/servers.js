@@ -3,6 +3,8 @@ import { defineStore } from 'pinia'
 export const useServersStore = defineStore('servers', {
 	state: () => {
 		return {
+			error: null,
+			initialLoading: false,
 			// List of different Bertas hosted user's servers
 			bertas: new Map(),
 			// Raw keys from /api/key
@@ -35,11 +37,13 @@ export const useServersStore = defineStore('servers', {
 						this.configuredKeys[alreadyIndex] = newObj
 					}
 				}).catch(async (err) => {
+					// To allow newly configured server to be fetched
+					// as their data will be uploaded shortly after.
 					if (err.response && err.response.status === 404) {
 						return true
 					}
 					// TODO - Handle errors
-					console.log(err)
+					console.log("fetchSpecificHost", err)
 				})
 		},
 		async fetchApiKeysAndBertas (vm) {
@@ -79,9 +83,11 @@ export const useServersStore = defineStore('servers', {
 							}
 						}
 					})
+					this.error = null
 				}).catch((err) => {
 					// TODO - Handle errors
-					console.log(err)
+					this.error = err
+					console.log("fetchApiKeysAndBertas", err)
 				})
 		},
 		async fetchHostsAllBertas (vm) {
@@ -114,11 +120,14 @@ export const useServersStore = defineStore('servers', {
 								updated_at: elem.updated_at
 							})
 						})
+						this.error = null
 					}).catch((err) => {
 						// TODO - Handle errors
-						console.log(err)
+						this.error = err
+						console.log("fetchHostsAllBertas", err)
 					})
 			}
+			this.initialLoading = false
 		}
 	}
 })

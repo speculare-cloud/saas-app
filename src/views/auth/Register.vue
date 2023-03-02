@@ -22,7 +22,7 @@
 							<span class="label-text">What is your email?</span>
 						</label>
 						<input
-							ref="emailField" autocomplete="on" name="email" type="email"
+							ref="emailField" autocomplete="email" name="email" type="email"
 							placeholder="john.doe@speculare.cloud"
 							class="input input-bordered w-full bg-base-300" :class="getInputStyle(emailState)"
 							v-model="emailAddr" @input="checkEmail" style="font-size: 0.875rem;">
