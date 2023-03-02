@@ -4,7 +4,7 @@ export const useServersStore = defineStore('servers', {
 	state: () => {
 		return {
 			error: null,
-			initialLoading: false,
+			initialLoading: true,
 			// List of different Bertas hosted user's servers
 			bertas: new Map(),
 			// Raw keys from /api/key
