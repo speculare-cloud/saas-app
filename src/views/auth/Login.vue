@@ -109,6 +109,7 @@ export default {
 				this.$router.replace({ name: 'Wait' });
 			}).catch((err) => {
 				if (err.response) {
+					this.emailState = FieldState.Error;
 					switch (err.response.status) {
 					case 404:
 						this.store.showToast("We didn't recognize this e-mail.\nDo you want to sign up instead?", "error");

@@ -310,16 +310,41 @@ td) {
 }
 
 .Vue-Toastification__toast--success {
-	background-color: rgb(52, 211, 153);
-	color: #fff;
+	background-color: hsl(143, 85%, 96%);
+	color: hsl(140, 100%, 27%);
+	border: 1px solid hsl(145, 92%, 91%);
+}
+
+.Vue-Toastification__toast--success .Vue-Toastification__close-button {
+	color: hsl(140, 100%, 27%);
 }
 
 .Vue-Toastification__toast--error {
-	background-color: #f21700;
-	color: #fff;
+	background-color: hsl(359, 100%, 97%);
+	color: hsl(360, 100%, 45%);
+	border: 1px solid hsl(359, 100%, 94%);
+}
+
+.Vue-Toastification__toast--error .Vue-Toastification__close-button {
+	color: hsl(360, 100%, 45%);
 }
 
 .Vue-Toastification__toast--warning {
-	background-color: #ffb400;
-	color: #fff;
+	background-color: hsl(57deg 85% 96%);
+	color: hsl(57deg 100% 27%);
+	border: 1px solid hsl(61deg 100% 83%);
+}
+
+.Vue-Toastification__toast--warning .Vue-Toastification__close-button {
+	color: hsl(57deg 100% 27%);
+}
+
+.Vue-Toastification__toast {
+	font-family: 'Montserrat', sans-serif;
+	padding: 16px;
+	min-height: unset;
+}
+
+.Vue-Toastification__toast-body {
+	font-size: 13px;
 }

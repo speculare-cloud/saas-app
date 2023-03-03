@@ -115,20 +115,20 @@ export default {
 			}).then(() => {
 				// Redirect to the wait page
 				this.$router.replace({ name: 'Wait' });
-			}).catch(() => {
-				// TODO - Open registration once the MAIL system is prepared.
-				return this.store.showToast("Successfully added to the waiting list.", "success");
-
-				/*if (err.response) {
+			}).catch((err) => {
+				if (err.response) {
+					// this.emailState = FieldState.Error;
 					if (400 <= err.response.status < 500) {
-						this.store.showToast("Please, verify your information and\nmake sure you don't already have an account.", "error");
+						// TODO - Open registration once the MAIL system is prepared.
+						this.store.showToast("Successfully added to the waiting list.", "success");
+						// this.store.showToast("Please, verify your information and\nmake sure you don't already have an account.", "error");
 					} else {
 						this.store.showToast("Unknown error, please try again later...", "error");
 					}
 				} else {
 					console.error(err);
 					this.store.showToast("Unknown error, try again later...", "error");
-				}*/
+				}
 			}).finally(() => {
 				this.requestLoading = false;
 			});
