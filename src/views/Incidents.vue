@@ -116,23 +116,19 @@ export default {
 	methods: {
 		refreshList: async function() {
 			for (const berta of this.bertas.keys()) {
-				const huuids = Array.from(this.bertas.get(berta)).filter(n => n)
-
-				for (const uuid of huuids) {
-					await this.$http.get(this.$serverBase(berta) + '/api/incidents?uuid=' + uuid)
-						.then((resp) => {
-							resp.data.forEach(elem => {
-								const idx = this.incidents.findIndex(el => el.id == elem.id);
-								if (idx !== -1) {
-									this.incidents[idx] = elem
-								} else {
-									this.incidents.push(elem);
-								}
-							})
-						}).catch((err) => {
-							console.error(err)
+				await this.$http.get(this.$serverBase(berta) + '/api/incidents')
+					.then((resp) => {
+						resp.data.forEach(elem => {
+							const idx = this.incidents.findIndex(el => el.id == elem.id);
+							if (idx !== -1) {
+								this.incidents[idx] = elem
+							} else {
+								this.incidents.push(elem);
+							}
 						})
-				}
+					}).catch((err) => {
+						console.error(err)
+					})
 			}
 		}
 	}
