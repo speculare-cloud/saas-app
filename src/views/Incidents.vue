@@ -26,36 +26,28 @@
 				<table class="table w-full text-[#c5c8cb]">
 					<thead>
 						<tr>
-							<th>Monitor</th>
+							<th />
+							<th>Server</th>
 							<th>Started at</th>
 							<th>Length</th>
 						</tr>
 					</thead>
 					<tbody>
-						<tr v-for="incident in incidents" :key="incident.id">
-							<td class="flex flex-row items-center gap-4">
-								<svg
-									xmlns="http://www.w3.org/2000/svg" width="47" height="46" viewBox="0 0 47 46"
-									fill="none" class="inline w-8 h-8 rounded">
-									<rect
-										x="0.125" width="46" height="46" rx="8"
-										fill="#3B4254" />
-									<path
-										fill="#ff000000" d="M21.6875 19.7656V21.9218M21.6875 26.2343H21.6983M30.9788 16.514C27.5699 16.695 24.2284 15.5163 21.6875 13.2365C19.1466 15.5163 15.8051 16.695 12.3962 16.514C12.1219 17.576 11.9835 18.6686 11.9844 19.7656C11.9844 25.7934 16.1071 30.8595 21.6875 32.2955C27.2679 30.8595 31.3906 25.7944 31.3906 19.7656C31.3906 18.6422 31.2472 17.5533 30.9788 16.514Z" stroke="#B8BFD1" stroke-width="2.5875"
-										stroke-linecap="round" stroke-linejoin="round" />
-									<circle cx="31.75" cy="29.9904" r="8.625" fill="#3B4254" />
-									<path fill-rule="evenodd" clip-rule="evenodd" d="M31.85 36.8904C33.6799 36.8904 35.435 36.1634 36.729 34.8694C38.023 33.5754 38.75 31.8204 38.75 29.9904C38.75 28.1604 38.023 26.4054 36.729 25.1114C35.435 23.8174 33.6799 23.0904 31.85 23.0904C30.02 23.0904 28.2649 23.8174 26.9709 25.1114C25.6769 26.4054 24.95 28.1604 24.95 29.9904C24.95 31.8204 25.6769 33.5754 26.9709 34.8694C28.2649 36.1634 30.02 36.8904 31.85 36.8904V36.8904ZM35.0472 28.8752C35.2044 28.7125 35.2913 28.4946 35.2893 28.2685C35.2874 28.0424 35.1966 27.826 35.0367 27.6661C34.8768 27.5062 34.6605 27.4155 34.4343 27.4135C34.2082 27.4116 33.9903 27.4985 33.8277 27.6556L30.9875 30.4958L29.8722 29.3806C29.7096 29.2235 29.4917 29.1366 29.2656 29.1385C29.0394 29.1405 28.8231 29.2312 28.6632 29.3911C28.5033 29.551 28.4125 29.7674 28.4106 29.9935C28.4086 30.2196 28.4956 30.4375 28.6527 30.6002L30.3777 32.3252C30.5394 32.4869 30.7587 32.5777 30.9875 32.5777C31.2162 32.5777 31.4355 32.4869 31.5972 32.3252L35.0472 28.8752V28.8752Z" fill="#10C97A" />
-								</svg>
-								<div class="flex flex-col text-[13px]">
-									<span class="text-white text-sm">{{ incident.hostname }}</span>
-									little description of the issue
-								</div>
+						<tr v-for="incident in incidents" :key="incident.id" class="text-[13px]">
+							<td class="min">
+								<span v-if="!incident.status">ongoing&nbsp;</span>
+								<span v-if="incident.status" class="text-success">resolved</span>
+								<span v-else-if="incident.severity" class="text-error">critical</span>
+								<span v-else class="text-warning">warning</span>
 							</td>
-							<td class="text-[13px]">
-								{{ incident.started_at }}
+							<td class="text-white text-sm">
+								{{ incident.hostname }}
 							</td>
-							<td class="text-[13px]">
-								{{ incident.resolved_at }}
+							<td>
+								{{ moment(incident.started_at).format("hh:mm A - D MMMM YYYY") }}
+							</td>
+							<td>
+								{{ getLength(incident.started_at, incident.updated_at, incident.resolved_at) }}
 							</td>
 						</tr>
 					</tbody>
@@ -77,6 +69,8 @@ import { storeToRefs } from 'pinia'
 import { nextTick } from 'vue';
 import { useIncidentsStore } from '@/stores/incidents';
 import { useServersStore } from '@/stores/servers';
+import { fmtDuration } from '@/utils/help';
+import moment from 'moment';
 
 export default {
 	name: 'Incidents',
@@ -85,7 +79,7 @@ export default {
 		const store = useIncidentsStore();
 		const serverStore = useServersStore();
 		const { bertas } = storeToRefs(serverStore)
-		return { store, serverStore, bertas }
+		return { store, serverStore, bertas, moment }
 	},
 
 	data () {
@@ -103,8 +97,7 @@ export default {
 	},
 
 	watch: {
-		// execute the refresh when the bertas get updated too
-		// (in case of new bertas).
+		// execute the refresh when the bertas get updated too (in case of new bertas).
 		bertas: {
 			async handler() {
 				await this.refreshList();
@@ -114,11 +107,15 @@ export default {
 	},
 
 	methods: {
+		getLength: function(from, to, tox) {
+			return fmtDuration(moment.duration(moment(to ?? tox).diff(moment(from))).asSeconds());
+		},
 		refreshList: async function() {
 			for (const berta of this.bertas.keys()) {
 				await this.$http.get(this.$serverBase(berta) + '/api/incidents')
 					.then((resp) => {
 						resp.data.forEach(elem => {
+							console.log(elem);
 							const idx = this.incidents.findIndex(el => el.id == elem.id);
 							if (idx !== -1) {
 								this.incidents[idx] = elem

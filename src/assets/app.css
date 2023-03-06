@@ -348,3 +348,12 @@ td) {
 .Vue-Toastification__toast-body {
 	font-size: 13px;
 }
+
+td {
+    width: auto;
+}
+
+td.min {
+	width: 0%;
+	white-space: nowrap;
+}

@@ -118,7 +118,11 @@
 									{{ item.hostname }}
 								</p>
 								<p class="text-[13px]">
-									<span class="text-success mr-1">Up</span> - <span class="ml-1">{{ fmtDuration(item.uptime) }}</span>
+									<span v-if="isServerOnline(item.updated_at) == 2" class="text-success mr-1">Up</span>
+									<span v-else-if="isServerOnline(item.updated_at) == 1" class="text-warning mr-1">??</span>
+									<span v-else class="text-error mr-1">Down</span>
+									-
+									<span class="ml-1">{{ fmtDuration(item.uptime) }}</span>
 								</p>
 							</div>
 						</div>

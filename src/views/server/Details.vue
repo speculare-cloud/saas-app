@@ -23,9 +23,9 @@
 						{{ $route.params.hostname }}
 					</h1>
 					<p class="text-sm text-[#c5c8cb] my-0">
-						<span v-if="isServerOnline(hostInfo?.updated_at) == 2" class="text-green-400 mr-1">Up</span>
-						<span v-else-if="isServerOnline(hostInfo?.updated_at) == 1" class="text-[#ffb400] mr-1">??</span>
-						<span v-else class="text-[#f21700] mr-1">Down</span>
+						<span v-if="isServerOnline(hostInfo?.updated_at) == 2" class="text-success mr-1">Up</span>
+						<span v-else-if="isServerOnline(hostInfo?.updated_at) == 1" class="text-warning mr-1">??</span>
+						<span v-else class="text-error mr-1">Down</span>
 						-
 						<span class="ml-1">Granularity of {{ fmtGranularity(granularity) }}</span>
 					</p>
