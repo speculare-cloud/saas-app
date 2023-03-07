@@ -6,20 +6,6 @@
 					Incidents
 				</h1>
 			</div>
-			<div class="mt-4 md:mt-0 flex flex-col items-start sm:flex-row sm:space-x-4">
-				<div class="mb-3 relative self-stretch sm:mb-0 sm:self-end w-[265px]">
-					<svg class="absolute left-[12px] top-[13px]" height="14" viewBox="0 0 14 14" width="14">
-						<path
-							stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" stroke="currentColor"
-							d="M13 13L9.61539 9.61539M11.0513 6.02564C11.0513 6.68562 10.9213 7.33913 10.6687 7.94887C10.4162 8.55861 10.046 9.11263 9.57931 9.57931C9.11263 10.046 8.55861 10.4162 7.94887 10.6687C7.33913 10.9213 6.68562 11.0513 6.02564 11.0513C5.36566 11.0513 4.71215 10.9213 4.10241 10.6687C3.49267 10.4162 2.93865 10.046 2.47198 9.57931C2.0053 9.11263 1.63512 8.55861 1.38255 7.94887C1.12999 7.33913 1 6.68562 1 6.02564C1 4.69276 1.52949 3.41447 2.47198 2.47198C3.41447 1.52949 4.69276 1 6.02564 1C7.35852 1 8.63682 1.52949 9.57931 2.47198C10.5218 3.41447 11.0513 4.69276 11.0513 6.02564Z" />
-					</svg>
-
-					<input
-						type="text" placeholder="Search monitors"
-						class="input input-bordered w-full bg-base-300 !pl-[34px] h-10"
-						style="font-size: 0.875rem;">
-				</div>
-			</div>
 		</div>
 		<div class="mt-12">
 			<div class="overflow-x-auto no-scrollbar rounded-lg shadow">
@@ -27,9 +13,12 @@
 					<thead>
 						<tr>
 							<th />
-							<th>Server</th>
+							<th class="flex flex-col">
+								<span>Server</span>
+								<span>↪ Alert</span>
+							</th>
 							<th>Started at</th>
-							<th>Length</th>
+							<th>Duration</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -40,13 +29,14 @@
 								<span v-else-if="incident.severity" class="text-error">critical</span>
 								<span v-else class="text-warning">warning</span>
 							</td>
-							<td class="text-white text-sm">
-								{{ incident.hostname }}
+							<td class="flex flex-col">
+								<span class="text-sm text-white">{{ incident.hostname }}</span>
+								<span class="text-[13px]">↪ {{ incident.alert.name }} ({{ incident.alert.info ?? incident.alert.lookup }})</span>
 							</td>
 							<td>
 								{{ moment(incident.started_at).format("hh:mm A - D MMMM YYYY") }}
 							</td>
-							<td>
+							<td  class="min">
 								{{ getLength(incident.started_at, incident.updated_at, incident.resolved_at) }}
 							</td>
 						</tr>
@@ -115,7 +105,6 @@ export default {
 				await this.$http.get(this.$serverBase(berta) + '/api/incidents')
 					.then((resp) => {
 						resp.data.forEach(elem => {
-							console.log(elem);
 							const idx = this.incidents.findIndex(el => el.id == elem.id);
 							if (idx !== -1) {
 								this.incidents[idx] = elem

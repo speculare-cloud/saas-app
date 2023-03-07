@@ -43,14 +43,23 @@
 						<div v-else class="animate-pulse bg-slate-600 w-full rounded h-[22px] mt-3" />
 					</h4>
 				</div>
-				<div class="flex flex-col align-middle justify-between mb-5 text-left flex-1 p-5 bg-base-300 shadow-md rounded-lg">
-					<h6 class="text-[#c5c8cb]">
-						Incidents
-					</h6>
-					<h4 class="text-white text-lg">
-						<span v-if="hostInfo">{{ incidentsCount }}<span v-if="incidentsCount > 100">+</span></span>
-						<div v-else class="animate-pulse bg-slate-600 w-full rounded h-[22px] mt-3" />
-					</h4>
+				<div class="flex flex-row items-center justify-between mb-5 text-left flex-1 p-5 bg-base-300 shadow-md rounded-lg">
+					<div class="flex-1 flex flex-col align-middle justify-between">
+						<h6 class="text-[#c5c8cb]">
+							Incidents
+						</h6>
+						<h4 class="text-white text-lg">
+							<span v-if="hostInfo">{{ incidentsCount }}<span v-if="incidentsCount > 100">+</span></span>
+							<div v-else class="animate-pulse bg-slate-600 w-full rounded h-[22px] mt-3" />
+						</h4>
+					</div>
+					<router-link key="incidents" :to="{ name: 'Incidents' }" class="text-[#c5c8cb]">
+						<svg
+							xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 fill-current md:h-8 md:w-8 rotate-180 hover:!fill-white transition duration-300" width="24" height="24"
+							viewBox="0 0 24 24">
+							<path d="M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z" />
+						</svg>
+					</router-link>
 				</div>
 				<div class="flex flex-col align-middle justify-between mb-5 text-left flex-1 p-5 bg-base-300 shadow-md rounded-lg">
 					<h6 class="text-[#c5c8cb]">
