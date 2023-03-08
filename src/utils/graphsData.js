@@ -3,7 +3,12 @@ import moment from 'moment'
 
 function sanitizeGraphData (vm) {
 	const dataSize = vm.chartLabels.length
-	const threshold = dataSize / 60 + 15
+	const threshold = vm.graphRange.scale / 60 + 15
+
+	console.log("Range scale:", vm.graphRange.scale);
+	console.log("Datasize is:", dataSize);
+	console.log("Threshold is defined as:", threshold);
+
 	// Be sure the date are following in order (by 1s for now)
 	const now = moment().utc().unix()
 	const min = moment.utc().subtract(vm.graphRange.scale, 'seconds').unix()
@@ -39,12 +44,16 @@ function sanitizeGraphData (vm) {
 			}
 		} else {
 			if (vm.chartLabels[i + 1] > vm.chartLabels[i] + threshold) {
+				console.log("Nulling data as it's more than threshold:", vm.chartLabels[i + 1] - vm.chartLabels[i])
 				// Don't need to change the Labels, uPlot already handle this
 				// TODO - might just push empty value ?
 				vm.nullData(i)
 			}
 		}
 	}
+
+	console.log(vm.chartLabels);
+	console.log(vm.chartDataObj);
 }
 
 function basicRespHandler (vm, data) {
@@ -85,11 +94,12 @@ export function getRangeParams (graphRange) {
 }
 
 export function fetchInit (vm, grouped) {
-	console.log('fetchInit: ' + vm.table + ' is grouped: ' + grouped)
+	console.log('[' + vm.table + '] fetchInit: is grouped: ' + grouped)
 	// Fetching old data with the API
 	vm.$http
 		.get(vm.$serverBase(vm.$route.params.berta) + '/api/' + vm.table + '?uuid=' + vm.uuid + getRangeParams(vm.graphRange))
 		.then(resp => {
+			console.log('[' + vm.table + '] resp received')
 			if (!grouped) basicRespHandler(vm, resp.data)
 			else groupedRespHandler(vm, resp.data)
 

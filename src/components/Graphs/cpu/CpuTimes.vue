@@ -59,6 +59,7 @@ export default {
 
 	watch: {
 		graphRange: function (newVal, oldVal) {
+			console.log("New graphRange", newVal);
 			rebuildGraph(this, newVal, oldVal)
 		}
 	},
@@ -85,6 +86,7 @@ export default {
 	methods: {
 		// Empty every arrays and close the websocket
 		cleaning: function (ws = true) {
+			console.log('[' + this.table + '] cleaning called')
 			this.fetchingDone = false
 			this.chartLabels = []
 			this.chartDataObj = []
@@ -160,6 +162,7 @@ export default {
 
 			// Update onscreen values
 			if (update) {
+				console.log('[' + this.table + '] updating value on graph')
 				updateGraph(vm, function () {
 					vm.datacollection = [
 						vm.chartLabels,

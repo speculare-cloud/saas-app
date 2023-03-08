@@ -2,10 +2,16 @@ import uPlot from 'uplot'
 
 export function reactDataChange (vm, oldData, newData, stack = false) {
 	if (oldData == null || !vm.chart) {
+		if (vm.chart) vm.destroyChart()
 		vm.createChart(newData)
-	} else if (!vm.hovered && vm.chart) {
-		const data = stack ? vm.stack(newData, i => !vm.chart.series[i].show).data : newData
-		vm.chart.setData(data)
+	} else {
+		if (oldData[0].length !== newData[0].length) {
+			vm.destroyChart()
+			vm.createChart(newData)
+		} else if (!vm.hovered) {
+			const data = stack ? vm.stack(newData, i => !vm.chart.series[i].show).data : newData
+			vm.chart.setData(data)
+		}
 	}
 
 	// Update the legend to the latest value

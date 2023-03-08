@@ -126,21 +126,127 @@
 			</p>
 			<IoNetsOverall :key="this.$route.params.uuid" :uuid="this.$route.params.uuid" :berta="this.$route.params.berta" :graph-range="graphRange" />
 		</div>
+
+		<button class="p-3 bg-base-300 rounded-md hover:bg-gray-800 focus:outline-none fixed bottom-8 right-8" @click="rangePickOpen = !rangePickOpen">
+			<img src="@/assets/graph_custom.svg" class="w-6 h-6 inline-block">
+		</button>
+
+		<div v-if="rangePickOpen" class="relative z-10">
+			<div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+			<div class="fixed inset-0 z-10 overflow-y-auto">
+				<div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+					<div class="relative transform rounded-lg bg-base-300 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg px-6 py-4">
+						<!-- Body -->
+						<p class="text-lg text-gray-100 mb-4">
+							Quick selector
+						</p>
+						<select class="form-select block w-full py-1" ref="scaleSelect">
+							<option />
+							<option :selected="selectedIdx == 1">
+								Last 5 minutes (live)
+							</option>
+							<option :selected="selectedIdx == 2">
+								Last 15 minutes
+							</option>
+							<option :selected="selectedIdx == 3">
+								Last 30 minutes
+							</option>
+							<option :selected="selectedIdx == 4">
+								Last 1 hour
+							</option>
+							<option :selected="selectedIdx == 5">
+								Last 3 hours
+							</option>
+							<option :selected="selectedIdx == 6">
+								Last 6 hours
+							</option>
+						</select>
+						<p class="text-lg text-gray-100 my-4">
+							Range selector
+						</p>
+						<DatePicker
+							v-model="range" :max-date="new Date()" :model-config="modelConfig" color="teal"
+							is-range is-dark>
+							<template #default="{ inputValue, isDragging, togglePopover }">
+								<div class="flex flex-col sm:flex-row justify-start items-center">
+									<div class="relative flex-grow">
+										<svg
+											class="text-gray-600 w-4 h-full mx-2 absolute pointer-events-none"
+											fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+											viewBox="0 0 24 24" stroke="currentColor">
+											<path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+										</svg>
+										<input
+											class="flex-grow pl-8 pr-2 py-1 bg-gray-100 border rounded w-full"
+											:class="isDragging ? 'text-gray-600' : 'text-gray-900'"
+											:value="inputValue.start" @click="togglePopover()" placeholder="Click to select">
+									</div>
+									<span class="flex-shrink-0 m-2">
+										<svg class="w-4 h-4 stroke-current text-gray-600" viewBox="0 0 24 24">
+											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+										</svg>
+									</span>
+									<div class="relative flex-grow">
+										<svg
+											class="text-gray-600 w-4 h-full mx-2 absolute pointer-events-none"
+											fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+											viewBox="0 0 24 24" stroke="currentColor">
+											<path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+										</svg>
+										<input
+											class="flex-grow pl-8 pr-2 py-1 bg-gray-100 border rounded w-full"
+											:class="isDragging ? 'text-gray-600' : 'text-gray-900'"
+											:value="inputValue.end" @click="togglePopover()" placeholder="Click to select">
+									</div>
+								</div>
+							</template>
+						</DatePicker>
+
+						<!-- Footer -->
+						<div class="flex justify-between mt-4">
+							<button @click="rangePickOpen = false">
+								<svg
+									class="fill-current text-white" xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+									viewBox="0 0 18 18">
+									<path d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z" />
+								</svg>
+							</button>
+							<div>
+								<button class="px-4 bg-transparent p-2 rounded-md text-green-400 hover:bg-gray-800 mr-2" @click="resetGraphRange()">
+									Clear
+								</button>
+								<button class="px-4 bg-green-400 p-2 rounded-md text-white hover:bg-green-500" @click="applyRangeSelect()">
+									Apply
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 	</section>
 </template>
 
 <script>
+import moment from 'moment';
 import Skeleton from '@/components/Graphs/Base/Skeleton'
+
+import { DatePicker } from 'v-calendar'
 import { useServersStore } from '@/stores/servers';
 import { nextTick } from 'vue';
 import { initWS, closeWS, CDC_VALUES } from '@/utils/websockets';
-import { fmtDuration, fmtGranularity, isServerOnline } from '@/utils/help';
+import { fmtDuration, fmtGranularity, isServerOnline, computeGranularity } from '@/utils/help';
 import { defineAsyncComponent } from 'vue'
+
+import 'v-calendar/dist/style.css';
+
+const scaleIdxArr = [5, 15, 30, 60, 180, 360]
 
 export default {
 	name: 'DetailsServer',
 
 	components: {
+		DatePicker,
 		CpuTimes: defineAsyncComponent({
 			loader: () => import('@/components/Graphs/cpu/CpuTimes'),
 			loadingComponent: Skeleton
@@ -174,6 +280,16 @@ export default {
 
 	data () {
 		return {
+			selectedIdx: 1,
+			rangePickOpen: false,
+			modelConfig: {
+				type: 'string',
+				mask: 'YYYY-MM-DD'
+			},
+			range: {
+				start: null,
+				end: null
+			},
 			graphRange: {
 				granularity: 1,
 				scale: 300,
@@ -218,6 +334,50 @@ export default {
 	},
 
 	methods: {
+		resetGraphRange: function() {
+			this.$refs.scaleSelect.selectedIndex = 1;
+			this.graphRange = {
+				granularity: 1,
+				scale: 300,
+				start: null,
+				end: null
+			}
+
+			this.range = {
+				start: null,
+				end: null
+			}
+		},
+		applyRangeSelect: function() {
+			if (this.range.start != null) {
+				// TODO:
+				// Define the trueRange in the format of YYYY-MM-DDTHH:mm:ss.SSS
+				let start = moment(this.range.start);
+				let end = moment(this.range.end)
+				// Assume the scale will never be bigger than 1 info per seconds
+				this.graphRange = {
+					granularity: computeGranularity(moment.duration(end.diff(start)).asSeconds()),
+					scale: end.diff(start, 'seconds'),
+					start: start.format("YYYY-MM-DDTHH:mm:ss.SSS"),
+					end: end.format("YYYY-MM-DDTHH:mm:ss.SSS")
+				}
+				console.log("Computed granularity is:", this.graphRange.granularity);
+			} else {
+				const scaleIdx = this.$refs.scaleSelect.selectedIndex;
+				if (scaleIdx !== 0) {
+					this.selectedIdx = scaleIdx;
+					this.graphRange = {
+						granularity: computeGranularity(scaleIdxArr[scaleIdx - 1] * 60),
+						scale: scaleIdxArr[scaleIdx - 1] * 60,
+						start: null,
+						end: null
+					}
+					console.log("Computed granularity is:", this.graphRange.granularity);
+				}
+			}
+
+			this.rangePickOpen = false;
+		},
 		convertToObject: function(jsonValues) {
 			return {
 				system: jsonValues[0],

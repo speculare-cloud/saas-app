@@ -62,3 +62,9 @@ export function isServerOnline (updated_at) {
 	if (moment.utc(updated_at).isBefore(moment.utc().subtract(5, 'minutes'))) return 0 // offline
 	return 2 // online
 }
+
+export function computeGranularity (scale) {
+	// Using ~ we convert the float to int once in it inversed form
+	// Reusing ~ again we reverse it again and TADAAA not decimal
+	return ~~((0.003 * scale) * 0.93 + 0.298206)
+}

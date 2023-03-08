@@ -93,6 +93,10 @@ export default {
 			// Init mouseenter and mouseleave event for freezing the charts
 			initMouseEvent(this)
 		},
+		destroyChart: function() {
+			this.chart?.destroy();
+			this.chart = null;
+		},
 		getSize: function () {
 			return {
 				width: this.$refs.uniqueName.clientWidth,
