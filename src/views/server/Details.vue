@@ -134,7 +134,7 @@
 		<div v-if="rangePickOpen" class="relative z-10">
 			<div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
 			<div class="fixed inset-0 z-10 overflow-y-auto">
-				<div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+				<div class="flex min-h-full items-center md:items-end justify-center p-4 text-center sm:items-center sm:p-0">
 					<div class="relative transform rounded-lg bg-base-300 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg px-6 py-4">
 						<!-- Body -->
 						<p class="text-lg text-gray-100 mb-4">
