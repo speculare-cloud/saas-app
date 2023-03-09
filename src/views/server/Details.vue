@@ -165,7 +165,7 @@
 							Range selector
 						</p>
 						<DatePicker
-							v-model="range" :max-date="new Date()" :model-config="modelConfig" color="teal"
+							v-model="range" :max-date="tomorrow" :model-config="modelConfig" color="teal"
 							is-range is-dark>
 							<template #default="{ inputValue, isDragging, togglePopover }">
 								<div class="flex flex-col sm:flex-row justify-start items-center">
@@ -276,6 +276,14 @@ export default {
 	setup () {
 		const store = useServersStore();
 		return { store, fmtDuration, isServerOnline, fmtGranularity }
+	},
+
+	computed: {
+		tomorrow() {
+			let date = new Date();
+			date.setDate(date.getDate() + 1);
+			return date;
+		}
 	},
 
 	data () {
