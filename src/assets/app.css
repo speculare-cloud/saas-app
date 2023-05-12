@@ -158,6 +158,21 @@ body,
     will-change: transform
 }
 
+.status-indicator--xs {
+    width: 30px;
+    height: 30px
+}
+
+.status-indicator--xs .circle {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 8.33px;
+    height: 8.33px;
+    animation-iteration-count: 0;
+    will-change: transform
+}
+
 @keyframes pulsate-tertiary {
     45% {
         transform: scale(1, 1)

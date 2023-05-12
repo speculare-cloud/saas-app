@@ -7,7 +7,7 @@
 				</h1>
 			</div>
 		</div>
-		<div class="mt-12">
+		<div class="mt-12 mb-12">
 			<div class="overflow-x-auto no-scrollbar rounded-lg shadow">
 				<table class="table w-full text-[#c5c8cb]">
 					<thead>
@@ -42,13 +42,6 @@
 						</tr>
 					</tbody>
 				</table>
-			</div>
-			<div class="mt-8 flex justify-center">
-				<div class="btn-group">
-					<button class="btn btn-active">
-						1
-					</button>
-				</div>
 			</div>
 		</div>
 	</section>
@@ -113,6 +106,7 @@ export default {
 							}
 						})
 					}).catch((err) => {
+						// TODO - Handle errors
 						console.error(err)
 					})
 			}

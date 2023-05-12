@@ -5,16 +5,16 @@ function sanitizeGraphData (vm) {
 	const dataSize = vm.chartLabels.length
 	const threshold = vm.graphRange.scale / 60 + 15
 
-	console.log("Range scale:", vm.graphRange.scale);
-	console.log("Datasize is:", dataSize);
-	console.log("Threshold is defined as:", threshold);
+	// console.log("Range scale:", vm.graphRange.scale);
+	// console.log("Datasize is:", dataSize);
+	// console.log("Threshold is defined as:", threshold);
 
 	// Be sure the date are following in order (by 1s for now)
 	const now = moment().utc().unix()
 	const min = moment.utc().subtract(vm.graphRange.scale, 'seconds').unix()
 	// Add the first item as the oldest to avoid big blank.
 	if (vm.chartLabels.length === 0 || vm.chartLabels[0] >= min + threshold) {
-		console.log(vm.table + ': first triggered')
+		// console.log(vm.table + ': first triggered')
 		vm.unshiftEmpty(min + threshold - 1, null)
 	}
 	// Set the newest as null in case it does not exists.
@@ -52,8 +52,8 @@ function sanitizeGraphData (vm) {
 		}
 	}
 
-	console.log(vm.chartLabels);
-	console.log(vm.chartDataObj);
+	// console.log(vm.chartLabels);
+	// console.log(vm.chartDataObj);
 }
 
 function basicRespHandler (vm, data) {
