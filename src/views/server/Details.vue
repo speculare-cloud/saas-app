@@ -145,7 +145,7 @@
 			<IoNetsOverall :key="this.$route.params.uuid" :uuid="this.$route.params.uuid" :berta="this.$route.params.berta" :graph-range="graphRange" />
 		</div>
 
-		<button class="w-fit btn bg-base-300 shadow-md shadow-slate-900 fixed bottom-8 right-8" @click="rangePickOpen = !rangePickOpen">
+		<button class="btn btn-md bg-success bg-opacity-30 fixed bottom-8 right-8" @click="rangePickOpen = !rangePickOpen">
 			<img src="@/assets/graph_custom.svg" class="w-6 h-6 inline-block">
 		</button>
 
