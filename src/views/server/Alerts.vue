@@ -48,7 +48,11 @@
 						<code>Warning: {{ alert.warn }}</code>
 						<code>Critical: {{ alert.crit }}</code>
 					</div>
-					<div class="text-right">
+					<div class="group/button flex flex-row justify-end gap-2">
+						<button @click="deleteAlert(alert)" class="invisible opacity-0 group-hover/button:visible group-hover/button:opacity-100 w-fit btn btn-error !h-10 !min-h-[2.5rem] transition-opacity">
+							<span v-if="!alert.deleting">delete</span>
+							<span v-if="alert.deleting">loading...</span>
+						</button>
 						<button class="w-fit btn group-hover:btn-info !h-10 !min-h-[2.5rem]">
 							Edit
 						</button>
@@ -95,6 +99,7 @@ export default {
 				});
 		},
 		actionAlert: async function(alert) {
+			if (alert.loading) return;
 			alert.loading = true;
 			const payload = { active: !alert.active};
 			await this.$http.patch(this.$serverBase(this.$route.params.berta) + "/api/alerts?id=" + alert.id, payload)
@@ -111,6 +116,24 @@ export default {
 					console.log(err);
 				});
 			alert.loading = false;
+		},
+		deleteAlert: async function(alert) {
+			if (alert.deleting) return;
+			alert.deleting = true;
+
+			await this.$http.delete(this.$serverBase(this.$route.params.berta) + "/api/alerts?id=" + alert.id)
+				.then((resp) => {
+					if (resp.data === 1) {
+						const idx = this.alerts.findIndex(el => el.id == alert.id);
+						this.alerts.splice(idx, 1);
+					} else {
+						alert.deleting = false;
+					}
+				}).catch((err) => {
+					alert.deleting = false;
+					// TODO - Handle errors
+					console.log(err);
+				});
 		}
 	}
 }
