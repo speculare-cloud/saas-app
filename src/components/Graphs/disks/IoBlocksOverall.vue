@@ -76,9 +76,9 @@ export default {
 
 		// Don't setup anything before everything is rendered
 		nextTick(() => {
-			// Await the first call to iostats_count cause it's needed for the next
+			// Await the first call to ioblocks/count cause it's needed for the next
 			vm.$http
-				.get(vm.$serverBase(vm.$route.params.berta) + "/api/ioblocks_count?uuid=" + vm.uuid + getRangeParams(vm.graphRange))
+				.get(vm.$serverBase(vm.$route.params.berta) + "/api/ioblocks/count?uuid=" + vm.uuid + getRangeParams(vm.graphRange))
 				.then(resp => (vm.groupedSkip = resp.data))
 				.catch(err => {
 					console.log('[ionets] Failed to fetch number of disks', err)
