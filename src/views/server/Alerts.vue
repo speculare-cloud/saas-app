@@ -49,7 +49,7 @@
 						<code>Critical: {{ alert.crit }}</code>
 					</div>
 					<div class="text-right">
-						<button class="w-fit btn group-hover:btn-info !h-10 !min-h-[2.5rem] normal-case" key="add_server">
+						<button class="w-fit btn group-hover:btn-info !h-10 !min-h-[2.5rem]">
 							Edit
 						</button>
 					</div>

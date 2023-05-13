@@ -34,41 +34,50 @@
 		</div>
 		<div class="mt-12">
 			<div class="flex flex-col md:flex-row md:space-x-4">
-				<div class="flex flex-col align-middle justify-between mb-5 text-left flex-1 p-5 bg-base-300 shadow-md rounded-lg">
-					<h6 class="text-[#c5c8cb] text-sm">
-						Currently up for
-					</h6>
-					<h4 class="text-white text-lg">
-						<span v-if="hostInfo">{{ fmtDuration(hostInfo.uptime) }}</span>
-						<div v-else class="animate-pulse bg-slate-600 w-full rounded h-[22px] mt-3" />
-					</h4>
-				</div>
-				<div class="flex flex-row items-center justify-between mb-5 text-left flex-1 p-5 bg-base-300 shadow-md rounded-lg">
-					<div class="flex-1 flex flex-col align-middle justify-between">
-						<h6 class="text-[#c5c8cb]">
-							Incidents
-						</h6>
-						<h4 class="text-white text-lg">
-							<span v-if="hostInfo">{{ incidentsCount }}<span v-if="incidentsCount > 100">+</span></span>
-							<div v-else class="animate-pulse bg-slate-600 w-full rounded h-[22px] mt-3" />
-						</h4>
+				<div class="flex-[2_2_0%] grid grid-cols-2 gap-4 mb-5">
+					<div class="flex flex-row items-center justify-between text-left p-5 bg-base-300 shadow-md rounded-lg">
+						<div class="flex flex-col w-full">
+							<h6 class="text-[#c5c8cb]">
+								Currently up for
+							</h6>
+							<h4 class="text-white text-lg mt-2 flex flex-row gap-2 h-[34px]">
+								<span v-if="hostInfo">{{ fmtDuration(hostInfo.uptime) }}</span>
+								<div v-else class="animate-pulse bg-slate-600 w-full rounded h-[22px] mt-3" />
+							</h4>
+						</div>
 					</div>
-					<router-link key="incidents" :to="{ name: 'Incidents' }" class="text-[#c5c8cb]">
-						<svg
-							xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 fill-current md:h-8 md:w-8 rotate-180 hover:!fill-white transition duration-300" width="24" height="24"
-							viewBox="0 0 24 24">
-							<path d="M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z" />
-						</svg>
-					</router-link>
+					<div class="flex flex-row items-center justify-between text-left p-5 bg-base-300 shadow-md rounded-lg">
+						<div class="flex flex-col w-full">
+							<h6 class="text-[#c5c8cb]">
+								Incidents
+							</h6>
+							<h4 class="text-white text-lg mt-2 flex flex-row gap-2 h-[34px]">
+								<span v-if="hostInfo">{{ incidentsCount }}<span v-if="incidentsCount > 100">+</span></span>
+								<div v-else class="animate-pulse bg-slate-600 w-full rounded h-[22px] mt-3" />
+							</h4>
+						</div>
+						<router-link key="incidents" :to="{ name: 'Incidents' }" class="text-[#c5c8cb]">
+							<svg
+								xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 fill-current md:h-8 md:w-8 rotate-180 hover:!fill-white transition duration-300" width="24" height="24"
+								viewBox="0 0 24 24">
+								<path d="M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z" />
+							</svg>
+						</router-link>
+					</div>
 				</div>
-				<div class="flex flex-row items-center justify-between mb-5 text-left flex-1 p-5 bg-base-300 shadow-md rounded-lg gap-2">
+				<div class="flex-1 flex flex-row items-center justify-between mb-5 text-left p-5 bg-base-300 shadow-md rounded-lg gap-2">
 					<div class="flex flex-col w-full">
 						<h6 class="text-[#c5c8cb]">
 							Alerts
 						</h6>
-						<h4 class="text-white mt-2 w-full">
-							<span v-if="hostInfo" class="badge p-4 text-white text-[15px] w-full">
-								{{ alertsCount }} {{ alertsCount > 1 ? 'actives' : 'active' }}
+						<h4 class="text-white mt-2 flex flex-row gap-2 h-[34px]">
+							<span v-if="hostInfo" class="badge badge-success bg-opacity-[15%] p-4 text-white text-[15px] w-full text-ellipsis whitespace-nowrap">
+								{{ alertsCount.active }} {{ alertsCount.active > 1 ? 'actives' : 'active' }}
+							</span>
+							<div v-else class="animate-pulse bg-slate-600 w-full rounded h-[22px] mt-3" />
+
+							<span v-if="hostInfo" class="badge badge-error bg-opacity-[15%] p-4 text-white text-[15px] w-full text-ellipsis whitespace-nowrap">
+								{{ alertsCount.inactive }} {{ alertsCount.inactive > 1 ? 'inactives' : 'inactive' }}
 							</span>
 							<div v-else class="animate-pulse bg-slate-600 w-full rounded h-[22px] mt-3" />
 						</h4>
@@ -136,7 +145,7 @@
 			<IoNetsOverall :key="this.$route.params.uuid" :uuid="this.$route.params.uuid" :berta="this.$route.params.berta" :graph-range="graphRange" />
 		</div>
 
-		<button class="p-3 bg-base-300 rounded-md hover:bg-gray-800 focus:outline-none fixed bottom-8 right-8" @click="rangePickOpen = !rangePickOpen">
+		<button class="w-fit btn bg-base-300 shadow-md shadow-slate-900 fixed bottom-8 right-8" @click="rangePickOpen = !rangePickOpen">
 			<img src="@/assets/graph_custom.svg" class="w-6 h-6 inline-block">
 		</button>
 
@@ -213,18 +222,18 @@
 
 						<!-- Footer -->
 						<div class="flex justify-between mt-4">
-							<button @click="rangePickOpen = false">
+							<button class="w-fit btn group-hover:btn-info !h-10 !min-h-[2.5rem]" @click="rangePickOpen = false">
 								<svg
 									class="fill-current text-white" xmlns="http://www.w3.org/2000/svg" width="18" height="18"
 									viewBox="0 0 18 18">
 									<path d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z" />
 								</svg>
 							</button>
-							<div>
-								<button class="px-4 bg-transparent p-2 rounded-md text-green-400 hover:bg-gray-800 mr-2" @click="resetGraphRange()">
+							<div class="flex flex-row gap-2">
+								<button class="w-fit btn !h-10 !min-h-[2.5rem]" @click="resetGraphRange()">
 									Clear
 								</button>
-								<button class="px-4 bg-green-400 p-2 rounded-md text-white hover:bg-green-500" @click="applyRangeSelect()">
+								<button class="w-fit btn btn-success !h-10 !min-h-[2.5rem]" @click="applyRangeSelect()">
 									Apply
 								</button>
 							</div>
@@ -313,10 +322,14 @@ export default {
 				start: null,
 				end: null
 			},
+			alertsCount: {
+				active: 0,
+				inactive: 0,
+				total: 0
+			},
 			hostInfo: null,
 			connection: null,
 			incidentsCount: 0,
-			alertsCount: 0,
 			granularity: null,
 		}
 	},
@@ -422,23 +435,16 @@ export default {
 					// TODO - Handle errors
 					console.log(err);
 				});
-			await this.$http.get(this.$serverBase(this.$route.params.berta) + "/api/incidents_count?uuid=" + this.$route.params.uuid)
+			await this.$http.get(this.$serverBase(this.$route.params.berta) + "/api/incidents/count?uuid=" + this.$route.params.uuid)
 				.then((resp) => {
-					this.incidentsCount = resp.data ?? 0;
+					this.incidentsCount = resp.data;
 				}).catch((err) => {
 					// TODO - Handle errors
 					console.log(err);
 				});
-			await this.$http.get(this.$serverBase(this.$route.params.berta) + "/api/alerts_count?uuid=" + this.$route.params.uuid)
+			await this.$http.get(this.$serverBase(this.$route.params.berta) + "/api/alerts/count?uuid=" + this.$route.params.uuid)
 				.then((resp) => {
-					this.alertsCount = resp.data ?? 0;
-				}).catch((err) => {
-					// TODO - Handle errors
-					console.log(err);
-				});
-			await this.$http.get(this.$serverBase(this.$route.params.berta) + "/api/incidents_count?uuid=" + this.$route.params.uuid)
-				.then((resp) => {
-					this.incidentsCount = resp.data ?? 0;
+					this.alertsCount = resp.data;
 				}).catch((err) => {
 					// TODO - Handle errors
 					console.log(err);
