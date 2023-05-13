@@ -36,22 +36,22 @@
 			<div class="flex flex-col md:flex-row md:space-x-4">
 				<div class="flex-[2_2_0%] grid grid-cols-2 gap-4 mb-5">
 					<div class="flex flex-row items-center justify-between text-left p-5 bg-base-300 shadow-md rounded-lg">
-						<div class="flex flex-col w-full">
+						<div class="flex flex-col w-full h-full justify-around">
 							<h6 class="text-[#c5c8cb]">
 								Currently up for
 							</h6>
-							<h4 class="text-white text-lg mt-2 flex flex-row gap-2 h-[34px]">
+							<h4 class="text-white text-lg mt-2 flex flex-row gap-2 min-h-[34px]">
 								<span v-if="hostInfo">{{ fmtDuration(hostInfo.uptime) }}</span>
 								<div v-else class="animate-pulse bg-slate-600 w-full rounded h-[22px] mt-3" />
 							</h4>
 						</div>
 					</div>
 					<div class="flex flex-row items-center justify-between text-left p-5 bg-base-300 shadow-md rounded-lg">
-						<div class="flex flex-col w-full">
+						<div class="flex flex-col w-full h-full justify-around">
 							<h6 class="text-[#c5c8cb]">
 								Incidents
 							</h6>
-							<h4 class="text-white text-lg mt-2 flex flex-row gap-2 h-[34px]">
+							<h4 class="text-white text-lg mt-2 flex flex-row gap-2 min-h-[34px]">
 								<span v-if="hostInfo">{{ incidentsCount }}<span v-if="incidentsCount > 100">+</span></span>
 								<div v-else class="animate-pulse bg-slate-600 w-full rounded h-[22px] mt-3" />
 							</h4>
@@ -66,11 +66,11 @@
 					</div>
 				</div>
 				<div class="flex-1 flex flex-row items-center justify-between mb-5 text-left p-5 bg-base-300 shadow-md rounded-lg gap-2">
-					<div class="flex flex-col w-full">
+					<div class="flex flex-col w-full h-full justify-around">
 						<h6 class="text-[#c5c8cb]">
 							Alerts
 						</h6>
-						<h4 class="text-white mt-2 flex flex-row gap-2 h-[34px]">
+						<h4 class="text-white mt-2 flex flex-row gap-2 min-h-[34px]">
 							<span v-if="hostInfo" class="badge badge-success bg-opacity-[15%] p-4 text-white text-[15px] w-full text-ellipsis whitespace-nowrap">
 								{{ alertsCount.active }} {{ alertsCount.active > 1 ? 'actives' : 'active' }}
 							</span>
