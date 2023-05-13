@@ -49,11 +49,11 @@
 						<code>Critical: {{ alert.crit }}</code>
 					</div>
 					<div class="group/button flex flex-row justify-end gap-2">
-						<button @click="deleteAlert(alert)" class="invisible opacity-0 group-hover/button:visible group-hover/button:opacity-100 w-fit btn btn-error !h-10 !min-h-[2.5rem] transition-opacity">
+						<button @click="deleteAlert(alert)" class="invisible opacity-0 group-hover/button:visible group-hover/button:opacity-100 btn btn-md btn-error transition-opacity">
 							<span v-if="!alert.deleting">delete</span>
 							<span v-if="alert.deleting">loading...</span>
 						</button>
-						<button class="w-fit btn group-hover:btn-info !h-10 !min-h-[2.5rem]">
+						<button class="btn btn-md group-hover:btn-info">
 							Edit
 						</button>
 					</div>

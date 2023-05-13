@@ -16,11 +16,11 @@
 
 					<input
 						type="text" placeholder="Search monitors"
-						class="input input-bordered w-full bg-base-300 !pl-[34px] h-10"
+						class="input input-md input-bordered w-full bg-base-300 !pl-[34px] h-10"
 						v-model="searchText" @input="filterList" style="font-size: 0.875rem;">
 				</div>
 
-				<router-link key="add_server" :to="{ name: 'NewServer' }" class="btn btn-info !h-10 !min-h-[2.5rem] normal-case">
+				<router-link key="add_server" :to="{ name: 'NewServer' }" class="btn btn-md btn-info min-h-[2.5rem] h-[2.5rem]">
 					add a server
 				</router-link>
 			</div>

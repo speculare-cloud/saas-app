@@ -1,7 +1,7 @@
 <template>
 	<section>
 		<div class="flex-col">
-			<router-link key="servers" :to="{ name: 'Servers' }" class="btn btn-sm md:btn-md btn-ghost gap-2 normal-case lg:gap-3 !pl-0 !pr-2">
+			<router-link key="servers" :to="{ name: 'Servers' }" class="btn btn-md btn-ghost gap-2 normal-case lg:gap-3 !pl-0 !pr-2">
 				<svg
 					xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 fill-current md:h-8 md:w-8" width="24" height="24"
 					viewBox="0 0 24 24">
@@ -222,7 +222,7 @@
 
 						<!-- Footer -->
 						<div class="flex justify-between mt-4">
-							<button class="w-fit btn group-hover:btn-info !h-10 !min-h-[2.5rem]" @click="rangePickOpen = false">
+							<button class="btn btn-md" @click="rangePickOpen = false">
 								<svg
 									class="fill-current text-white" xmlns="http://www.w3.org/2000/svg" width="18" height="18"
 									viewBox="0 0 18 18">
@@ -230,10 +230,10 @@
 								</svg>
 							</button>
 							<div class="flex flex-row gap-2">
-								<button class="w-fit btn !h-10 !min-h-[2.5rem]" @click="resetGraphRange()">
+								<button class="btn btn-md" @click="resetGraphRange()">
 									Clear
 								</button>
-								<button class="w-fit btn btn-success !h-10 !min-h-[2.5rem]" @click="applyRangeSelect()">
+								<button class="btn btn-md btn-success" @click="applyRangeSelect()">
 									Apply
 								</button>
 							</div>

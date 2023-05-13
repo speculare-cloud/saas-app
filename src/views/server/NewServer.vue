@@ -1,7 +1,7 @@
 <template>
 	<section class="mb-10">
 		<div class="flex-col">
-			<router-link key="servers" :to="{ name: 'Servers' }" class="btn btn-sm md:btn-md btn-ghost gap-2 normal-case lg:gap-3 !pl-0 !pr-2">
+			<router-link key="servers" :to="{ name: 'Servers' }" class="btn btn-md btn-ghost gap-2 normal-case lg:gap-3 !pl-0 !pr-2">
 				<svg
 					xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 fill-current md:h-8 md:w-8" width="24" height="24"
 					viewBox="0 0 24 24">
@@ -72,8 +72,8 @@
 				</div>
 				<router-link
 					:to="{ name: 'Servers' }" :class="host_uuid === null ? 'disabled' : ''"
-					class="btn btn-info !h-10 !min-h-[2.5rem] normal-case" key="add_server">
-					Goto servers
+					class="btn btn-md btn-info" key="add_server">
+					goto servers
 				</router-link>
 			</div>
 		</div>

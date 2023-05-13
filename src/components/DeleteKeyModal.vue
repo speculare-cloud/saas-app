@@ -3,7 +3,7 @@
 		<input ref="deleteModal" type="checkbox" :id="'delete-modal-' + trunkKey" class="modal-toggle">
 		<div class="modal modal-bottom sm:modal-middle">
 			<div class="modal-box relative">
-				<label :for="'delete-modal-' + trunkKey" class="btn btn-sm lg:btn-md btn-circle absolute right-2 top-2">✕</label>
+				<label :for="'delete-modal-' + trunkKey" class="btn btn-md btn-circle absolute right-2 top-2">✕</label>
 				<h3 class="font-bold text-lg">
 					Are you really sure?
 				</h3>
@@ -19,8 +19,8 @@
 						class="input input-bordered input-error w-full" style="font-size: 1rem;">
 				</div>
 				<div class="modal-action">
-					<label :for="'delete-modal-' + trunkKey" class="btn btn-sm lg:btn-md lowercase">cancel</label>
-					<label @click="deleteKey" class="btn btn-sm lg:btn-md btn-error lowercase">
+					<label :for="'delete-modal-' + trunkKey" class="btn btn-md lowercase">cancel</label>
+					<label @click="deleteKey" class="btn btn-md btn-error lowercase">
 						<span v-if="!loading">delete</span>
 						<span v-if="loading">loading...</span>
 					</label>
