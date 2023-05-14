@@ -32,10 +32,10 @@
 								↪ Running every {{ alert.timing }}s
 							</p>
 						</div>
-						<div class="tooltip" :data-tip="!(alert.activeLoading ?? false) ? (alert.active ? 'Pause' : 'Resume') : 'Loading'">
+						<div class="tooltip" :data-tip="activeLoading != alert.id ? (alert.active ? 'Pause' : 'Resume') : 'Loading'">
 							<button
 								@click="switchActiveAlert(alert)" class="status-indicator status-indicator--xs"
-								:class="!(alert.activeLoading ?? false) ? (alert.active ? 'status-indicator--success' : 'status-indicator--danger') : 'status-indicator--warning'">
+								:class="activeLoading != alert.id ? (alert.active ? 'status-indicator--success' : 'status-indicator--danger') : 'status-indicator--warning'">
 								<div class="circle circle--animated circle-main" />
 								<div class="circle circle--animated circle-secondary" />
 								<div class="circle circle--animated circle-tertiary" />
@@ -50,10 +50,10 @@
 					</div>
 					<div class="flex flex-row justify-end gap-2">
 						<button @click="deleteAlert(alert)" class="invisible opacity-0 group-hover:visible group-hover:opacity-100 btn btn-md btn-error transition-opacity">
-							<span v-if="!alert.deleting">delete</span>
-							<span v-if="alert.deleting">loading...</span>
+							<span v-if="deleteLoading != alert.id">delete</span>
+							<span v-else>loading...</span>
 						</button>
-						<label for="my-modal-4" class="btn btn-md group-hover:btn-info" @click="editingAlert = Object.assign({}, alert)">
+						<label for="my-modal-4" class="btn btn-md group-hover:btn-info" @click="defineEditingAlert(alert)">
 							Edit
 						</label>
 					</div>
@@ -61,86 +61,36 @@
 			</div>
 		</div>
 
-		<input type="checkbox" id="my-modal-4" class="modal-toggle">
-		<label for="my-modal-4" class="modal modal-bottom sm:modal-middle cursor-pointer">
-			<label class="modal-box relative flex flex-col gap-4" for="" v-if="editingAlert">
-				<h3 class="text-lg font-bold">{{ editingAlert.name }}</h3>
-
-				<div class="flex flex-col gap-1">
-					<p>Warning threshold:</p>
-					<codemirror
-						v-model="editingAlert.warn"
-						placeholder="Enter the warning threshold (use $this to compare)"
-						:indent-with-tab="true"
-						:tab-size="4"
-						:extensions="extensions"
-						@ready="handleReady" />
-				</div>
-
-				<div class="flex flex-col gap-1">
-					<p>Critical threshold:</p>
-					<codemirror
-						v-model="editingAlert.crit"
-						placeholder="Enter the critical threshold (use $this to compare)"
-						:indent-with-tab="true"
-						:tab-size="4"
-						:extensions="extensions"
-						@ready="handleReady" />
-				</div>
-
-				<div class="modal-action justify-between mt-0">
-					<label for="my-modal-4" class="btn btn-md" @click="editingAlert = null">
-						<svg
-							class="fill-current text-white" xmlns="http://www.w3.org/2000/svg" width="18" height="18"
-							viewBox="0 0 18 18">
-							<path d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z" />
-						</svg>
-					</label>
-					<div class="flex flex-row gap-2">
-						<button class="btn btn-md btn-info" @click="testAlert(editingAlert)">
-							{{ editingAlert.testLoading ? 'loading...' : 'test' }}
-						</button>
-						<button class="btn btn-md btn-success" @click="updateAlert(editingAlert, {whole: editingAlert, update: editingAlert})">
-							{{ editingAlert.loading ? 'loading...' : 'apply' }}
-						</button>
-					</div>
-				</div>
-
-				<div v-if="editingAlert.alertContent" class="alert px-4 py-2 shadow-lg" :class="editingAlert.alertSuccess ? 'alert-success' : 'alert-error'">
-					<code>{{ editingAlert.alertContent }}</code>
-				</div>
-			</label>
-		</label>
+		<input type="checkbox" id="my-modal-4" class="modal-toggle" ref="updateToggle">
+		<UpdateAlertModal
+			v-if="editingAlert.original && editingAlert.editing"
+			:alert="editingAlert"
+			@close="defineEditingAlert(null)"
+			@update:alert="(alert) => alertUpdated(alert)"
+			@update:editing="(alert) => editingAlert.editing = alert" />
 	</section>
 </template>
 
 <script>
-import { nextTick, shallowRef } from 'vue';
-import { Codemirror } from 'vue-codemirror'
-import { oneDark } from '@codemirror/theme-one-dark'
-import { rust } from '@codemirror/lang-rust'
+import { nextTick } from 'vue';
+import UpdateAlertModal from '@/components/UpdateAlertModal.vue';
 
 export default {
-	name: 'Incidents',
+	name: 'Alerts',
 
 	components: {
-		Codemirror
-	},
-
-	setup() {
-		const extensions = [rust(), oneDark]
-		const view = shallowRef()
-		const handleReady = (payload) => {
-			view.value = payload.view
-		}
-
-		return { extensions, handleReady };
+		UpdateAlertModal
 	},
 
 	data() {
 		return {
 			alerts: [],
-			editingAlert: null
+			editingAlert: {
+				original: null,
+				editing: null
+			},
+			activeLoading: null,
+			deleteLoading: null,
 		}
 	},
 
@@ -151,6 +101,22 @@ export default {
 	},
 
 	methods: {
+		defineEditingAlert: function(alert) {
+			if (alert == null) {
+				this.editingAlert = {
+					original: null,
+					editing: null
+				}
+				// Force close to avoid issues (fails to reopen on first click next)
+				this.$refs.updateToggle.checked = false;
+				return;
+			}
+
+			this.editingAlert = {
+				original: alert,
+				editing: Object.assign({}, alert)
+			}
+		},
 		refreshList: async function() {
 			await this.$http.get(this.$serverBase(this.$route.params.berta) + "/api/alerts?uuid=" + this.$route.params.uuid)
 				.then((resp) => {
@@ -168,20 +134,29 @@ export default {
 				});
 		},
 		switchActiveAlert: async function(alert) {
-			if (alert.activeLoading) return;
-			alert.activeLoading = true;
-			const payload = {
-				whole: alert,
-				update: {
-					active: !alert.active
-				}
-			};
-			await this.updateAlert(alert, payload);
-			alert.activeLoading = false;
+			if (this.activeLoading) return;
+			this.activeLoading = alert.id;
+
+			const payload = { whole: alert, update: { active: !alert.active }};
+			await this.$http.patch(this.$serverBase(this.$route.params.berta) + "/api/alerts?id=" + alert.id, payload)
+				.then((resp) => {
+					const idx = this.alerts.findIndex(el => el.id == resp.data.id);
+					if (idx !== -1) {
+						this.alerts[idx] = resp.data
+					} else {
+						this.alerts.push(resp.data);
+					}
+				}).catch((err) => {
+					// TODO - Handle erros
+					console.log(err)
+				});
+
+			this.activeLoading = null;
 		},
 		deleteAlert: async function(alert) {
-			if (alert.deleting) return;
-			alert.deleting = true;
+			if (this.deleteLoading) return;
+			this.deleteLoading = alert.id;
+
 			await this.$http.delete(this.$serverBase(this.$route.params.berta) + "/api/alerts?id=" + alert.id)
 				.then((resp) => {
 					if (resp.data === 1) {
@@ -192,42 +167,16 @@ export default {
 					// TODO - Handle errors
 					console.log(err);
 				});
-			alert.deleting = false;
+
+			this.deleteLoading = null;
 		},
-		updateAlert: async function(alert, payload) {
-			if (alert.loading) return;
-			alert.loading = true;
-			await this.$http.patch(this.$serverBase(this.$route.params.berta) + "/api/alerts?id=" + alert.id, payload)
-				.then((resp) => {
-					const elem = resp.data;
-					const idx = this.alerts.findIndex(el => el.id == elem.id);
-					if (idx !== -1) {
-						this.alerts[idx] = elem
-					} else {
-						this.alerts.push(elem);
-					}
-					alert.alertContent = "alert successfully updated";
-					alert.alertSuccess = true;
-				}).catch((err) => {
-					console.error(err);
-					alert.alertContent = "error: " + err.request.response ?? err.message;
-					alert.alertSuccess = false;
-				});
-			alert.loading = false;
-		},
-		testAlert: async function(alert) {
-			if (alert.testLoading) return;
-			alert.testLoading = true;
-			await this.$http.post(this.$serverBase(this.$route.params.berta) + "/api/alerts/test", alert)
-				.then((resp) => {
-					alert.alertContent = resp.data;
-					alert.alertSuccess = true;
-				}).catch((err) => {
-					console.error(err);
-					alert.alertContent = "error: " + err.request.response ?? err.message;
-					alert.alertSuccess = false;
-				});
-			alert.testLoading = false;
+		alertUpdated: function(alert) {
+			const idx = this.alerts.findIndex(el => el.id == alert.id);
+			if (idx !== -1) {
+				this.alerts[idx] = alert
+			} else {
+				this.alerts.push(alert);
+			}
 		}
 	}
 }
