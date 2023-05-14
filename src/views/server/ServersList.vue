@@ -15,7 +15,7 @@
 					</svg>
 
 					<input
-						type="text" placeholder="Search monitors"
+						type="text" placeholder="Search servers"
 						class="input input-md input-bordered w-full bg-base-300 !pl-[34px] h-10"
 						v-model="searchText" @input="filterList" style="font-size: 0.875rem;">
 				</div>

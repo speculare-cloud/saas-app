@@ -433,7 +433,7 @@ export default {
 				});
 			await this.$http.get(this.$serverBase(this.$route.params.berta) + "/api/incidents/count?uuid=" + this.$route.params.uuid)
 				.then((resp) => {
-					this.incidentsCount = resp.data;
+					this.incidentsCount = resp.data.total;
 				}).catch((err) => {
 					// TODO - Handle errors
 					console.log(err);
