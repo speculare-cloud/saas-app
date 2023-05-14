@@ -145,103 +145,99 @@
 			<IoNetsOverall :key="this.$route.params.uuid" :uuid="this.$route.params.uuid" :berta="this.$route.params.berta" :graph-range="graphRange" />
 		</div>
 
-		<button class="btn btn-md bg-success bg-opacity-30 fixed bottom-8 right-8" @click="rangePickOpen = !rangePickOpen">
-			<img src="@/assets/graph_custom.svg" class="w-6 h-6 inline-block">
-		</button>
+		<label for="my-modal-6" class="btn btn-md bg-success fixed bottom-8 right-8 text-black hover:text-white">
+			<svg
+				xmlns="http://www.w3.org/2000/svg" height="48" viewBox="0 96 960 960" width="48"
+				class="w-6 h-6 inline-block fill-current">
+				<path d="M700 926q-58 0-99-41t-41-99q0-58 41-99t99-41q58 0 99 41t41 99q0 58-41 99t-99 41Zm-.235-60Q733 866 756.5 842.735q23.5-23.264 23.5-56.5Q780 753 756.735 729.5q-23.264-23.5-56.5-23.5Q667 706 643.5 729.265q-23.5 23.264-23.5 56.5Q620 819 643.265 842.5q23.264 23.5 56.5 23.5ZM120 816v-60h360v60H120Zm140-310q-58 0-99-41t-41-99q0-58 41-99t99-41q58 0 99 41t41 99q0 58-41 99t-99 41Zm-.235-60Q293 446 316.5 422.735q23.5-23.264 23.5-56.5Q340 333 316.735 309.5q-23.264-23.5-56.5-23.5Q227 286 203.5 309.265q-23.5 23.264-23.5 56.5Q180 399 203.265 422.5q23.264 23.5 56.5 23.5ZM480 396v-60h360v60H480Z" />
+			</svg>
+		</label>
 
-		<div v-if="rangePickOpen" class="relative z-10">
-			<div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
-			<div class="fixed inset-0 z-10 overflow-y-auto">
-				<div class="flex min-h-full items-center md:items-end justify-center p-4 text-center sm:items-center sm:p-0">
-					<div class="relative transform rounded-lg bg-base-300 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg px-6 py-4">
-						<!-- Body -->
-						<p class="text-lg text-gray-100 mb-4">
-							Quick selector
-						</p>
-						<select class="form-select block w-full py-1" ref="scaleSelect">
-							<option />
-							<option :selected="selectedIdx == 1">
-								Last 5 minutes (live)
-							</option>
-							<option :selected="selectedIdx == 2">
-								Last 15 minutes
-							</option>
-							<option :selected="selectedIdx == 3">
-								Last 30 minutes
-							</option>
-							<option :selected="selectedIdx == 4">
-								Last 1 hour
-							</option>
-							<option :selected="selectedIdx == 5">
-								Last 3 hours
-							</option>
-							<option :selected="selectedIdx == 6">
-								Last 6 hours
-							</option>
-						</select>
-						<p class="text-lg text-gray-100 my-4">
-							Range selector
-						</p>
-						<DatePicker
-							v-model="range" :max-date="tomorrow" :model-config="modelConfig" color="teal"
-							is-range is-dark>
-							<template #default="{ inputValue, isDragging, togglePopover }">
-								<div class="flex flex-col sm:flex-row justify-start items-center">
-									<div class="relative flex-grow">
-										<svg
-											class="text-gray-600 w-4 h-full mx-2 absolute pointer-events-none"
-											fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-											viewBox="0 0 24 24" stroke="currentColor">
-											<path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-										</svg>
-										<input
-											class="flex-grow pl-8 pr-2 py-1 bg-gray-100 border rounded w-full"
-											:class="isDragging ? 'text-gray-600' : 'text-gray-900'"
-											:value="inputValue.start" @click="togglePopover()" placeholder="Click to select">
-									</div>
-									<span class="flex-shrink-0 m-2">
-										<svg class="w-4 h-4 stroke-current text-gray-600" viewBox="0 0 24 24">
-											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-										</svg>
-									</span>
-									<div class="relative flex-grow">
-										<svg
-											class="text-gray-600 w-4 h-full mx-2 absolute pointer-events-none"
-											fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-											viewBox="0 0 24 24" stroke="currentColor">
-											<path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-										</svg>
-										<input
-											class="flex-grow pl-8 pr-2 py-1 bg-gray-100 border rounded w-full"
-											:class="isDragging ? 'text-gray-600' : 'text-gray-900'"
-											:value="inputValue.end" @click="togglePopover()" placeholder="Click to select">
-									</div>
-								</div>
-							</template>
-						</DatePicker>
-
-						<!-- Footer -->
-						<div class="flex justify-between mt-4">
-							<button class="btn btn-md" @click="rangePickOpen = false">
+		<input type="checkbox" id="my-modal-6" class="modal-toggle">
+		<label for="my-modal-6" class="modal modal-bottom sm:modal-middle cursor-pointer">
+			<label for="" class="modal-box overscroll-none overflow-y-initial">
+				<!-- Body -->
+				<h3 class="text-lg font-bold mb-2">Quick selector</h3>
+				<select class="form-select block w-full py-1 mb-6" ref="scaleSelect">
+					<option />
+					<option :selected="selectedIdx == 1">
+						Last 5 minutes (live)
+					</option>
+					<option :selected="selectedIdx == 2">
+						Last 15 minutes
+					</option>
+					<option :selected="selectedIdx == 3">
+						Last 30 minutes
+					</option>
+					<option :selected="selectedIdx == 4">
+						Last 1 hour
+					</option>
+					<option :selected="selectedIdx == 5">
+						Last 3 hours
+					</option>
+					<option :selected="selectedIdx == 6">
+						Last 6 hours
+					</option>
+				</select>
+				<h3 class="text-lg font-bold mb-2">Range selector</h3>
+				<DatePicker
+					v-model="range" :max-date="tomorrow" :model-config="modelConfig" color="teal"
+					is-range is-dark>
+					<template #default="{ inputValue, isDragging, togglePopover }">
+						<div class="flex flex-col sm:flex-row justify-start items-center">
+							<div class="relative flex-grow w-full">
 								<svg
-									class="fill-current text-white" xmlns="http://www.w3.org/2000/svg" width="18" height="18"
-									viewBox="0 0 18 18">
-									<path d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z" />
+									class="text-gray-600 w-4 h-full mx-2 absolute pointer-events-none"
+									fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+									viewBox="0 0 24 24" stroke="currentColor">
+									<path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
 								</svg>
-							</button>
-							<div class="flex flex-row gap-2">
-								<button class="btn btn-md" @click="resetGraphRange()">
-									Clear
-								</button>
-								<button class="btn btn-md btn-success" @click="applyRangeSelect()">
-									Apply
-								</button>
+								<input
+									class="flex-grow pl-8 pr-2 py-1 bg-gray-100 border rounded w-full"
+									:class="isDragging ? 'text-gray-600' : 'text-gray-900'"
+									:value="inputValue.start" @click="togglePopover()" placeholder="Click to select">
+							</div>
+							<span class="flex-shrink-0 m-2 text-white">
+								<svg class="rotate-90 sm:rotate-0 w-4 h-4 stroke-current" viewBox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+								</svg>
+							</span>
+							<div class="relative flex-grow w-full">
+								<svg
+									class="text-gray-600 w-4 h-full mx-2 absolute pointer-events-none"
+									fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+									viewBox="0 0 24 24" stroke="currentColor">
+									<path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+								</svg>
+								<input
+									class="flex-grow pl-8 pr-2 py-1 bg-gray-100 border rounded w-full"
+									:class="isDragging ? 'text-gray-600' : 'text-gray-900'"
+									:value="inputValue.end" @click="togglePopover()" placeholder="Click to select">
 							</div>
 						</div>
+					</template>
+				</DatePicker>
+
+				<!-- Footer -->
+				<div class="modal-action justify-between mt-6">
+					<label for="my-modal-6" class="btn btn-md">
+						<svg
+							class="fill-current text-white" xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+							viewBox="0 0 18 18">
+							<path d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z" />
+						</svg>
+					</label>
+					<div class="flex flex-row gap-2">
+						<button class="btn btn-md" @click="resetGraphRange()">
+							Clear
+						</button>
+						<button class="btn btn-md btn-success" @click="applyRangeSelect()">
+							Apply
+						</button>
 					</div>
 				</div>
-			</div>
-		</div>
+			</label>
+		</label>
 	</section>
 </template>
 

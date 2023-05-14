@@ -397,3 +397,15 @@ td.min {
     box-shadow: var(--ring-offset-shadow), var(--ring-shadow), var(--box-shadow, 0 0 #0000);
     border-color: #10b981;
 }
+
+.overflow-y-initial {
+	overflow-y: initial;
+}
+
+.cm-scroller {
+	line-height: 2.75!important;
+}
+
+.cm-content {
+	padding: 0!important;
+}
