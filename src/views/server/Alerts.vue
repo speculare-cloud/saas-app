@@ -62,7 +62,7 @@
 		</div>
 
 		<input type="checkbox" id="my-modal-4" class="modal-toggle">
-		<label for="my-modal-4" class="modal cursor-pointer">
+		<label for="my-modal-4" class="modal modal-bottom sm:modal-middle cursor-pointer">
 			<label class="modal-box relative flex flex-col gap-4" for="" v-if="editingAlert">
 				<h3 class="text-lg font-bold">{{ editingAlert.name }}</h3>
 
