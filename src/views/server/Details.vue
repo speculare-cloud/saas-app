@@ -56,7 +56,7 @@
 								<div v-else class="animate-pulse bg-slate-600 w-full rounded h-[22px] mt-3" />
 							</h4>
 						</div>
-						<router-link key="incidents" :to="{ name: 'Incidents' }" class="text-[#c5c8cb]">
+						<router-link key="incidentsServer" :to="{ name: 'IncidentsServer' }" class="text-[#c5c8cb]">
 							<svg
 								xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 fill-current md:h-8 md:w-8 rotate-180 hover:!fill-white transition duration-300" width="24" height="24"
 								viewBox="0 0 24 24">

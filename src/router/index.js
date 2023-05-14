@@ -41,8 +41,18 @@ const routes = [{
 			import('@/views/server/Alerts'),
 		meta: {
 			requireAuth: true,
-			child: 'details',
+			child: 'servers',
 			pageName: 'Alerts server'
+		}
+	}, {
+		path: 'servers/:berta/:uuid/:hostname/incidents',
+		name: 'IncidentsServer',
+		component: () =>
+			import('@/views/server/Incidents'),
+		meta: {
+			requireAuth: true,
+			child: 'servers',
+			pageName: 'Incidents server'
 		}
 	}, {
 		path: 'servers/new',
