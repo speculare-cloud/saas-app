@@ -138,7 +138,6 @@ export default {
 			const json = JSON.parse(event.data);
 			const jsonValues = json[CDC_VALUES];
 
-			console.log(jsonValues);
 			this.host_uuid = jsonValues[2] ?? null;
 		}
 	}

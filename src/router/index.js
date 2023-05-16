@@ -6,7 +6,7 @@ const routes = [{
 	path: '/:pathMatch(.*)*',
 	name: '404',
 	component: () =>
-		import('@/views/404'),
+		import('@/views/miscs/404'),
 	meta: {
 		accessibleBoth: true
 	}
@@ -20,7 +20,7 @@ const routes = [{
 		path: 'servers',
 		name: 'Servers',
 		component: () =>
-			import('@/views/server/ServersList'),
+			import('@/views/server/List'),
 		meta: {
 			requireAuth: true
 		}
@@ -58,7 +58,7 @@ const routes = [{
 		path: 'servers/new',
 		name: 'NewServer',
 		component: () =>
-			import('@/views/server/NewServer'),
+			import('@/views/server/New'),
 		meta: {
 			requireAuth: true,
 			child: 'servers',
@@ -68,7 +68,7 @@ const routes = [{
 		path: 'servers/new/:secretKey',
 		name: 'NewDetails',
 		component: () =>
-			import('@/views/server/NewServer'),
+			import('@/views/server/New'),
 		meta: {
 			requireAuth: true,
 			child: 'servers',
@@ -86,7 +86,7 @@ const routes = [{
 		path: 'notifications',
 		name: 'Notifications',
 		component: () =>
-			import('@/views/Notifications'),
+			import('@/views/mngmt/Notifications'),
 		meta: {
 			requireAuth: true
 		}
@@ -94,15 +94,7 @@ const routes = [{
 		path: 'billing',
 		name: 'Billing',
 		component: () =>
-			import('@/views/Billing'),
-		meta: {
-			requireAuth: true
-		}
-	}, {
-		path: 'help',
-		name: 'Help',
-		component: () =>
-			import('@/views/Help'),
+			import('@/views/mngmt/Billing'),
 		meta: {
 			requireAuth: true
 		}
@@ -110,7 +102,15 @@ const routes = [{
 		path: 'account',
 		name: 'Account',
 		component: () =>
-			import('@/views/Account'),
+			import('@/views/mngmt/Account'),
+		meta: {
+			requireAuth: true
+		}
+	}, {
+		path: 'help',
+		name: 'Help',
+		component: () =>
+			import('@/views/miscs/Help'),
 		meta: {
 			requireAuth: true
 		}
