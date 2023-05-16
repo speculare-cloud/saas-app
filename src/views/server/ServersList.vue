@@ -46,7 +46,7 @@
 			<p class="p-4 text-[#c5c8cb]">
 				Waiting activation...
 			</p>
-			<div class="bg-base-300 rounded-lg shadow servers-list">
+			<div class="bg-base-300 rounded-lg shadow">
 				<div v-for="item in store.unconfiguredKeys" :key="item.key">
 					<router-link
 						:to="{ name: 'NewDetails', params: { secretKey: item.key } }" id="servers-item"
@@ -101,9 +101,9 @@
 					<p>Try another query, we've not found any servers name containing what you entered.</p>
 				</div>
 			</div>
-			<div class="bg-base-300 rounded-lg shadow servers-list">
+			<div class="bg-base-300 rounded-lg shadow">
 				<div v-if="!searchText && store.configuredKeys.length === 0" class="animate-pulse bg-slate-600 w-full rounded-lg h-[65.5px]" />
-				<div v-for="item in (!searchText ? store.configuredKeys : filteredResult)" :key="item.uuid">
+				<div v-for="item in filteredResult" :key="item.uuid">
 					<router-link
 						:to="{ name: 'DetailsServer', params: { berta: item.berta, uuid: item.uuid, hostname: item.hostname } }"
 						class="flex justify-between cursor-pointer pl-4 pr-8 py-3 hover:bg-neutral-focus gap-4 rounded-lg text-[#c5c8cb] hover:text-[#d3d3d3] transition duration-300">
@@ -172,15 +172,28 @@ export default {
 
 	data () {
 		return {
-			filteredResult: [],
-			searchText: ""
+			searchText: "",
+			viewGrid: true,
 		}
 	},
 
-	methods: {
-		filterList: function() {
-			this.filteredResult = this.store.configuredKeys.filter((el) => el.hostname.match(this.searchText));
-		},
-	}
+	computed: {
+		filteredResult() {
+			let tmpResult = this.store.configuredKeys;
+
+			if (this.searchText !== "") {
+				tmpResult = tmpResult.filter((el) => {
+					return el.hostname.match(this.searchText);
+				})
+			}
+
+			tmpResult.sort((a, b) => {
+				if (a.hostname.localeCompare(b.hostname)) return 1
+				else return -1
+			});
+
+			return tmpResult;
+		}
+	},
 }
 </script>
