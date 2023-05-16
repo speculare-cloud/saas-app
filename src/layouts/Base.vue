@@ -152,7 +152,7 @@ export default {
 
 			// Polling to update the uptime & latest info from hosts
 			vm.polling = setInterval(async () => {
-				// await vm.serversStore.fetchHostsAllBertas(vm);
+				await vm.serversStore.fetchHostsAllBertas(vm);
 			}, 5000)
 		})
 	},
