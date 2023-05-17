@@ -40,7 +40,7 @@ export default {
 
 	data () {
 		return {
-			groupedSkip: 0,
+			groupedSkip: 1,
 			table: 'ioblocks',
 			unit: 'MB/s',
 			connection: null,
@@ -65,7 +65,8 @@ export default {
 	},
 
 	watch: {
-		graphRange: function (newVal, oldVal) {
+		graphRange: async function (newVal, oldVal) {
+			await this.refreshCount();
 			// true is to tell the fetchInit to handle as grouped values
 			rebuildGraph(this, newVal, oldVal, true)
 		}
@@ -75,14 +76,9 @@ export default {
 		const vm = this
 
 		// Don't setup anything before everything is rendered
-		nextTick(() => {
+		nextTick(async () => {
 			// Await the first call to ioblocks/count cause it's needed for the next
-			vm.$http
-				.get(vm.$serverBase(vm.$route.params.berta) + "/api/ioblocks/count?uuid=" + vm.uuid + getRangeParams(vm.graphRange))
-				.then(resp => (vm.groupedSkip = resp.data))
-				.catch(err => {
-					console.log('[ionets] Failed to fetch number of disks', err)
-				})
+			await vm.refreshCount();
 			// Setup the IntersectionObserver
 			// true is to tell the fetchInit to handle as grouped values
 			vm.obs = graphScrollObs(vm, true)
@@ -99,6 +95,15 @@ export default {
 	},
 
 	methods: {
+		// Refresh the number of ioblocks there is for the current rangeParams
+		refreshCount: async function() {
+			await this.$http
+				.get(this.$serverBase(this.$route.params.berta) + "/api/ioblocks/count?uuid=" + this.uuid + getRangeParams(this.graphRange))
+				.then(resp => this.groupedSkip = Math.max(1, resp.data))
+				.catch(err => {
+					console.log('[ionets] Failed to fetch number of disks', err)
+				})
+		},
 		// Empty every arrays and close the websocket
 		cleaning: function (ws = true) {
 			this.fetchingDone = false
