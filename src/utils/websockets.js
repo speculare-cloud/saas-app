@@ -6,6 +6,11 @@ export function initWS (wsUrl, table, eventType, filter, callback = null, vm, ha
 		vm.connection = new WebSocket(wsUrl + '/ws?query=' + eventType + ':' + table + (filter ?? ''))
 	}
 
+	vm.connection.addEventListener("error", (event) => {
+		console.error('[' + table + '] >> webSocket error', event)
+		vm.loadingMessage = "Realtime error"
+	});
+
 	vm.connection.addEventListener('open', function () {
 		console.log('[' + table + '] >> webSocket opened')
 		callback && callback(vm, callbackarg)
