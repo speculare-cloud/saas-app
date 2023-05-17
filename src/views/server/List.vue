@@ -156,8 +156,8 @@
 import { useServersStore } from '@/stores/servers';
 import { trunkKey, fmtDuration, fmtGranularity, isServerOnline } from '@/utils/help';
 
-import DeleteKeyModal from '@/components/DeleteKeyModal'
-import Error from '@/components/Error'
+import DeleteKeyModal from '@/components/DeleteKeyModal.vue'
+import Error from '@/components/Error.vue'
 
 export default {
 	name: 'Home',

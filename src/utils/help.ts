@@ -1,17 +1,17 @@
-import moment from 'moment'
+import { DateTime, Duration } from "luxon"
 
-export function trunkKey (text) {
-	if (text === null) return undefined
+export function trunkKey (text?: string) {
+	if (!text) return undefined
 
 	return text.slice(0, 10)
 }
 
-export function fmtDuration (durationinsec) {
-	return moment.duration(durationinsec, 'seconds').format('Y[y] M[m] D[d] HH[h] mm[m] ss[s]')
+export function fmtDuration (durationinsec: number) {
+	return Duration.fromMillis(durationinsec * 1000).rescale().toHuman({ unitDisplay: "short" })
 }
 
 // Granularity can either be in minutes, seconds or in ms.
-export function fmtGranularity (granularity) {
+export function fmtGranularity (granularity?: number) {
 	if (!granularity) return 'unknown'
 
 	if (granularity > 60000) {
@@ -23,17 +23,17 @@ export function fmtGranularity (granularity) {
 	}
 }
 
-export const FieldState = {
-	None: 0,
-	Success: 1,
-	Error: 2,
-	Empty: 3
+export enum FieldState {
+	None = 0,
+	Success,
+	Error,
+	Empty
 }
 
 /*
  * Return the appropriate style for the input based on the state
  */
-export function getInputStyle (fieldState) {
+export function getInputStyle (fieldState: FieldState) {
 	switch (fieldState) {
 	case FieldState.Success:
 		return 'input-success'
@@ -46,7 +46,7 @@ export function getInputStyle (fieldState) {
 	}
 }
 
-export function validateEmail (email) {
+export function validateEmail (email: string) {
 	return String(email)
 		.toLowerCase()
 		.match(
@@ -57,14 +57,18 @@ export function validateEmail (email) {
 /*
  * Return the status of the server (online, unknown or offline)
  */
-export function isServerOnline (updated_at) {
+export function isServerOnline (updated_at?: string) {
 	if (!updated_at) return 1 // unknown
-	if (moment.utc(updated_at).isBefore(moment.utc().subtract(5, 'minutes'))) return 0 // offline
+	if (DateTime.fromISO(updated_at, { zone: "UTC"}) <= DateTime.utc().minus({minutes: 5})) return 0
 	return 2 // online
 }
 
-export function computeGranularity (scale) {
+export function computeGranularity (scale: number) {
 	// Using ~ we convert the float to int once in it inversed form
 	// Reusing ~ again we reverse it again and TADAAA not decimal
 	return ~~((0.003 * scale) * 0.93 + 0.298206)
+}
+
+export function opt<T>(v?: T) {
+	return v ?? null;
 }

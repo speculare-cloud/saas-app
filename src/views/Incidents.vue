@@ -34,7 +34,7 @@
 								<span class="text-[13px]">↪ {{ incident.alert.name }} ({{ incident.alert.info ?? incident.alert.lookup }})</span>
 							</td>
 							<td>
-								{{ moment(incident.started_at).format("hh:mm A - D MMMM YYYY") }}
+								{{ fmtStarted(incident.started_at) }}
 							</td>
 							<td  class="min">
 								{{ getLength(incident.started_at, incident.updated_at, incident.resolved_at) }}
@@ -47,12 +47,12 @@
 	</section>
 </template>
 
-<script>
+<script lang="ts">
 import { storeToRefs } from 'pinia'
 import { nextTick } from 'vue';
 import { useServersStore } from '@/stores/servers';
 import { fmtDuration } from '@/utils/help';
-import moment from 'moment';
+import { DateTime } from 'luxon';
 
 export default {
 	name: 'Incidents',
@@ -60,12 +60,12 @@ export default {
 	setup () {
 		const serverStore = useServersStore();
 		const { bertas } = storeToRefs(serverStore)
-		return { serverStore, bertas, moment }
+		return { serverStore, bertas }
 	},
 
 	data () {
 		return {
-			incidents: []
+			incidents: new Array<any>()
 		}
 	},
 
@@ -88,8 +88,11 @@ export default {
 	},
 
 	methods: {
+		fmtStarted: function(started_at) {
+			return DateTime.fromISO(started_at).toFormat("hh:mm A - D MMMM YYYY");
+		},
 		getLength: function(from, to, tox) {
-			return fmtDuration(moment.duration(moment(to ?? tox).diff(moment(from))).asSeconds());
+			return fmtDuration(DateTime.fromISO(to ?? tox).diff(DateTime.fromISO(from)).seconds);
 		},
 		refreshList: async function() {
 			for (const berta of this.bertas.keys()) {

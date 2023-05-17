@@ -242,7 +242,6 @@
 </template>
 
 <script>
-import moment from 'moment';
 import Skeleton from '@/components/Graphs/Base/Skeleton'
 
 import { DatePicker } from 'v-calendar'
