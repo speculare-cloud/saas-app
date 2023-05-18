@@ -35,11 +35,13 @@ function sanitizeGraphData (vm: GraphComponents) {
 
 		if (i === dataSize - 1) {
 			// Check against now to see if we're missing starting data
+			console.log("Checking", now - threshold, vm.chartLabels[i])
 			if (!(now - threshold <= vm.chartLabels[i] && vm.chartLabels[i] <= now + threshold)) {
 				// Change last labels by now to ensure gap if no previous data
 				vm.chartLabels[i] = now
 				// TODO - might just push empty value ?
 				vm.nullData(i)
+				console.log("Nulling data value")
 			}
 		} else {
 			if (vm.chartLabels[i + 1] > vm.chartLabels[i] + threshold) {

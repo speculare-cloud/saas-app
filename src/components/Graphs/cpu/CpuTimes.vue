@@ -144,16 +144,19 @@ export default {
 				this.wsBuffer.push(obj)
 			}
 		},
-		addNewData: function (elem, update=false) {
+		addNewData: function (elem: CpuTimes, update=false) {
 			const vm = this
 			// Compute the busy time of the CPU from these params
 			const busy = elem.cuser + elem.nice + elem.system + elem.irq + elem.softirq + elem.steal
 			// Compute the idling time of the CPU from these params
 			const idle = elem.idle + elem.iowait
 			// Get the usage in % computed from busy and idle + prev values
-			const usage = vm.getUsageFrom(busy, idle)
+			const usage = vm.getUsageFrom(busy as unknown as number, idle as unknown as number)
+			// Construct the date
+			let date = DateTime.fromISO(elem.created_at, {zone: "utc"})
+			if (!date.isValid) date = DateTime.fromFormat(elem.created_at, "yyyy-MM-dd HH:mm:ss.u", {zone: "utc"})
 			// Add the new value to the Array
-			vm.pushValue(DateTime.fromISO(elem.created_at, { zone: "UTC"}).toUnixInteger(), usage, busy, idle)
+			vm.pushValue(date.toUnixInteger(), usage, busy, idle)
 
 			// Update onscreen values
 			if (update) {
@@ -166,7 +169,7 @@ export default {
 				})
 			}
 		},
-		getUsageFrom: function (busy, idle) {
+		getUsageFrom: function (busy: number, idle: number) {
 			// If the previous does not exist, we can't compute the percent
 			const prevIndex = this.chartLabels.length - 1
 

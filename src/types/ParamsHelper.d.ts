@@ -5,6 +5,7 @@ interface GraphComponents {
 	fetchingDone: boolean;
 	wsBuffer: Array;
 	chartLabels: Array;
+	chartDataObj: Array;
 
 	connection: opt<WebSocket>;
 	graphRange: opt<{
