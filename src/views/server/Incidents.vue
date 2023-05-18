@@ -66,13 +66,14 @@
 import { nextTick } from 'vue';
 import { fmtDuration } from '@/utils/help';
 import { DateTime } from 'luxon';
+import type { IncidentsJoined } from '@martichou/sproot';
 
 export default {
 	name: 'Incidents',
 
 	data () {
 		return {
-			incidents: new Array<any>()
+			incidents: new Array<IncidentsJoined>()
 		}
 	},
 
@@ -94,7 +95,7 @@ export default {
 		refreshList: async function() {
 			await this.$http.get(this.$serverBase(this.$route.params.berta) + "/api/incidents?uuid=" + this.$route.params.uuid)
 				.then((resp) => {
-					resp.data.forEach(elem => {
+					resp.data.forEach((elem: IncidentsJoined) => {
 						const idx = this.incidents.findIndex(el => el.id == elem.id);
 						if (idx !== -1) {
 							this.incidents[idx] = elem

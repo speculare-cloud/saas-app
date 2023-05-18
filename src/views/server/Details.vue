@@ -242,7 +242,7 @@
 </template>
 
 <script>
-import Skeleton from '@/components/Graphs/Base/Skeleton'
+import Skeleton from '@/components/Graphs/Base/Skeleton.vue'
 
 import { DatePicker } from 'v-calendar'
 import { useServersStore } from '@/stores/servers';
@@ -261,27 +261,27 @@ export default {
 	components: {
 		DatePicker,
 		CpuTimes: defineAsyncComponent({
-			loader: () => import('@/components/Graphs/cpu/CpuTimes'),
+			loader: () => import('@/components/Graphs/cpu/CpuTimes.vue'),
 			loadingComponent: Skeleton
 		}),
 		LoadAvg: defineAsyncComponent({
-			loader: () => import('@/components/Graphs/cpu/LoadAvg'),
+			loader: () => import('@/components/Graphs/cpu/LoadAvg.vue'),
 			loadingComponent: Skeleton
 		}),
 		IoBlocksOverall: defineAsyncComponent({
-			loader: () => import('@/components/Graphs/disks/IoBlocksOverall'),
+			loader: () => import('@/components/Graphs/disks/IoBlocksOverall.vue'),
 			loadingComponent: Skeleton
 		}),
 		Ram: defineAsyncComponent({
-			loader: () => import('@/components/Graphs/memory/Ram'),
+			loader: () => import('@/components/Graphs/memory/Ram.vue'),
 			loadingComponent: Skeleton
 		}),
 		Swap: defineAsyncComponent({
-			loader: () => import('@/components/Graphs/memory/Swap'),
+			loader: () => import('@/components/Graphs/memory/Swap.vue'),
 			loadingComponent: Skeleton
 		}),
 		IoNetsOverall: defineAsyncComponent({
-			loader: () => import('@/components/Graphs/net/IoNetsOverall'),
+			loader: () => import('@/components/Graphs/net/IoNetsOverall.vue'),
 			loadingComponent: Skeleton
 		})
 	},

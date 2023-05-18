@@ -13,6 +13,7 @@
   "dependencies": {
     "@codemirror/lang-rust": "^6.0.1",
     "@codemirror/theme-one-dark": "^6.1.2",
+    "@martichou/sproot": "^1.0.0",
     "@popperjs/core": "^2.11.7",
     "@tailwindcss/typography": "^0.5.9",
     "@types/luxon": "^3.3.0",

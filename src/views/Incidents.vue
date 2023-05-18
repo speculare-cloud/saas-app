@@ -53,6 +53,7 @@ import { nextTick } from 'vue';
 import { useServersStore } from '@/stores/servers';
 import { fmtDuration } from '@/utils/help';
 import { DateTime } from 'luxon';
+import type { IncidentsJoined } from "@martichou/sproot";
 
 export default {
 	name: 'Incidents',
@@ -65,7 +66,7 @@ export default {
 
 	data () {
 		return {
-			incidents: new Array<any>()
+			incidents: new Array<IncidentsJoined>()
 		}
 	},
 
@@ -98,7 +99,7 @@ export default {
 			for (const berta of this.bertas.keys()) {
 				await this.$http.get(this.$serverBase(berta) + "/api/incidents")
 					.then((resp) => {
-						resp.data.forEach(elem => {
+						resp.data.forEach((elem: IncidentsJoined) => {
 							const idx = this.incidents.findIndex(el => el.id == elem.id);
 							if (idx !== -1) {
 								this.incidents[idx] = elem

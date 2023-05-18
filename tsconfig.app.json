@@ -6,9 +6,9 @@
     "composite": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
     },
 	"types": ["pinia-plugin-persist"],
-	"noImplicitAny": false
+	"noImplicitAny": false,
   }
 }

@@ -80,7 +80,8 @@
 	</section>
 </template>
 
-<script>
+<script lang="ts">
+import { opt } from '@/utils/help';
 import { initWS, closeWS, CDC_VALUES } from '@/utils/websockets';
 import { nextTick } from 'vue';
 
@@ -90,8 +91,8 @@ export default {
 	data () {
 		return {
 			connection: null,
-			host_uuid: null,
-			secretKey: this.$route.params.secretKey ?? null,
+			host_uuid: opt<string>(),
+			secretKey: opt<string>(this.$route.params.secretKey as string),
 		}
 	},
 
@@ -99,7 +100,6 @@ export default {
 		const vm = this
 
 		nextTick(async () => {
-			console.log(this.$route.path);
 			if (vm.secretKey === null) await vm.generateKey();
 			else await vm.getKeyInfo();
 
