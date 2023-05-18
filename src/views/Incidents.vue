@@ -93,7 +93,7 @@ export default {
 			return DateTime.fromISO(started_at).toFormat("hh:mm A - D MMMM YYYY");
 		},
 		getLength: function(from, to, tox) {
-			return fmtDuration(DateTime.fromISO(to ?? tox).diff(DateTime.fromISO(from)).seconds);
+			return fmtDuration(DateTime.fromISO(to ?? tox).diff(DateTime.fromISO(from)).as('seconds'));
 		},
 		refreshList: async function() {
 			for (const berta of this.bertas.keys()) {

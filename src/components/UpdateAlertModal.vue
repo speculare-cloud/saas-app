@@ -26,7 +26,7 @@
 			</div>
 
 			<div class="modal-action justify-between mt-0">
-				<label for="my-modal-4" class="btn btn-md" @click="this.$emit('close')">
+				<label for="my-modal-4" class="btn btn-md" @click="$emit('close')">
 					<svg
 						class="fill-current text-white" xmlns="http://www.w3.org/2000/svg" width="18" height="18"
 						viewBox="0 0 18 18">
@@ -50,11 +50,13 @@
 	</label>
 </template>
 
-<script>
+<script lang="ts">
 import { shallowRef } from 'vue';
 import { Codemirror } from 'vue-codemirror'
 import { oneDark } from '@codemirror/theme-one-dark'
 import { rust } from '@codemirror/lang-rust'
+import type { AlertsDTO } from '@martichou/sproot';
+import { opt } from '@/utils/help';
 
 export default {
 	name: 'UpdateAlertModal',
@@ -103,9 +105,9 @@ export default {
 			updateLoading: false,
 
 			alertSuccess: true,
-			alertContent: null,
+			alertContent: opt<string>(),
 
-			lastAlertTested: null,
+			lastAlertTested: opt<AlertsDTO>(),
 		}
 	},
 

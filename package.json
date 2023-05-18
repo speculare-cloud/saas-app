@@ -24,6 +24,7 @@
     "pinia": "^2.0.36",
     "pinia-plugin-persist": "^1.0.0",
     "pinia-plugin-persistedstate": "^3.1.0",
+    "uplot": "^1.6.24",
     "v-calendar": "^3.0.3",
     "vue": "^3.3.2",
     "vue-codemirror": "^6.1.1",

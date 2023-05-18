@@ -20,10 +20,6 @@
 	color-scheme: dark
 }
 
-svg {
-    fill: currentColor!important;
-}
-
 code {
     color: rgb(229, 231, 235);
     background-color: #555;

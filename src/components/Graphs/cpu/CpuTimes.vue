@@ -7,14 +7,17 @@
 	</div>
 </template>
 
-<script>
+<script lang="ts">
 import { nextTick } from 'vue'
 import { graphScrollObs, rebuildGraph } from '@/utils/graphs'
 import { updateGraph } from '@/utils/graphsData'
 import { series } from '@/utils/graphsCharts'
 import { closeWS } from '@/utils/websockets'
-import LineChart from '@/components/Graphs/Base/LineChart'
-import moment from 'moment'
+
+import LineChart from '@/components/Graphs/Base/LineChart.vue'
+import { opt, optUn } from '@/utils/help'
+import type { CpuTimes } from '@martichou/sproot'
+import { DateTime } from 'luxon'
 
 export default {
 	name: 'Cputimes',
@@ -40,27 +43,27 @@ export default {
 		return {
 			table: 'cputimes',
 			unit: 'percentage',
-			connection: null,
+			connection: opt<WebSocket>(),
 			fetchingDone: false,
-			datacollection: null,
 			loadingMessage: 'Loading',
 			chartSeries: [
 				{},
 				{...series(0, false), label: 'user & system'}
 			],
-			wsBuffer: [],
-			chartLabels: [],
-			chartDataObj: [],
-			historyBusyDataObj: [],
-			historyIdleDataObj: [],
-			obs: null
+			datacollection: optUn<(number | null)[][]>(),
+			wsBuffer: new Array<CpuTimes>(),
+			chartLabels: new Array<number>(),
+			chartDataObj: new Array<number | null>(),
+			historyBusyDataObj: new Array<number | null>(),
+			historyIdleDataObj: new Array<number | null>(),
+			obs: opt<IntersectionObserver>()
 		}
 	},
 
 	watch: {
 		graphRange: function (newVal, oldVal) {
 			console.log("New graphRange", newVal);
-			rebuildGraph(this, newVal, oldVal)
+			rebuildGraph(this, newVal, oldVal);
 		}
 	},
 
@@ -78,7 +81,7 @@ export default {
 
 	beforeUnmount: function () {
 		// Stop the Observation of the element
-		this.obs.unobserve(this.$el)
+		this.obs?.unobserve(this.$el)
 		// Close the webSocket connection
 		this.cleaning()
 	},
@@ -94,9 +97,7 @@ export default {
 			this.historyIdleDataObj = []
 			this.wsBuffer = []
 
-			if (ws) {
-				closeWS(this.table, this)
-			}
+			if (ws) closeWS(this.table, this)
 		},
 		// Null the data of an index (without nulling the Labels)
 		nullData: function (i) {
@@ -127,19 +128,13 @@ export default {
 		},
 		wsMessageHandle: function (event) {
 			// Parse the data and extract newValue
-			const json = JSON.parse(event.data)
-			const obj = {
-				cuser: json.columnvalues[1],
-				nice: json.columnvalues[2],
-				system: json.columnvalues[3],
-				irq: json.columnvalues[6],
-				softirq: json.columnvalues[7],
-				steal: json.columnvalues[8],
-				idle: json.columnvalues[4],
-				iowait: json.columnvalues[5],
-				created_at: json.columnvalues[12],
-			}
+			const json = JSON.parse(event.data);
+			const columnsNames = json.columnnames;
+			const columnsValues = json.columnvalues;
 
+			const obj: CpuTimes = Object.fromEntries(
+				columnsNames.map((_, i) => [columnsNames[i], columnsValues[i]])
+			) as CpuTimes;
 			if (this.fetchingDone) {
 				// Add the new data to the graph
 				this.addNewData(obj, true)
@@ -158,7 +153,7 @@ export default {
 			// Get the usage in % computed from busy and idle + prev values
 			const usage = vm.getUsageFrom(busy, idle)
 			// Add the new value to the Array
-			vm.pushValue(moment.utc(elem.created_at).unix(), usage, busy, idle)
+			vm.pushValue(DateTime.fromISO(elem.created_at, { zone: "UTC"}).toUnixInteger(), usage, busy, idle)
 
 			// Update onscreen values
 			if (update) {
@@ -174,10 +169,13 @@ export default {
 		getUsageFrom: function (busy, idle) {
 			// If the previous does not exist, we can't compute the percent
 			const prevIndex = this.chartLabels.length - 1
-			if (!(this.historyBusyDataObj[prevIndex] == null)) {
-				// Get the previous entry
-				const prevBusy = this.historyBusyDataObj[prevIndex]
-				const prevIdle = this.historyIdleDataObj[prevIndex]
+
+			// Get the previous entry
+			const prevBusy = this.historyBusyDataObj[prevIndex]
+			const prevIdle = this.historyIdleDataObj[prevIndex]
+
+			// Assert not null
+			if (prevBusy && prevIdle) {
 				// Compute the total of the previous and now
 				const prevTotal = prevBusy + prevIdle
 				const total = busy + idle

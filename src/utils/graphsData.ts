@@ -1,7 +1,7 @@
 import { drainWsBuffer } from '@/utils/graphsWebsockets'
-import moment from 'moment'
+import { DateTime } from 'luxon'
 
-function sanitizeGraphData (vm) {
+function sanitizeGraphData (vm: GraphComponents) {
 	const dataSize = vm.chartLabels.length
 	const threshold = vm.graphRange.scale / 60 + 15
 
@@ -9,9 +9,8 @@ function sanitizeGraphData (vm) {
 	// console.log("Datasize is:", dataSize);
 	// console.log("Threshold is defined as:", threshold);
 
-	// Be sure the date are following in order (by 1s for now)
-	const now = moment().utc().unix()
-	const min = moment.utc().subtract(vm.graphRange.scale, 'seconds').unix()
+	const now = DateTime.utc().toUnixInteger()
+	const min = DateTime.utc().minus({seconds: vm.graphRange.scale}).toUnixInteger()
 	// Add the first item as the oldest to avoid big blank.
 	if (vm.chartLabels.length === 0 || vm.chartLabels[0] >= min + threshold) {
 		// console.log(vm.table + ': first triggered')
@@ -56,7 +55,7 @@ function sanitizeGraphData (vm) {
 	// console.log(vm.chartDataObj);
 }
 
-function basicRespHandler (vm, data) {
+function basicRespHandler (vm: GraphComponents, data) {
 	const dataLength = data.length
 	// - data in reverse order (push_back) as uPlot use last as most recent
 	for (let i = dataLength - 1; i >= 0; i--) {
@@ -64,13 +63,14 @@ function basicRespHandler (vm, data) {
 	}
 }
 
-function groupedRespHandler (vm, data) {
+function groupedRespHandler (vm: GraphComponents, data: Array<any>) {
+	if (vm.groupedSkip === undefined) return;
 	const dataLength = data.length
 	// - data in reverse order (push_back) as uPlot use last as most recent
 	// - skip intNumber by intNumber
 	for (let i = dataLength - 1; i >= 0; i -= vm.groupedSkip) {
 		if (vm.groupedSkip > 1) {
-			const currentData = []
+			const currentData = new Array<any>()
 			for (let y = 0; y < vm.groupedSkip; y++) {
 				currentData.push(data[i - y])
 			}
@@ -86,14 +86,14 @@ export function getRangeParams (graphRange) {
 		return '&min_date=' + graphRange.start + '&max_date=' + graphRange.end
 	} else {
 		// Substract vm.scaleTime seconds as this is pretty much the minimum time for the graph
-		const min = moment().utc().subtract(graphRange.scale + 5, 'seconds').format('YYYY-MM-DDTHH:mm:ss.SSS')
+		const min = DateTime.utc().minus({seconds: graphRange.scale + 5}).toFormat("yyyy-MM-dd'T'HH:mm:ss.SSS")
 		// Add 5 seconds to minimize the risks of missing data
-		const max = moment().utc().add(5, 'seconds').format('YYYY-MM-DDTHH:mm:ss.SSS')
+		const max = DateTime.utc().plus({seconds: 5}).toFormat("yyyy-MM-dd'T'HH:mm:ss.SSS")
 		return '&min_date=' + min + '&max_date=' + max
 	}
 }
 
-export function fetchInit (vm, grouped) {
+export function fetchInit (vm: GraphComponents, grouped) {
 	console.log('[' + vm.table + '] fetchInit: is grouped: ' + grouped)
 	// Fetching old data with the API
 	vm.$http
@@ -117,7 +117,7 @@ export function fetchInit (vm, grouped) {
 		})
 }
 
-export function updateGraph (vm, updateFunc) {
+export function updateGraph (vm: GraphComponents, updateFunc) {
 	// Sanitize the Data in case of gap but also remove too old element
 	sanitizeGraphData(vm)
 	// Update the datacollection so that uPlot update the chart

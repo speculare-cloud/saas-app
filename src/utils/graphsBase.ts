@@ -1,6 +1,6 @@
 import uPlot from 'uplot'
 
-export function reactDataChange (vm, oldData, newData, stack = false) {
+export function reactDataChange (vm: ChartComponents, oldData, newData, stack = false) {
 	if (oldData == null || !vm.chart) {
 		if (vm.chart) vm.destroyChart()
 		vm.createChart(newData)
@@ -9,7 +9,7 @@ export function reactDataChange (vm, oldData, newData, stack = false) {
 			vm.destroyChart()
 			vm.createChart(newData)
 		} else if (!vm.hovered) {
-			const data = stack ? vm.stack(newData, i => !vm.chart.series[i].show).data : newData
+			const data = stack && vm.stack ? vm.stack(newData, i => !vm.chart.series[i].show).data : newData
 			vm.chart.setData(data)
 		}
 	}
@@ -18,7 +18,7 @@ export function reactDataChange (vm, oldData, newData, stack = false) {
 	if (!vm.hovered) vm.chart.setLegend({ idx: newData[1].length - 1 }, false)
 }
 
-export function customLegend (vm) {
+export function customLegend (vm: ChartComponents) {
 	return {
 		hooks: {
 			init: function (u) {
@@ -58,7 +58,7 @@ export function customLegend (vm) {
 	}
 }
 
-export function initMouseEvent (vm) {
+export function initMouseEvent (vm: ChartComponents) {
 	// get the over part of the Graph as per uPlot doc
 	const elems = vm.$el.getElementsByClassName('u-over')
 

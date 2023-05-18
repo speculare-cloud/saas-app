@@ -69,6 +69,12 @@ export function computeGranularity (scale: number) {
 	return ~~((0.003 * scale) * 0.93 + 0.298206)
 }
 
+export type Nullable<T> = T | null;
+
 export function opt<T>(v?: T) {
 	return v ?? null;
+}
+
+export function optUn<T>(v?: T) {
+	return v ?? undefined;
 }

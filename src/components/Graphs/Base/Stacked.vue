@@ -164,7 +164,7 @@ export default {
 		},
 		setChartSize: function () {
 			if (this.chart) this.chart.setSize(this.getSize())
-		}
+		},
 	}
 }
 </script>
