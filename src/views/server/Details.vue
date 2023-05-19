@@ -309,8 +309,8 @@ export default {
 			graphRange: {
 				granularity: 1,
 				scale: 300,
-				start: opt<string>(),
-				end: opt<string>()
+				start: opt<DateTime>(),
+				end: opt<DateTime>()
 			},
 			alertsCount: opt<HttpAlertsCount>(),
 			hostInfo: opt<Host>(),
@@ -372,8 +372,8 @@ export default {
 				this.graphRange = {
 					granularity: computeGranularity(end.diff(start).as('seconds')),
 					scale: end.diff(start).as('seconds'),
-					start: start.toFormat("yyyy-MM-dd'T'HH:mm:ss.SSS"),
-					end: end.toFormat("yyyy-MM-dd'T'HH:mm:ss.SSS")
+					start: start,
+					end: end
 				}
 			} else {
 				const scaleIdx = (this.$refs.scaleSelect as any).selectedIndex;

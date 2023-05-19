@@ -1,60 +1,72 @@
 import { drainWsBuffer } from '@/utils/graphsWebsockets'
 import { DateTime } from 'luxon'
+import { SPS_FORMAT } from './help';
+import { assert } from '@vue/compiler-core';
 
 function sanitizeGraphData (vm: GraphComponents) {
-	const dataSize = vm.chartLabels.length
-	const threshold = vm.graphRange.scale / 60 + 15
+	// How many points we have to sanitize
+	const dataSize = vm.chartLabels.length;
 
-	// console.log("Range scale:", vm.graphRange.scale);
-	// console.log("Datasize is:", dataSize);
-	// console.log("Threshold is defined as:", threshold);
+	// Important: the oldest data is at the index 0
+	// and the newest data is at the end of the array
 
-	const now = DateTime.utc().toUnixInteger()
-	const min = DateTime.utc().minus({seconds: vm.graphRange.scale}).toUnixInteger()
-	// Add the first item as the oldest to avoid big blank.
-	if (vm.chartLabels.length === 0 || vm.chartLabels[0] >= min + threshold) {
-		// console.log(vm.table + ': first triggered')
-		vm.unshiftEmpty(min + threshold - 1, null)
+	// console.log("Global information:")
+	// console.log("> scale", vm.graphRange.scale)
+	// console.log("> granularity", vm.graphRange.granularity)
+	// console.log("> dataSize", dataSize)
+
+	const from = vm.graphRange.rangeFrom ?? DateTime.utc().minus({seconds: vm.graphRange.scale});
+	const to = vm.graphRange.rangeTo ?? DateTime.utc();
+	const fromAsUnix = from.toUnixInteger()
+	const toAsUnix = to.toUnixInteger()
+
+	// console.log("Date", fromAsUnix, "and", toAsUnix);
+
+	let threshold = vm.graphRange.granularity
+	if (threshold > 60) {
+		threshold = vm.graphRange.scale < 345600 ? 600 : 1800
 	}
-	// Set the newest as null in case it does not exists.
-	// TODO - Review
-	if (vm.chartLabels.length === 0 || vm.chartLabels[vm.chartLabels.length - 1] <= now - threshold) {
-		vm.pushValue(now)
-		vm.nullData(vm.chartLabels.length)
-	}
-	// vm.nullData(vm.chartLabels.length)
+	// Threshold within 5% of the value we should have
+	threshold += (5 / 100) * threshold
+	// console.log("> threshold", threshold)
+
+	// Iterate in the reverse order, and fill the gaps we may have
 	for (let i = dataSize - 1; i >= 0; i--) {
-		// Iterate in the reverse order, and find if any missing data from the latest we have
-		// Also compare start against current time, if over threshold, might be some missing data
-
-		// If the current data is too old, get rid of it
-		if (vm.chartLabels[i] < min) {
+		// If too old, splice
+		if (vm.chartLabels[i] < fromAsUnix) {
+			// console.log("Deleting too old data", vm.chartLabels[i]);
 			vm.spliceData(i, 1)
-			continue
+			continue;
 		}
 
-		if (i === dataSize - 1) {
-			// Check against now to see if we're missing starting data
-			console.log("Checking", now - threshold, vm.chartLabels[i])
-			if (!(now - threshold <= vm.chartLabels[i] && vm.chartLabels[i] <= now + threshold)) {
-				// Change last labels by now to ensure gap if no previous data
-				vm.chartLabels[i] = now
-				// TODO - might just push empty value ?
-				vm.nullData(i)
-				console.log("Nulling data value")
-			}
-		} else {
-			if (vm.chartLabels[i + 1] > vm.chartLabels[i] + threshold) {
-				console.log("Nulling data as it's more than threshold:", vm.chartLabels[i + 1] - vm.chartLabels[i])
-				// Don't need to change the Labels, uPlot already handle this
-				// TODO - might just push empty value ?
-				vm.nullData(i)
-			}
+		if (i === dataSize - 1) continue;
+		const next = vm.chartLabels[i + 1];
+		const current = vm.chartLabels[i];
+		// console.log(i, "gap check, current vs next diff", next - current, "with current as", current);
+		if (next - current > threshold) {
+			const toAdd = Math.round((current + next) / 2 - threshold);
+			// console.log(i, "> adding null value at", toAdd);
+			vm.spliceNull(i + 1, toAdd);
 		}
 	}
 
-	// console.log(vm.chartLabels);
-	// console.log(vm.chartDataObj);
+	const newDataSize = vm.chartLabels.length;
+	// console.log("Size after cleanup", newDataSize)
+
+	// Add null at start to ensure correct graph
+	if (newDataSize === 0 || vm.chartLabels[0] > fromAsUnix) {
+		// console.log("Adding null value at the start", fromAsUnix)
+		vm.unshiftEmpty(fromAsUnix);
+	}
+
+	if (vm.chartLabels[newDataSize - 1] + threshold < toAsUnix) {
+		// console.log("Adding null value at the end", toAsUnix)
+		vm.pushValue(toAsUnix, null);
+	}
+
+	// Assert that the function does the job correctly
+	assert(vm.chartLabels.length === vm.chartDataObj.length, "Both array are not the same size");
+	assert(vm.chartLabels.every((v,i,a) => !i || a[i-1] <= v), "Array is not in order");
 }
 
 function basicRespHandler (vm: GraphComponents, data) {
@@ -85,12 +97,12 @@ function groupedRespHandler (vm: GraphComponents, data: Array<any>) {
 
 export function getRangeParams (graphRange) {
 	if (graphRange.start != null) {
-		return '&min_date=' + graphRange.start + '&max_date=' + graphRange.end
+		return '&min_date=' + graphRange.start.toFormat(SPS_FORMAT) + '&max_date=' + graphRange.end.toFormat(SPS_FORMAT)
 	} else {
 		// Substract vm.scaleTime seconds as this is pretty much the minimum time for the graph
-		const min = DateTime.utc().minus({seconds: graphRange.scale + 5}).toFormat("yyyy-MM-dd'T'HH:mm:ss.SSS")
+		const min = DateTime.utc().minus({seconds: graphRange.scale + 5}).toFormat(SPS_FORMAT)
 		// Add 5 seconds to minimize the risks of missing data
-		const max = DateTime.utc().plus({seconds: 5}).toFormat("yyyy-MM-dd'T'HH:mm:ss.SSS")
+		const max = DateTime.utc().plus({seconds: 5}).toFormat(SPS_FORMAT)
 		return '&min_date=' + min + '&max_date=' + max
 	}
 }

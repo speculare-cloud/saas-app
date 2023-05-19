@@ -78,3 +78,5 @@ export function opt<T>(v?: T) {
 export function optUn<T>(v?: T) {
 	return v ?? undefined;
 }
+
+export const SPS_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS";

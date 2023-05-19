@@ -22,6 +22,7 @@ interface GraphComponents {
 	pushValue: Function;
 	nullData: Function;
 	spliceData: Function;
+	spliceNull: Function;
 
 	loadingMessage?: string;
 	groupedSkip?: number;

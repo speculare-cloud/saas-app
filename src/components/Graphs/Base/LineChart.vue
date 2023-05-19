@@ -59,7 +59,7 @@ export default {
 			const opts: uPlot.Options = {
 				...this.getSize(),
 				plugins: [
-					customLegend(this)
+					customLegend(this),
 				],
 				cursor: {
 					points: {

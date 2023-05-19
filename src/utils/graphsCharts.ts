@@ -8,7 +8,8 @@ function serie (idx: number, alpha = true) {
 	return {
 		value: (_, v) => intValueOrTilde(v),
 		points: {
-			show: false
+			show: true,
+			size: 3,
 		},
 		width: Math.min(Math.max(2 / devicePixelRatio, 1.25), 2),
 		stroke: strokeColors[idx],

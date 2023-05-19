@@ -112,8 +112,14 @@ export default {
 			this.historyBusyDataObj.splice(start, nb)
 			this.historyIdleDataObj.splice(start, nb)
 		},
+		spliceNull: function(start, date) {
+			this.chartLabels.splice(start, 0, date)
+			this.chartDataObj.splice(start, 0, null)
+			this.historyBusyDataObj.splice(start, 0, null)
+			this.historyIdleDataObj.splice(start, 0, null)
+		},
 		// Add values (Labels and data) to the arrays
-		pushValue: function (date, usage, busy, idle) {
+		pushValue: function (date, usage, busy = opt<number>(), idle = opt<number>()) {
 			this.chartLabels.push(date)
 			this.chartDataObj.push(usage)
 			this.historyBusyDataObj.push(busy)
@@ -151,7 +157,7 @@ export default {
 			// Compute the idling time of the CPU from these params
 			const idle = elem.idle + elem.iowait
 			// Get the usage in % computed from busy and idle + prev values
-			const usage = vm.getUsageFrom(busy as unknown as number, idle as unknown as number)
+			const usage = vm.getUsageFrom(busy, idle)
 			// Construct the date
 			let date = DateTime.fromISO(elem.created_at, {zone: "utc"})
 			if (!date.isValid) date = DateTime.fromFormat(elem.created_at, "yyyy-MM-dd HH:mm:ss.u", {zone: "utc"})
@@ -186,7 +192,7 @@ export default {
 				const totald = total - prevTotal
 				const idled = idle - prevIdle
 				// Get the value as percent
-				return (totald - idled) / totald * 100
+				return Math.max(0, (totald - idled) / totald * 100)
 			}
 
 			return null
