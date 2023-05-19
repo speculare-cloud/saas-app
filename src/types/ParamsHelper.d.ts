@@ -20,7 +20,6 @@ interface GraphComponents {
 	wsMessageHandle: Function;
 	unshiftEmpty: Function;
 	pushValue: Function;
-	nullData: Function;
 	spliceData: Function;
 	spliceNull: Function;
 

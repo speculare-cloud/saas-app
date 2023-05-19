@@ -13,7 +13,6 @@ import { graphScrollObs, rebuildGraph } from '@/utils/graphs'
 import { updateGraph } from '@/utils/graphsData'
 import { series } from '@/utils/graphsCharts'
 import { closeWS } from '@/utils/websockets'
-
 import LineChart from '@/components/Graphs/Base/LineChart.vue'
 import { opt, optUn } from '@/utils/help'
 import type { CpuTimes } from '@martichou/sproot'
@@ -43,13 +42,13 @@ export default {
 		return {
 			table: 'cputimes',
 			unit: 'percentage',
-			connection: opt<WebSocket>(),
 			fetchingDone: false,
 			loadingMessage: 'Loading',
 			chartSeries: [
 				{},
 				{...series(0, false), label: 'user & system'}
 			],
+			connection: opt<WebSocket>(),
 			datacollection: optUn<(number | null)[][]>(),
 			wsBuffer: new Array<CpuTimes>(),
 			chartLabels: new Array<number>(),
@@ -98,12 +97,6 @@ export default {
 			this.wsBuffer = []
 
 			if (ws) closeWS(this.table, this)
-		},
-		// Null the data of an index (without nulling the Labels)
-		nullData: function (i) {
-			this.chartDataObj[i] = null
-			this.historyBusyDataObj[i] = null
-			this.historyIdleDataObj[i] = null
 		},
 		// Remove nb index from each data arrays starting from start
 		spliceData: function (start, nb) {
