@@ -72,8 +72,7 @@
 </template>
 
 <script lang="ts">
-import { nextTick } from 'vue';
-import UpdateAlertModal from '@/components/UpdateAlertModal.vue';
+import { defineAsyncComponent, nextTick } from 'vue';
 import type { Alerts, AlertsDTO, AlertsDTOUpdate } from '@martichou/sproot';
 import { opt } from '@/utils/help';
 
@@ -81,7 +80,7 @@ export default {
 	name: 'Alerts',
 
 	components: {
-		UpdateAlertModal
+		UpdateAlertModal: defineAsyncComponent(() => import('@/components/UpdateAlertModal.vue')),
 	},
 
 	data() {
