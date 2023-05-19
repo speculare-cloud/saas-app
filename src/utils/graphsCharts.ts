@@ -18,8 +18,8 @@ function serie (idx: number, alpha = true) {
 }
 
 // TODO - see what's up
-function splineGraph (u, seriesIdx, idx0, idx1, extendGap, buildClip) {
-	return uPlot.paths.spline!()(u, seriesIdx, idx0, idx1, extendGap, buildClip)
+function splineGraph (u, seriesIdx, idx0, idx1) {
+	return uPlot.paths.spline!()(u, seriesIdx, idx0, idx1)
 }
 
 export function intValueOrTilde (v: number) {

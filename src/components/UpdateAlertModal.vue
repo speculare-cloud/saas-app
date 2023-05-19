@@ -84,20 +84,6 @@ export default {
 		return { extensions, handleReady };
 	},
 
-	computed: {
-		applyDisabled() {
-			return JSON.stringify(this.lastAlertTested) != JSON.stringify(this.alert.editing);
-		},
-		alertEditing: {
-			get: function() {
-				return this.alert.editing
-			},
-			set: function(value) {
-				this.$emit('update:editing', value)
-			}
-		}
-	},
-
 	data() {
 		return {
 			alertTested: true,
@@ -109,6 +95,20 @@ export default {
 
 			lastAlertTested: opt<AlertsDTO>(),
 		}
+	},
+
+	computed: {
+		applyDisabled() {
+			return JSON.stringify(this.lastAlertTested) != JSON.stringify(this.alert.editing);
+		},
+		alertEditing: {
+			get: function() {
+				return this.alert.editing
+			},
+			set: function(value) {
+				this.$emit('update:editing', value)
+			}
+		},
 	},
 
 	methods: {
