@@ -1,5 +1,3 @@
-export const CDC_VALUES = 'columnvalues'
-
 // TODO - Rework params into named params
 export function initWS (wsUrl, table, eventType, filter, callback: Function | null, vm: WsVM, handle = null, callbackarg = null) {
 	console.log('[' + table + '] %cStarting %cconnection to WebSocket Server', 'color:green;', 'color:black;')

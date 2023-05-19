@@ -8,12 +8,13 @@
 </template>
 
 <script lang="ts">
+import LineChart from '@/components/Graphs/Base/LineChart.vue'
+
 import { nextTick } from 'vue'
 import { graphScrollObs, rebuildGraph } from '@/utils/graphs'
 import { updateGraph } from '@/utils/graphsData'
 import { series } from '@/utils/graphsCharts'
 import { closeWS } from '@/utils/websockets'
-import LineChart from '@/components/Graphs/Base/LineChart.vue'
 import { opt, optUn } from '@/utils/help'
 import type { CpuTimes } from '@martichou/sproot'
 import { DateTime } from 'luxon'
@@ -61,7 +62,6 @@ export default {
 
 	watch: {
 		graphRange: function (newVal, oldVal) {
-			console.log("New graphRange", newVal);
 			rebuildGraph(this, newVal, oldVal);
 		}
 	},
@@ -112,7 +112,7 @@ export default {
 			this.historyIdleDataObj.splice(start, 0, null)
 		},
 		// Add values (Labels and data) to the arrays
-		pushValue: function (date, usage, busy = opt<number>(), idle = opt<number>()) {
+		pushValue: function (date, usage = opt<number>(), busy = opt<number>(), idle = opt<number>()) {
 			this.chartLabels.push(date)
 			this.chartDataObj.push(usage)
 			this.historyBusyDataObj.push(busy)
@@ -143,12 +143,12 @@ export default {
 				this.wsBuffer.push(obj)
 			}
 		},
-		addNewData: function (elem: CpuTimes, update=false) {
+		addNewData: function (elem, update=false) {
 			const vm = this
 			// Compute the busy time of the CPU from these params
-			const busy = elem.cuser + elem.nice + elem.system + elem.irq + elem.softirq + elem.steal
+			const busy = Number(elem.cuser + elem.nice + elem.system + elem.irq + elem.softirq + elem.steal)
 			// Compute the idling time of the CPU from these params
-			const idle = elem.idle + elem.iowait
+			const idle = Number(elem.idle + elem.iowait)
 			// Get the usage in % computed from busy and idle + prev values
 			const usage = vm.getUsageFrom(busy, idle)
 			// Construct the date
@@ -168,7 +168,8 @@ export default {
 				})
 			}
 		},
-		getUsageFrom: function (busy: number, idle: number) {
+		// TODO - Rework
+		getUsageFrom: function (busy, idle) {
 			// If the previous does not exist, we can't compute the percent
 			const prevIndex = this.chartLabels.length - 1
 

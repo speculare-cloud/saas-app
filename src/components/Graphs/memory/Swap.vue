@@ -7,14 +7,17 @@
 	</div>
 </template>
 
-<script>
+<script lang="ts">
+import Stacked from '@/components/Graphs/Base/Stacked.vue'
+
 import { nextTick } from 'vue'
 import { graphScrollObs, rebuildGraph } from '@/utils/graphs'
 import { updateGraph } from '@/utils/graphsData'
 import { series, intValueOrTilde } from '@/utils/graphsCharts'
 import { closeWS } from '@/utils/websockets'
-import Stacked from '@/components/Graphs/Base/Stacked'
-import moment from 'moment'
+import { opt, optUn } from '@/utils/help'
+import type { Swap } from '@martichou/sproot'
+import { DateTime } from 'luxon'
 
 export default {
 	name: 'Swap',
@@ -40,20 +43,20 @@ export default {
 		return {
 			table: 'swap',
 			unit: 'MB',
-			connection: null,
 			fetchingDone: false,
-			datacollection: null,
 			loadingMessage: 'Loading',
 			chartSeries: [
 				{},
 				{...series(0, true, false), label: 'free', value: (_u, _v, _s, i) => intValueOrTilde(this.chartDataObjFree[i])},
 				{...series(1, true, false), label: 'used', value: (_u, _v, _s, i) => intValueOrTilde(this.chartDataObjUsed[i])}
 			],
-			wsBuffer: [],
-			chartLabels: [],
-			chartDataObjFree: [],
-			chartDataObjUsed: [],
-			obs: null
+			connection: opt<WebSocket>(),
+			datacollection: optUn<(number | null)[][]>(),
+			wsBuffer: new Array<Swap>(),
+			chartLabels: new Array<number>(),
+			chartDataObjFree: new Array<number | null>(),
+			chartDataObjUsed: new Array<number | null>(),
+			obs: opt<IntersectionObserver>()
 		}
 	},
 
@@ -77,7 +80,7 @@ export default {
 
 	beforeUnmount: function () {
 		// Stop the Observation of the element
-		this.obs.unobserve(this.$el)
+		this.obs?.unobserve(this.$el)
 		// Close the webSocket connection
 		this.cleaning()
 	},
@@ -85,20 +88,14 @@ export default {
 	methods: {
 		// Empty every arrays and close the websocket
 		cleaning: function (ws = true) {
+			console.log('[' + this.table + '] cleaning called')
 			this.fetchingDone = false
 			this.chartLabels = []
 			this.chartDataObjFree = []
 			this.chartDataObjUsed = []
 			this.wsBuffer = []
 
-			if (ws) {
-				closeWS(this.table, this)
-			}
-		},
-		// Null the data of an index (without nulling the Labels)
-		nullData: function (i) {
-			this.chartDataObjFree[i] = null
-			this.chartDataObjUsed[i] = null
+			if (ws) closeWS(this.table, this)
 		},
 		// Remove one index from each data arrays
 		spliceData: function (start, nb) {
@@ -106,8 +103,13 @@ export default {
 			this.chartDataObjFree.splice(start, nb)
 			this.chartDataObjUsed.splice(start, nb)
 		},
+		spliceNull: function(start, date) {
+			this.chartLabels.splice(start, 0, date)
+			this.chartDataObjFree.splice(start, 0, null)
+			this.chartDataObjUsed.splice(start, 0, null)
+		},
 		// Add values (Labels and data) to the arrays
-		pushValue: function (date, free, used) {
+		pushValue: function (date, free = opt<number>(), used = opt<number>()) {
 			this.chartLabels.push(date)
 			this.chartDataObjFree.push(free)
 			this.chartDataObjUsed.push(used)
@@ -120,13 +122,13 @@ export default {
 		},
 		wsMessageHandle: function (event) {
 			// Parse the data and extract newValue
-			const json = JSON.parse(event.data)
-			const obj = {
-				free: json.columnvalues[2],
-				used: json.columnvalues[3],
-				created_at: json.columnvalues[5],
-			}
+			const json = JSON.parse(event.data);
+			const columnsNames = json.columnnames;
+			const columnsValues = json.columnvalues;
 
+			const obj: Swap = Object.fromEntries(
+				columnsNames.map((_, i) => [columnsNames[i], columnsValues[i]])
+			) as Swap;
 			if (this.fetchingDone) {
 				// Add the new data to the graph
 				this.addNewData(obj, true)
@@ -138,11 +140,15 @@ export default {
 		},
 		addNewData: function (elem, update=false) {
 			const vm = this
+			// Construct the date
+			let date = DateTime.fromISO(elem.created_at, {zone: "utc"})
+			if (!date.isValid) date = DateTime.fromFormat(elem.created_at, "yyyy-MM-dd HH:mm:ss.u", {zone: "utc"})
 			// Add the new value to the Array
-			vm.pushValue(moment.utc(elem.created_at).unix(), elem.free, elem.used)
+			vm.pushValue(date.toUnixInteger(), elem.free, elem.used)
 
 			// Update onscreen values
 			if (update) {
+				console.log('[' + this.table + '] updating value on graph')
 				updateGraph(vm, function () {
 					vm.datacollection = [
 						vm.chartLabels,

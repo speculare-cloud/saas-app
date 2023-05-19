@@ -7,14 +7,17 @@
 	</div>
 </template>
 
-<script>
+<script lang="ts">
+import LineChart from '@/components/Graphs/Base/LineChart.vue'
+
 import { nextTick } from 'vue'
 import { graphScrollObs, rebuildGraph } from '@/utils/graphs'
 import { updateGraph } from '@/utils/graphsData'
 import { series } from '@/utils/graphsCharts'
 import { closeWS } from '@/utils/websockets'
-import LineChart from '@/components/Graphs/Base/LineChart'
-import moment from 'moment'
+import { opt, optUn } from '@/utils/help'
+import type { LoadAvg } from '@martichou/sproot'
+import { DateTime } from 'luxon'
 
 export default {
 	name: 'Loadavg',
@@ -40,10 +43,12 @@ export default {
 		return {
 			table: 'loadavg',
 			unit: 'load',
-			yscale: null,
-			connection: null,
+			thresholdModifier: {
+				add: 5,
+				mult: 2,
+			},
+			yscale: optUn<number[]>(),
 			fetchingDone: false,
-			datacollection: null,
 			loadingMessage: 'Loading',
 			chartSeries: [
 				{},
@@ -51,12 +56,14 @@ export default {
 				{...series(1, true), label: 'load5'},
 				{...series(2, true), label: 'load15'},
 			],
-			wsBuffer: [],
-			chartLabels: [],
-			chartDataObjOne: [],
-			chartDataObjFive: [],
-			chartDataObjFitheen: [],
-			obs: null
+			connection: opt<WebSocket>(),
+			datacollection: optUn<(number | null)[][]>(),
+			wsBuffer: new Array<LoadAvg>(),
+			chartLabels: new Array<number>(),
+			chartDataObjOne: new Array<number | null>(),
+			chartDataObjFive: new Array<number | null>(),
+			chartDataObjFitheen: new Array<number | null>(),
+			obs: opt<IntersectionObserver>()
 		}
 	},
 
@@ -80,7 +87,7 @@ export default {
 
 	beforeUnmount: function () {
 		// Stop the Observation of the element
-		this.obs.unobserve(this.$el)
+		this.obs?.unobserve(this.$el)
 		// Close the webSocket connection
 		this.cleaning()
 	},
@@ -88,6 +95,7 @@ export default {
 	methods: {
 		// Empty every arrays and close the websocket
 		cleaning: function (ws = true) {
+			console.log('[' + this.table + '] cleaning called')
 			this.fetchingDone = false
 			this.chartLabels = []
 			this.chartDataObjOne = []
@@ -95,15 +103,7 @@ export default {
 			this.chartDataObjFitheen = []
 			this.wsBuffer = []
 
-			if (ws) {
-				closeWS(this.table, this)
-			}
-		},
-		// Null the data of an index (without nulling the Labels)
-		nullData: function (i) {
-			this.chartDataObjOne[i] = null
-			this.chartDataObjFive[i] = null
-			this.chartDataObjFitheen[i] = null
+			if (ws) closeWS(this.table, this)
 		},
 		// Remove nb index from each data arrays starting from start
 		spliceData: function (start, nb) {
@@ -112,12 +112,18 @@ export default {
 			this.chartDataObjFive.splice(start, nb)
 			this.chartDataObjFitheen.splice(start, nb)
 		},
+		spliceNull: function(start, date) {
+			this.chartLabels.splice(start, 0, date)
+			this.chartDataObjOne.splice(start, 0, null)
+			this.chartDataObjFive.splice(start, 0, null)
+			this.chartDataObjFitheen.splice(start, 0, null)
+		},
 		// Add values (Labels and data) to the arrays
-		pushValue: function (date, one, five, fith) {
+		pushValue: function (date, one = opt<number>(), five = opt<number>(), fith = opt<number>()) {
 			this.chartLabels.push(date)
-			this.chartDataObjOne.push(Math.round(one * 100) / 100)
-			this.chartDataObjFive.push(Math.round(five * 100) / 100)
-			this.chartDataObjFitheen.push(Math.round(fith * 100) / 100)
+			this.chartDataObjOne.push(one ? Math.round(one * 100) / 100 : one)
+			this.chartDataObjFive.push(five ? Math.round(five * 100) / 100 : five)
+			this.chartDataObjFitheen.push(fith ? Math.round(fith * 100) / 100 : fith)
 		},
 		// Add a null first item with the specified date
 		unshiftEmpty: function (date) {
@@ -128,14 +134,13 @@ export default {
 		},
 		wsMessageHandle: function (event) {
 			// Parse the data and extract newValue
-			const json = JSON.parse(event.data)
-			const obj = {
-				one: json.columnvalues[1],
-				five: json.columnvalues[2],
-				fifteen: json.columnvalues[3],
-				created_at: json.columnvalues[5],
-			}
+			const json = JSON.parse(event.data);
+			const columnsNames = json.columnnames;
+			const columnsValues = json.columnvalues;
 
+			const obj: LoadAvg = Object.fromEntries(
+				columnsNames.map((_, i) => [columnsNames[i], columnsValues[i]])
+			) as LoadAvg;
 			if (this.fetchingDone) {
 				// Add the new data to the graph
 				this.addNewData(obj, true)
@@ -147,11 +152,15 @@ export default {
 		},
 		addNewData: function (elem, update=false) {
 			const vm = this
+			// Construct the date
+			let date = DateTime.fromISO(elem.created_at, {zone: "utc"})
+			if (!date.isValid) date = DateTime.fromFormat(elem.created_at, "yyyy-MM-dd HH:mm:ss.u", {zone: "utc"})
 			// Add the new value to the Array
-			vm.pushValue(moment.utc(elem.created_at).unix(), elem.one, elem.five, elem.fifteen)
+			vm.pushValue(date.toUnixInteger(), elem.one, elem.five, elem.fifteen)
 
 			// Update onscreen values
 			if (update) {
+				console.log('[' + this.table + '] updating value on graph')
 				updateGraph(vm, function() {
 					vm.datacollection = [
 						vm.chartLabels,

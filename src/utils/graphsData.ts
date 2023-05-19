@@ -7,6 +7,9 @@ function sanitizeGraphData (vm: GraphComponents) {
 	// How many points we have to sanitize
 	const dataSize = vm.chartLabels.length;
 
+	// console.log("Source date", vm.chartLabels);
+	// console.log("Source obj", (vm as any).chartDataObjOne);
+
 	// Important: the oldest data is at the index 0
 	// and the newest data is at the end of the array
 
@@ -26,6 +29,10 @@ function sanitizeGraphData (vm: GraphComponents) {
 	if (threshold > 60) {
 		threshold = vm.graphRange.scale < 345600 ? 600 : 1800
 	}
+	const originalThreshold = threshold;
+	// console.log("> originalThreshold", originalThreshold)
+	threshold += vm.thresholdModifier?.add ?? 0;
+	threshold *= vm.thresholdModifier?.mult ?? 1
 	// Threshold within 5% of the value we should have
 	threshold += (5 / 100) * threshold
 	// console.log("> threshold", threshold)
@@ -33,7 +40,7 @@ function sanitizeGraphData (vm: GraphComponents) {
 	// Iterate in the reverse order, and fill the gaps we may have
 	for (let i = dataSize - 1; i >= 0; i--) {
 		// If too old, splice
-		if (vm.chartLabels[i] < fromAsUnix) {
+		if (vm.chartLabels[i] < fromAsUnix - 5) {
 			// console.log("Deleting too old data", vm.chartLabels[i]);
 			vm.spliceData(i, 1)
 			continue;
@@ -44,7 +51,7 @@ function sanitizeGraphData (vm: GraphComponents) {
 		const current = vm.chartLabels[i];
 		// console.log(i, "gap check, current vs next diff", next - current, "with current as", current);
 		if (next - current > threshold) {
-			const toAdd = Math.round((current + next) / 2 - threshold);
+			const toAdd = Math.round((current + next) / 2 - originalThreshold);
 			// console.log(i, "> adding null value at", toAdd);
 			vm.spliceNull(i + 1, toAdd);
 		}
@@ -65,8 +72,7 @@ function sanitizeGraphData (vm: GraphComponents) {
 	}
 
 	// Assert that the function does the job correctly
-	assert(vm.chartLabels.length === vm.chartDataObj.length, "Both array are not the same size");
-	assert(vm.chartLabels.every((v,i,a) => !i || a[i-1] <= v), "Array is not in order");
+	assert(vm.chartLabels.every((v,i,a) => !i || a[i-1] <= v), vm.table + ": array is not in order");
 }
 
 function basicRespHandler (vm: GraphComponents, data) {

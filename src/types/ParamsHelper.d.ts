@@ -5,7 +5,6 @@ interface GraphComponents {
 	fetchingDone: boolean;
 	wsBuffer: Array;
 	chartLabels: Array;
-	chartDataObj: Array;
 
 	connection: opt<WebSocket>;
 	graphRange: opt<{
@@ -23,6 +22,10 @@ interface GraphComponents {
 	spliceData: Function;
 	spliceNull: Function;
 
+	thresholdModifier?: {
+		add: number;
+		mult: number;
+	};
 	loadingMessage?: string;
 	groupedSkip?: number;
 

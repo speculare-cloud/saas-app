@@ -82,7 +82,8 @@
 
 <script lang="ts">
 import { opt } from '@/utils/help';
-import { initWS, closeWS, CDC_VALUES } from '@/utils/websockets';
+import { initWS, closeWS } from '@/utils/websockets';
+import type { ApiKey } from '@martichou/sproot';
 import { nextTick } from 'vue';
 
 export default {
@@ -103,7 +104,7 @@ export default {
 			if (vm.secretKey === null) await vm.generateKey();
 			else await vm.getKeyInfo();
 
-			initWS(vm.$authCdc, "apikeys", "update", ":key.eq." + vm.secretKey, false, vm);
+			initWS(vm.$authCdc, "apikeys", "update", ":key.eq." + vm.secretKey, null, vm);
 		})
 	},
 
@@ -136,9 +137,13 @@ export default {
 		},
 		wsMessageHandle: async function(event) {
 			const json = JSON.parse(event.data);
-			const jsonValues = json[CDC_VALUES];
+			const columnsNames = json.columnnames;
+			const columnsValues = json.columnvalues;
 
-			this.host_uuid = jsonValues[2] ?? null;
+			const keyObj: ApiKey = Object.fromEntries(
+				columnsNames.map((_, i) => [columnsNames[i], columnsValues[i]])
+			) as ApiKey;
+			this.host_uuid = keyObj.host_uuid ?? null;
 		}
 	}
 }
