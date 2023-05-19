@@ -24,7 +24,7 @@
 		</div>
 		<div class="mt-12 mb-12">
 			<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-				<div v-for="alert in alerts" :key="alert.id as unknown as number" class="group flex flex-col gap-4 p-5 bg-base-300 shadow-md rounded-lg">
+				<div v-for="alert in alerts" :key="alert.id" class="group flex flex-col gap-4 p-5 bg-base-300 shadow-md rounded-lg">
 					<div class="flex flex-row justify-between gap-2 items-center">
 						<div class="flex flex-col flex-1 gap-2">
 							{{ alert.name }}

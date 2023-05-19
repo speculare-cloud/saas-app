@@ -128,7 +128,7 @@
 									<span v-else-if="isServerOnline(item.host.updated_at) == 1" class="text-warning mr-1">??</span>
 									<span v-else class="text-error mr-1">Down</span>
 									-
-									<span class="ml-1">{{ fmtDuration(item.host.uptime as unknown as number) }}</span>
+									<span class="ml-1">{{ fmtDuration(item.host.uptime) }}</span>
 								</p>
 							</div>
 						</div>

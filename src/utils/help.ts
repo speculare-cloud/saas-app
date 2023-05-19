@@ -7,7 +7,7 @@ export function trunkKey (text?: string) {
 }
 
 export function fmtDuration (durationinsec: number) {
-	return Duration.fromMillis(durationinsec * 1000).rescale().toHuman({ unitDisplay: "short" })
+	return Duration.fromMillis(durationinsec * 1000).rescale().toHuman({ unitDisplay: "narrow" })
 }
 
 // Granularity can either be in minutes, seconds or in ms.
