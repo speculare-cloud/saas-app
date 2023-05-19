@@ -4,6 +4,8 @@ const strokeColors = ['#EAB839', '#008080', '#DA70D6', '#EAB839']
 const fillColorsAlpha = ['#EAB8391A', '#0080801A', '#DA70D61A', '#EAB8391A']
 const fillColors = ['#EAB839', '#008080', '#DA70D6', '#EAB839']
 
+// TODO - Filter out point from rendering depending on
+// threshold and value (if prev and next is null, draw, otherwise no)
 function serie (idx: number, alpha = true) {
 	return {
 		value: (_, v) => intValueOrTilde(v),
@@ -17,7 +19,6 @@ function serie (idx: number, alpha = true) {
 	}
 }
 
-// TODO - see what's up
 function splineGraph (u, seriesIdx, idx0, idx1) {
 	return uPlot.paths.spline!()(u, seriesIdx, idx0, idx1)
 }
