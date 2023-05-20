@@ -24,7 +24,7 @@ function sanitizeGraphData (vm: GraphComponents) {
 	const toAsUnix = to.toUnixInteger()
 
 	const threshold = vm.getThreshold();
-	// console.log(vm.table + ":> threshold", threshold)
+	console.log(vm.table + ":> threshold", threshold)
 
 	// Iterate in the reverse order, and fill the gaps we may have
 	// for (let i = dataSize - 1; i >= 0; i--) {
@@ -57,8 +57,9 @@ function sanitizeGraphData (vm: GraphComponents) {
 	}
 
 	if (vm.chartLabels[newDataSize - 1] + threshold < toAsUnix) {
-		console.log(vm.table + ":Adding null value at the end", toAsUnix)
-		vm.pushValue(toAsUnix, null);
+		const toAddTime = vm.chartLabels[newDataSize - 1] + 1;
+		console.log(vm.table + ":Adding null value at the end", toAddTime)
+		vm.pushValue(toAddTime, null);
 	}
 
 	// Assert that the function does the job correctly

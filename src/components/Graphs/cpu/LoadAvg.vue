@@ -104,9 +104,11 @@ export default {
 			]
 		},
 		getThreshold: function() {
-			let threshold = this.graphRange.granularity
-			if (threshold > 60) {
+			let threshold;
+			if (this.graphRange.granularity > 60) {
 				threshold = this.graphRange.scale < 345600 ? 600 : 1800
+			} else {
+				threshold = this.graphRange.scale / 60 + this.graphRange.granularity
 			}
 			threshold += this.thresholdModifier.add;
 			threshold *= this.thresholdModifier.mult;
