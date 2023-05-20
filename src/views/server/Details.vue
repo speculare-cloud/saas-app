@@ -52,7 +52,7 @@
 								Incidents
 							</h6>
 							<h4 class="text-white text-lg mt-2 flex flex-row gap-2 min-h-[34px]">
-								<span v-if="hostInfo">{{ incidentsCount?.total ?? 0 }}<span v-if="(incidentsCount?.total ?? 0) > 100">+</span></span>
+								<span v-if="hostInfo">{{ incidentsCount?.total ?? 0 }}<span v-if="(incidentsCount?.total ?? 0) >= 100">+</span></span>
 								<div v-else class="animate-pulse bg-slate-600 w-full rounded h-[22px] mt-3" />
 							</h4>
 						</div>
