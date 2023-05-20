@@ -51,15 +51,14 @@ function sanitizeGraphData (vm: GraphComponents) {
 
 	const newDataSize = dataSize;
 	// Add null at start to ensure correct graph
-	if (newDataSize === 0 || vm.chartLabels[0] > fromAsUnix) {
+	if (newDataSize === 0 || vm.chartLabels[0] > fromAsUnix + threshold) {
 		console.log(vm.table + ":Adding null value at the start", fromAsUnix)
 		vm.unshiftEmpty(fromAsUnix);
 	}
 
 	if (vm.chartLabels[newDataSize - 1] + threshold < toAsUnix) {
-		const toAddTime = vm.chartLabels[newDataSize - 1] + 1;
-		console.log(vm.table + ":Adding null value at the end", toAddTime)
-		vm.pushValue(toAddTime, null);
+		console.log(vm.table + ":Adding null value at the end", toAsUnix)
+		vm.pushValue(toAsUnix, null);
 	}
 
 	// Assert that the function does the job correctly
