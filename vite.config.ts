@@ -13,7 +13,7 @@ export default defineConfig(({mode}) => {
 			}
 		},
 		esbuild: {
-			// drop: mode !== 'development' ? ['console', 'debugger'] : [],
+			drop: mode !== 'development' ? ['console', 'debugger'] : [],
 		},
 		server: {
 			port: 8080
