@@ -64,9 +64,9 @@
 
 <script lang="ts">
 import { nextTick } from 'vue';
-import { fmtDuration } from '@/utils/help';
 import { DateTime } from 'luxon';
 import type { IncidentsJoined } from '@martichou/sproot';
+import { fmtDuration } from '@/utils/time';
 
 export default {
 	name: 'Incidents',

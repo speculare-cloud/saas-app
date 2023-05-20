@@ -1,6 +1,6 @@
 import { drainWsBuffer } from '@/utils/graphsWebsockets'
 import { DateTime } from 'luxon'
-import { SPS_FORMAT } from './help';
+import { SPS_FORMAT } from './time';
 
 function sanitizeGraphData (vm: GraphComponents) {
 	// How many points we have to sanitize

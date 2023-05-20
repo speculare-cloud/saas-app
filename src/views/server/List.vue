@@ -160,7 +160,8 @@
 
 <script lang="ts">
 import { useServersStore } from '@/stores/servers';
-import { trunkKey, fmtDuration, fmtGranularity, isServerOnline } from '@/utils/help';
+import { trunkKey, fmtGranularity} from '@/utils/help';
+import { fmtDuration, isServerOnline } from '@/utils/time';
 
 import DeleteKeyModal from '@/components/DeleteKeyModal.vue'
 import Error from '@/components/Error.vue'

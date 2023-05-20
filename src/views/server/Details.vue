@@ -244,12 +244,12 @@ import Skeleton from '@/components/Graphs/Base/Skeleton.vue'
 
 import { DatePicker } from 'v-calendar'
 import { useServersStore } from '@/stores/servers';
-import { nextTick } from 'vue';
+import { nextTick , defineAsyncComponent } from 'vue';
 import { initWS, closeWS } from '@/utils/websockets';
-import { fmtDuration, fmtGranularity, isServerOnline, computeGranularity, opt } from '@/utils/help';
-import { defineAsyncComponent } from 'vue'
+import { fmtGranularity, computeGranularity, opt } from '@/utils/help';
 import type { Host, HttpAlertsCount, HttpIncidentsCount } from '@martichou/sproot';
 import { DateTime } from 'luxon';
+import { fmtDuration, isServerOnline } from '@/utils/time';
 
 import 'v-calendar/dist/style.css';
 

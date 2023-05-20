@@ -1,13 +1,7 @@
-import { DateTime, Duration } from "luxon"
-
 export function trunkKey (text?: string) {
 	if (!text) return undefined
 
 	return text.slice(0, 10)
-}
-
-export function fmtDuration (durationinsec: number) {
-	return Duration.fromMillis(durationinsec * 1000).rescale().toHuman({ unitDisplay: "narrow" })
 }
 
 // Granularity can either be in minutes, seconds or in ms.
@@ -54,15 +48,6 @@ export function validateEmail (email: string) {
 		)
 }
 
-/*
- * Return the status of the server (online, unknown or offline)
- */
-export function isServerOnline (updated_at?: string) {
-	if (!updated_at) return 1 // unknown
-	if (DateTime.fromISO(updated_at, { zone: "UTC"}) <= DateTime.utc().minus({minutes: 5})) return 0
-	return 2 // online
-}
-
 export function computeGranularity (scale: number) {
 	// Using ~ we convert the float to int once in it inversed form
 	// Reusing ~ again we reverse it again and TADAAA not decimal
@@ -78,5 +63,3 @@ export function opt<T>(v?: T) {
 export function optUn<T>(v?: T) {
 	return v ?? undefined;
 }
-
-export const SPS_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS";
