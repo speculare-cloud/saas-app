@@ -22,6 +22,7 @@ interface GraphComponents {
 	spliceData: Function;
 	spliceNull: Function;
 	getThreshold: Function;
+	swapItem: Function;
 
 	loadingMessage?: string;
 	groupedSkip?: number;

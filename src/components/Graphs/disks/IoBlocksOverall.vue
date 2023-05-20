@@ -144,6 +144,14 @@ export default {
 
 			if (ws) closeWS(this.table, this)
 		},
+		swapItem: function(idxA, idxB) {
+			this.chartLabels[idxA] = this.chartLabels.splice(idxB, 1, this.chartLabels[idxA])[0];
+			this.chartDataObjRead[idxA] = this.chartDataObjRead.splice(idxB, 1, this.chartDataObjRead[idxA])[0];
+			this.chartDataObjWrite[idxA] = this.chartDataObjWrite.splice(idxB, 1, this.chartDataObjWrite[idxA])[0];
+			this.historyDataDate[idxA] = this.historyDataDate.splice(idxB, 1, this.historyDataDate[idxA])[0];
+			this.historyDataRead[idxA] = this.historyDataRead.splice(idxB, 1, this.historyDataRead[idxA])[0];
+			this.historyDataWrite[idxA] = this.historyDataWrite.splice(idxB, 1, this.historyDataWrite[idxA])[0];
+		},
 		// Remove nb index from each data arrays starting from start
 		spliceData: function (start, nb) {
 			this.chartLabels.splice(start, nb)

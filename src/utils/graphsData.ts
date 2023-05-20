@@ -49,6 +49,7 @@ function sanitizeGraphData (vm: GraphComponents) {
 	// console.log(vm.table + ":Size after cleanup", newDataSize)
 
 	const newDataSize = dataSize;
+	console.log(vm.table + ": size of data", newDataSize);
 	// Add null at start to ensure correct graph
 	if (newDataSize === 0 || vm.chartLabels[0] > fromAsUnix + threshold) {
 		console.log(vm.table + ":Adding null value at the start", fromAsUnix)
@@ -63,7 +64,8 @@ function sanitizeGraphData (vm: GraphComponents) {
 	// Is bound to be deleted once the algorithm is stable enough
 	for (let i = 0; i <= newDataSize; i++) {
 		if (vm.chartLabels[i] > vm.chartLabels[i + 1]) {
-			console.warn(vm.table + ": [" + i + "]current", vm.chartLabels[i], "is bigger than [" + i + 1 + "]next", vm.chartLabels[i + 1]);
+			console.warn(vm.table + ": [" + i + "]current", vm.chartLabels[i], "is bigger than [" + (i + 1) + "]next", vm.chartLabels[i + 1]);
+			vm.swapItem(i, i+1);
 		}
 	}
 }

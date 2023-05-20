@@ -113,8 +113,9 @@ export default {
 				.get(this.$serverBase(this.$route.params.berta) + "/api/ionets/count?uuid=" + this.uuid + getRangeParams(this.graphRange))
 				.then(resp => this.groupedSkip = Math.max(1, resp.data))
 				.catch(err => {
-					console.log('[ionets] Failed to fetch number of disks', err)
+					console.error('[' + this.table + '] Failed to fetch number of disks', err)
 				})
+			console.log('[' + this.table + '] Count of disks', this.groupedSkip);
 		},
 		getThreshold: function() {
 			let threshold;
@@ -142,6 +143,14 @@ export default {
 			this.wsBuffer = []
 
 			if (ws) closeWS(this.table, this)
+		},
+		swapItem: function(idxA, idxB) {
+			this.chartLabels[idxA] = this.chartLabels.splice(idxB, 1, this.chartLabels[idxA])[0];
+			this.chartDataObjRecv[idxA] = this.chartDataObjRecv.splice(idxB, 1, this.chartDataObjRecv[idxA])[0];
+			this.chartDataObjSent[idxA] = this.chartDataObjSent.splice(idxB, 1, this.chartDataObjSent[idxA])[0];
+			this.historyDataDate[idxA] = this.historyDataDate.splice(idxB, 1, this.historyDataDate[idxA])[0];
+			this.historyDataRecv[idxA] = this.historyDataRecv.splice(idxB, 1, this.historyDataRecv[idxA])[0];
+			this.historyDataSent[idxA] = this.historyDataSent.splice(idxB, 1, this.historyDataSent[idxA])[0];
 		},
 		// Remove nb index from each data arrays starting from start
 		spliceData: function (start, nb) {
