@@ -62,7 +62,7 @@ function sanitizeGraphData (vm: GraphComponents) {
 	}
 
 	// Is bound to be deleted once the algorithm is stable enough
-	for (let i = 0; i <= newDataSize; i++) {
+	for (let i = 0; i < newDataSize; i++) {
 		if (vm.chartLabels[i] > vm.chartLabels[i + 1]) {
 			console.warn(vm.table + ": [" + i + "]current", vm.chartLabels[i], "is bigger than [" + (i + 1) + "]next", vm.chartLabels[i + 1]);
 			vm.swapItem(i, i+1);
@@ -115,6 +115,9 @@ export function fetchInit (vm: GraphComponents, grouped) {
 		.get(vm.$serverBase(vm.$route.params.berta) + '/api/' + vm.table + '?uuid=' + vm.uuid + getRangeParams(vm.graphRange))
 		.then(resp => {
 			console.log('[' + vm.table + '] resp received')
+
+			vm.cleaning(vm.graphRange.scale !== 300);
+
 			if (!grouped) basicRespHandler(vm, resp.data)
 			else groupedRespHandler(vm, resp.data)
 
