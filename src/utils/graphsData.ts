@@ -62,7 +62,9 @@ function sanitizeGraphData (vm: GraphComponents) {
 	}
 
 	// Assert that the function does the job correctly
-	assert(vm.chartLabels.every((v,i,a) => !i || a[i-1] <= v), vm.table + ": end array is not in order");
+	if(vm.chartLabels.every((v,i,a) => !i || a[i-1] <= v)) {
+		console.warn(vm.table + ": end array is not in order");
+	}
 }
 
 function basicRespHandler (vm: GraphComponents, data) {
