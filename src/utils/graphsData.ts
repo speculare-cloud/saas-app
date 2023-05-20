@@ -1,7 +1,6 @@
 import { drainWsBuffer } from '@/utils/graphsWebsockets'
 import { DateTime } from 'luxon'
 import { SPS_FORMAT } from './help';
-import { assert } from '@vue/compiler-core';
 
 function sanitizeGraphData (vm: GraphComponents) {
 	// How many points we have to sanitize
@@ -61,9 +60,11 @@ function sanitizeGraphData (vm: GraphComponents) {
 		vm.pushValue(toAsUnix, null);
 	}
 
-	// Assert that the function does the job correctly
-	if(vm.chartLabels.every((v,i,a) => !i || a[i-1] <= v)) {
-		console.warn(vm.table + ": end array is not in order");
+	// Is bound to be deleted once the algorithm is stable enough
+	for (let i = 0; i <= newDataSize; i++) {
+		if (vm.chartLabels[i] > vm.chartLabels[i + 1]) {
+			console.warn("Current", vm.chartLabels[i], "is bigger than next", vm.chartLabels[i + 1]);
+		}
 	}
 }
 
