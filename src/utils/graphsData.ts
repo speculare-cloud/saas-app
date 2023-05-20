@@ -26,13 +26,14 @@ function sanitizeGraphData (vm: GraphComponents) {
 	console.log(vm.table + ":> threshold", threshold)
 
 	// Iterate in the reverse order, and fill the gaps we may have
-	// for (let i = dataSize - 1; i >= 0; i--) {
-	// 	// If too old, splice
-	// 	if (vm.chartLabels[i] < fromAsUnix - 5) {
-	// 		console.log(vm.table + ":Deleting too old data", vm.chartLabels[i]);
-	// 		vm.spliceData(i, 1)
-	// 		continue;
-	// 	}
+	for (let i = dataSize - 1; i >= 0; i--) {
+		// If too old, splice
+		if (vm.chartLabels[i] < fromAsUnix - 5) {
+			console.log(vm.table + ":Deleting too old data", vm.chartLabels[i]);
+			vm.spliceData(i, 1)
+			continue;
+		}
+	}
 
 	// 	if (i === dataSize - 1) continue;
 	// 	const next = vm.chartLabels[i + 1];
