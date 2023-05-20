@@ -3,7 +3,7 @@
 		<div v-if="datacollection == null" class="w-100 flex items-center justify-center text-xl text-gray-400" style="height: 258px">
 			<h3>{{ loadingMessage }}</h3>
 		</div>
-		<LineChart :chartdata="datacollection" :chartseries="chartSeries" :unit="unit" :yscale="[0, 100]" />
+		<LineChart :chartdata="datacollection" :chartseries="chartSeries!" :unit="unit" :yscale="[0, 100]" />
 	</div>
 </template>
 
@@ -45,10 +45,7 @@ export default {
 			unit: 'percentage',
 			fetchingDone: false,
 			loadingMessage: 'Loading',
-			chartSeries: [
-				{},
-				{...series(0, false), label: 'user & system'}
-			],
+			chartSeries: opt<{}[]>(),
 			connection: opt<WebSocket>(),
 			datacollection: optUn<(number | null)[][]>(),
 			wsBuffer: new Array<CpuTimes>(),
@@ -62,8 +59,14 @@ export default {
 
 	watch: {
 		graphRange: function (newVal, oldVal) {
+			// Rebuild the series with the new threshold
+			this.buildSeries();
 			rebuildGraph(this, newVal, oldVal);
 		}
+	},
+
+	beforeMount: function() {
+		this.buildSeries();
 	},
 
 	mounted: function () {
@@ -86,6 +89,22 @@ export default {
 	},
 
 	methods: {
+		buildSeries: function() {
+			this.chartSeries = [
+				{},
+				{...series(0, this.getThreshold(), false), label: 'user & system'}
+			]
+		},
+		getThreshold: function() {
+			let threshold = this.graphRange.granularity
+			if (threshold > 60) {
+				threshold = this.graphRange.scale < 345600 ? 600 : 1800
+			}
+			// Threshold within 5% of the value we should have
+			threshold += (5 / 100) * threshold
+
+			return threshold;
+		},
 		// Empty every arrays and close the websocket
 		cleaning: function (ws = true) {
 			console.log('[' + this.table + '] cleaning called')

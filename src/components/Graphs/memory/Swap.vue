@@ -3,7 +3,7 @@
 		<div v-if="datacollection == null" class="w-100 flex items-center justify-center text-xl text-gray-400" style="height: 258px">
 			<h3>{{ loadingMessage }}</h3>
 		</div>
-		<Stacked :chartdata="datacollection" :chartseries="chartSeries" :unit="unit" />
+		<Stacked :chartdata="datacollection" :chartseries="chartSeries!" :unit="unit" />
 	</div>
 </template>
 
@@ -45,11 +45,7 @@ export default {
 			unit: 'MB',
 			fetchingDone: false,
 			loadingMessage: 'Loading',
-			chartSeries: [
-				{},
-				{...series(0, true, false), label: 'free', value: (_u, _v, _s, i) => intValueOrTilde(this.chartDataObjFree[i])},
-				{...series(1, true, false), label: 'used', value: (_u, _v, _s, i) => intValueOrTilde(this.chartDataObjUsed[i])}
-			],
+			chartSeries: opt<{}[]>(),
 			connection: opt<WebSocket>(),
 			datacollection: optUn<(number | null)[][]>(),
 			wsBuffer: new Array<Swap>(),
@@ -62,8 +58,14 @@ export default {
 
 	watch: {
 		graphRange: function (newVal, oldVal) {
+			// Rebuild the series with the new threshold
+			this.buildSeries();
 			rebuildGraph(this, newVal, oldVal)
 		}
+	},
+
+	beforeMount: function() {
+		this.buildSeries();
 	},
 
 	mounted: function () {
@@ -86,6 +88,24 @@ export default {
 	},
 
 	methods: {
+		buildSeries: function() {
+			const threshold = this.getThreshold();
+			this.chartSeries = [
+				{},
+				{...series(0, threshold, true, false), label: 'free', value: (_u, _v, _s, i) => intValueOrTilde(this.chartDataObjFree[i])},
+				{...series(1, threshold, true, false), label: 'used', value: (_u, _v, _s, i) => intValueOrTilde(this.chartDataObjUsed[i])}
+			]
+		},
+		getThreshold: function() {
+			let threshold = this.graphRange.granularity
+			if (threshold > 60) {
+				threshold = this.graphRange.scale < 345600 ? 600 : 1800
+			}
+			// Threshold within 5% of the value we should have
+			threshold += (5 / 100) * threshold
+
+			return threshold;
+		},
 		// Empty every arrays and close the websocket
 		cleaning: function (ws = true) {
 			console.log('[' + this.table + '] cleaning called')

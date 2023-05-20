@@ -21,11 +21,8 @@ interface GraphComponents {
 	pushValue: Function;
 	spliceData: Function;
 	spliceNull: Function;
+	getThreshold: Function;
 
-	thresholdModifier?: {
-		add: number;
-		mult: number;
-	};
 	loadingMessage?: string;
 	groupedSkip?: number;
 

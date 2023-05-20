@@ -54,9 +54,7 @@ const pointsFilter = (u, seriesIdx, show, gaps) => {
 	return filtered.length ? filtered : null;
 };
 
-// TODO - Filter out point from rendering depending on
-// threshold and value (if prev and next is null, draw, otherwise no)
-function serie (idx: number, alpha = true) {
+function serie (idx: number, threshold: number, alpha = true) {
 	return {
 		value: (_, v) => intValueOrTilde(v),
 		points: {
@@ -65,7 +63,30 @@ function serie (idx: number, alpha = true) {
 		},
 		width: Math.min(Math.max(2 / devicePixelRatio, 1.25), 2),
 		stroke: strokeColors[idx],
-		fill: alpha ? fillColorsAlpha[idx] : fillColors[idx]
+		fill: alpha ? fillColorsAlpha[idx] : fillColors[idx],
+		gaps: (u, sidx, idx0, idx1, nullGaps) => {
+			const xData = u.data[0];
+			const yData = u.data[sidx];
+
+			const addlGaps = [];
+
+			for (let i = idx0 + 1; i <= idx1; i++) {
+				if (Number.isFinite(yData[i]) && Number.isFinite(yData[i-1])) {
+					if (xData[i] - xData[i - 1] > threshold) {
+						uPlot.addGap(
+							addlGaps,
+							Math.round(u.valToPos(xData[i - 1], 'x', true)),
+							Math.round(u.valToPos(xData[i],     'x', true)),
+						);
+					}
+				}
+			}
+
+			nullGaps.push(...addlGaps);
+			nullGaps.sort((a, b) => a[0] - b[0]);
+
+			return nullGaps;
+		}
 	}
 }
 
@@ -73,14 +94,14 @@ function splineGraph (u, seriesIdx, idx0, idx1) {
 	return uPlot.paths.spline!()(u, seriesIdx, idx0, idx1)
 }
 
-export function intValueOrTilde (v: number) {
+export function intValueOrTilde (v: number | null) {
 	return v == null ? '-' : v.toFixed(2)
 }
 
-export function series (idx: number, spline = false, alpha = true) {
+export function series (idx: number, threshold: number, spline = false, alpha = true) {
 	if (spline) {
 		return {
-			...serie(idx, alpha),
+			...serie(idx, threshold, alpha),
 			...{
 				drawStyle: 2,
 				lineInterpolation: 1,
@@ -88,7 +109,7 @@ export function series (idx: number, spline = false, alpha = true) {
 			}
 		}
 	} else {
-		return serie(idx)
+		return serie(idx, threshold)
 	}
 }
 

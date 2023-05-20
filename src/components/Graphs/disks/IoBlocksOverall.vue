@@ -3,7 +3,7 @@
 		<div v-if="datacollection == null" class="w-100 flex items-center justify-center text-xl text-gray-400" style="height: 258px">
 			<h3>{{ loadingMessage }}</h3>
 		</div>
-		<LineChart :chartdata="datacollection" :chartseries="chartSeries" :unit="unit" />
+		<LineChart :chartdata="datacollection" :chartseries="chartSeries!" :unit="unit" />
 	</div>
 </template>
 
@@ -48,11 +48,7 @@ export default {
 			unit: 'MB/s',
 			fetchingDone: false,
 			loadingMessage: 'Loading',
-			chartSeries: [
-				{},
-				{...series(0, false), label: 'read'},
-				{...series(1, false), label: 'write'},
-			],
+			chartSeries: opt<{}[]>(),
 			connection: opt<WebSocket>(),
 			datacollection: optUn<(number | null)[][]>(),
 			wsBuffer: new Array<IoBlock>(),
@@ -70,9 +66,15 @@ export default {
 	watch: {
 		graphRange: async function (newVal, oldVal) {
 			await this.refreshCount();
+			// Rebuild the series with the new threshold
+			this.buildSeries();
 			// true is to tell the fetchInit to handle as grouped values
 			rebuildGraph(this, newVal, oldVal, true)
 		}
+	},
+
+	beforeMount: function() {
+		this.buildSeries();
 	},
 
 	mounted: function () {
@@ -106,6 +108,24 @@ export default {
 				.catch(err => {
 					console.log('[ionets] Failed to fetch number of disks', err)
 				})
+		},
+		buildSeries: function() {
+			const threshold = this.getThreshold();
+			this.chartSeries = [
+				{},
+				{...series(0, threshold, false), label: 'read'},
+				{...series(1, threshold, false), label: 'write'},
+			]
+		},
+		getThreshold: function() {
+			let threshold = this.graphRange.granularity
+			if (threshold > 60) {
+				threshold = this.graphRange.scale < 345600 ? 600 : 1800
+			}
+			// Threshold within 5% of the value we should have
+			threshold += (5 / 100) * threshold
+
+			return threshold;
 		},
 		// Empty every arrays and close the websocket
 		cleaning: function (ws = true) {
