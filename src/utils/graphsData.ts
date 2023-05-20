@@ -63,7 +63,7 @@ function sanitizeGraphData (vm: GraphComponents) {
 	// Is bound to be deleted once the algorithm is stable enough
 	for (let i = 0; i <= newDataSize; i++) {
 		if (vm.chartLabels[i] > vm.chartLabels[i + 1]) {
-			console.warn("Current", vm.chartLabels[i], "is bigger than next", vm.chartLabels[i + 1]);
+			console.warn(vm.table + ": [" + i + "]current", vm.chartLabels[i], "is bigger than [" + i + 1 + "]next", vm.chartLabels[i + 1]);
 		}
 	}
 }
