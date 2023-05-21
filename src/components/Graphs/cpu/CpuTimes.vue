@@ -45,7 +45,7 @@ export default {
 			unit: 'percentage',
 			fetchingDone: false,
 			loadingMessage: 'Loading',
-			chartSeries: opt<{}[]>(),
+			chartSeries: opt<object[]>(),
 			connection: opt<WebSocket>(),
 			datacollection: optUn<(number | null)[][]>(),
 			wsBuffer: new Array<CpuTimes>(),
@@ -70,14 +70,12 @@ export default {
 	},
 
 	mounted: function () {
-		const vm = this
-
 		// Don't setup anything before everything is rendered
 		nextTick(() => {
 			// Setup the IntersectionObserver
-			vm.obs = graphScrollObs(vm)
+			this.obs = graphScrollObs(this)
 			// Observe the element
-			vm.obs.observe(vm.$el)
+			this.obs.observe(this.$el)
 		})
 	},
 
@@ -171,6 +169,7 @@ export default {
 			}
 		},
 		addNewData: function (elem, update=false) {
+			// eslint-disable-next-line @typescript-eslint/no-this-alias
 			const vm = this
 			// Compute the busy time of the CPU from these params
 			const busy = Number(elem.cuser + elem.nice + elem.system + elem.irq + elem.softirq + elem.steal)

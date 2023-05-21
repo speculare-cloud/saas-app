@@ -71,10 +71,8 @@ export default {
 	},
 
 	mounted: function () {
-		const vm = this
-
 		nextTick(async () => {
-			await vm.refreshList();
+			await this.refreshList();
 		})
 	},
 

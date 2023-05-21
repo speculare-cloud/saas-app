@@ -13,11 +13,5 @@
 <script lang="ts">
 export default {
 	name: 'Account',
-
-	data () {
-		return {}
-	},
-
-	mounted: function () {},
 }
 </script>

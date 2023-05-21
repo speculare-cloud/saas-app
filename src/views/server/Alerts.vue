@@ -119,7 +119,7 @@ export default {
 			}
 		},
 		refreshList: async function() {
-			await this.$http.get(this.$serverBase(this.$route.params.berta) + "/api/alerts?uuid=" + this.$route.params.uuid)
+			await this.$http.get(this.$serverBase(this.$route.params.berta as string) + "/api/alerts?uuid=" + this.$route.params.uuid)
 				.then((resp) => {
 					resp.data.forEach((elem: Alerts) => {
 						const idx = this.alerts.findIndex(el => el.id == elem.id);
@@ -139,7 +139,7 @@ export default {
 			this.activeLoading = alert.id;
 
 			const payload = { whole: alert, update: { active: !alert.active }};
-			await this.$http.patch(this.$serverBase(this.$route.params.berta) + "/api/alerts?id=" + alert.id, payload)
+			await this.$http.patch(this.$serverBase(this.$route.params.berta as string) + "/api/alerts?id=" + alert.id, payload)
 				.then((resp) => {
 					const elem = resp.data as Alerts;
 
@@ -160,7 +160,7 @@ export default {
 			if (this.deleteLoading) return;
 			this.deleteLoading = alert.id;
 
-			await this.$http.delete(this.$serverBase(this.$route.params.berta) + "/api/alerts?id=" + alert.id)
+			await this.$http.delete(this.$serverBase(this.$route.params.berta as string) + "/api/alerts?id=" + alert.id)
 				.then((resp) => {
 					if (resp.data === 1) {
 						const idx = this.alerts.findIndex(el => el.id == alert.id);

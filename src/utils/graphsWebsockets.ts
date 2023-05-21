@@ -7,7 +7,15 @@ export function openSpecificWS (vm: GraphComponents, grouped) {
 	if (vm.graphRange.scale !== 300) {
 		return fetchInit(vm, grouped)
 	}
-	initWS(vm.$cdcBase(vm.berta), vm.table, 'insert', ':host_uuid.eq.' + vm.uuid, fetchInit, vm, null, grouped)
+	initWS({
+		vm: vm,
+		wsUrl: vm.$cdcBase(vm.berta),
+		table: vm.table,
+		eventType: "insert",
+		filter: ":host_uuid.eq." + vm.uuid,
+		callback: fetchInit,
+		callbackarg: grouped,
+	});
 }
 
 // Drain the WS buffer by merging existing data with the new from the buffer

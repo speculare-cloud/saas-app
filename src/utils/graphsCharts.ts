@@ -91,7 +91,8 @@ function serie (idx: number, threshold: number, alpha = true) {
 }
 
 function splineGraph (u, seriesIdx, idx0, idx1) {
-	return uPlot.paths.spline!()(u, seriesIdx, idx0, idx1)
+	if (!uPlot.paths.spline) return;
+	return uPlot.paths.spline()(u, seriesIdx, idx0, idx1)
 }
 
 export function intValueOrTilde (v: number | null) {

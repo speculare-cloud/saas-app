@@ -13,11 +13,5 @@
 <script lang="ts">
 export default {
 	name: 'Notifications',
-
-	data () {
-		return {}
-	},
-
-	mounted: function () {},
 }
 </script>

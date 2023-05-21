@@ -78,10 +78,8 @@ export default {
 	},
 
 	mounted: function () {
-		const vm = this
-
 		nextTick(async () => {
-			await vm.refreshList();
+			await this.refreshList();
 		})
 	},
 
@@ -93,7 +91,7 @@ export default {
 			return fmtDuration(DateTime.fromISO(to ?? tox).diff(DateTime.fromISO(from)).as('seconds'));
 		},
 		refreshList: async function() {
-			await this.$http.get(this.$serverBase(this.$route.params.berta) + "/api/incidents?uuid=" + this.$route.params.uuid)
+			await this.$http.get(this.$serverBase(this.$route.params.berta as string) + "/api/incidents?uuid=" + this.$route.params.uuid)
 				.then((resp) => {
 					resp.data.forEach((elem: IncidentsJoined) => {
 						const idx = this.incidents.findIndex(el => el.id == elem.id);

@@ -3,17 +3,21 @@ require('@rushstack/eslint-patch/modern-module-resolution')
 
 module.exports = {
 	root: true,
-	'extends': [
+	extends: [
 		'eslint:recommended',
 		'plugin:vue/base',
 		'plugin:vue/vue3-essential',
 		'plugin:vue/vue3-strongly-recommended',
 		'@vue/eslint-config-typescript',
+		"@vue/typescript/recommended",
 	],
 	parserOptions: {
-		ecmaVersion: 'latest'
+		ecmaVersion: 'latest',
+		parser: '@typescript-eslint/parser',
 	},
+	plugins: ["@typescript-eslint"],
 	rules: {
+		'vue/no-multiple-template-root': "off",
 		'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
 		'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
 		'vue/max-attributes-per-line': ['error', {
@@ -29,7 +33,7 @@ module.exports = {
 			multiline: 'never'
 		}],
 		'new-cap': 'off',
-		camelcase: 'off',
+		'camelcase': 'off',
 		'vue/no-multi-spaces': 'off',
 		'vue/multi-word-component-names': 'off',
 		'vue/html-indent': ['error', 'tab', {
@@ -45,6 +49,7 @@ module.exports = {
 			ignores: []
 		}],
 		'no-tabs': 0,
-		indent: [2, 'tab']
+		'indent': [2, 'tab'],
+		'@typescript-eslint/no-explicit-any': 'off'
 	},
 }

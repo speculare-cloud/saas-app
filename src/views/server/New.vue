@@ -98,13 +98,17 @@ export default {
 	},
 
 	mounted: function () {
-		const vm = this
-
 		nextTick(async () => {
-			if (vm.secretKey === null) await vm.generateKey();
-			else await vm.getKeyInfo();
+			if (this.secretKey === null) await this.generateKey();
+			else await this.getKeyInfo();
 
-			initWS(vm.$authCdc, "apikeys", "update", ":key.eq." + vm.secretKey, null, vm);
+			initWS({
+				vm: this,
+				wsUrl: this.$authCdc,
+				table: "apikeys",
+				eventType: "update",
+				filter: ":key.eq." + this.secretKey,
+			});
 		})
 	},
 

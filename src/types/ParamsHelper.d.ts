@@ -14,28 +14,28 @@ interface GraphComponents {
 		end: string | null;
 	}>;
 
-	cleaning: Function;
-	addNewData: Function;
-	wsMessageHandle: Function;
-	unshiftEmpty: Function;
-	pushValue: Function;
-	spliceData: Function;
-	spliceNull: Function;
-	getThreshold: Function;
-	swapItem: Function;
+	cleaning: (ws: boolean = true) => void;
+	addNewData: (elem: any, update: boolean = false) => void;
+	wsMessageHandle: (event: any) => void;
+	unshiftEmpty: (date: number) => void;
+	pushValue: (date: number, ...args: any[]) => void;
+	spliceData: (start: number, nb: number) => void;
+	spliceNull: (start: number, nb: number) => void;
+	getThreshold: () => number;
+	swapItem: (iA: number, iB: number) => void;
 
 	loadingMessage?: string;
 	groupedSkip?: number;
 
-	$cdcBase: Function;
-	$serverBase: Function;
+	$cdcBase: (b: string) => string;
+	$serverBase: (b: string) => string;
 	$route: Route;
 	$http: AxiosInstance;
 }
 
 interface WsVM {
 	connection: opt<WebSocket>;
-	wsMessageHandle: Function;
+	wsMessageHandle: (event: any) => void;
 	loadingMessage?: string;
 }
 
@@ -44,8 +44,8 @@ interface ChartComponents {
 	chart: opt<uPlot>;
 	chartdata: Array<(number | null)[]>;
 	unit: string;
-	destroyChart: Function;
-	createChart: Function;
-	stack?: Function;
+	destroyChart: () => void;
+	createChart: (data: any) => void;
+	stack?: (d: any, o: any) => {data: any[], bands: uPlot.Band[]};
 	$el: any;
 }

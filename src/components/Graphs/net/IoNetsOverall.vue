@@ -47,7 +47,7 @@ export default {
 			unit: 'MB/s',
 			fetchingDone: false,
 			loadingMessage: 'Loading',
-			chartSeries: opt<{}[]>(),
+			chartSeries: opt<object[]>(),
 			connection: opt<WebSocket>(),
 			datacollection: optUn<(number | null)[][]>(),
 			wsBuffer: new Array<IoNet>(),
@@ -77,17 +77,15 @@ export default {
 	},
 
 	mounted: function () {
-		const vm = this
-
 		// Don't setup anything before everything is rendered
 		nextTick(async () => {
 			// Await the first call to ionets/count cause it's needed for the next
-			await vm.refreshCount();
+			await this.refreshCount();
 			// Setup the IntersectionObserver
 			// true is to tell the fetchInit to handle as grouped values
-			vm.obs = graphScrollObs(vm, true)
+			this.obs = graphScrollObs(this, true)
 			// Observe the element
-			vm.obs.observe(vm.$el)
+			this.obs.observe(this.$el)
 		})
 	},
 
@@ -110,7 +108,7 @@ export default {
 		// Refresh the number of ioblocks there is for the current rangeParams
 		refreshCount: async function() {
 			await this.$http
-				.get(this.$serverBase(this.$route.params.berta) + "/api/ionets/count?uuid=" + this.uuid + getRangeParams(this.graphRange))
+				.get(this.$serverBase(this.$route.params.berta as string) + "/api/ionets/count?uuid=" + this.uuid + getRangeParams(this.graphRange))
 				.then(resp => this.groupedSkip = Math.max(1, resp.data))
 				.catch(err => {
 					console.error('[' + this.table + '] Failed to fetch number of disks', err)
@@ -218,7 +216,9 @@ export default {
 			}
 		},
 		addNewData: function (elem: Array<IoNet>, update=false) {
+			// eslint-disable-next-line @typescript-eslint/no-this-alias
 			const vm = this
+
 			let total_recv = 0
 			let total_sent = 0
 			// Compute total read and write from all disks
@@ -230,7 +230,7 @@ export default {
 			// Construct the date
 			let date = DateTime.fromISO(elem[0].created_at, {zone: "utc"})
 			if (!date.isValid) date = DateTime.fromFormat(elem[0].created_at, "yyyy-MM-dd HH:mm:ss.u", {zone: "utc"})
-			let currDate = date.toUnixInteger();
+			const currDate = date.toUnixInteger();
 
 			const { recv, sent } = vm.getReadWriteFrom(currDate, total_recv, total_sent)
 			// Add the new value to the Array

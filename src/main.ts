@@ -41,9 +41,11 @@ const client = axios.create({
 
 app.config.globalProperties.$http = client
 
-app.config.globalProperties.$cdcBase = function getBaseCDCUrl (berta) {
+function getBaseCDCUrl (berta) {
 	return cdcOverride || 'wss://rt.' + berta + '.speculare.cloud:9641'
 }
+
+app.config.globalProperties.$cdcBase = getBaseCDCUrl
 app.config.globalProperties.$serverBase = function getBaseServer (berta) {
 	return bertaOverride || 'https://' + berta + '.speculare.cloud'
 };
@@ -52,7 +54,9 @@ app.config.globalProperties.$serverBase = function getBaseServer (berta) {
 (async () => {
 	if (mainStore.isLogged) {
 		await client.get(app.config.globalProperties.$authBase + '/api/whoami')
-			.then(() => {}).catch(() => {
+			.then(() => {
+				// do nothing.
+			}).catch(() => {
 				mainStore.logout()
 				router.replace({ name: 'Login' })
 			})
@@ -91,10 +95,10 @@ router.currentRoute;
 declare module "@vue/runtime-core" {
 	interface ComponentCustomProperties {
 		$http: AxiosInstance;
-		$authBase: String;
-		$authCdc: String;
-		$cdcBase: Function;
-		$serverBase: Function;
+		$authBase: string;
+		$authCdc: string;
+		$cdcBase: (b: string) => string;
+		$serverBase: (b: string) => string;
 		$mainStore: ReturnType<typeof useMainStore>;
 		$incidentsStore: ReturnType<typeof useIncidentsStore>;
 		$serversStore: ReturnType<typeof useServersStore>;

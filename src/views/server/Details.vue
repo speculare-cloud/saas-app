@@ -293,10 +293,10 @@ export default {
 
 	computed: {
 		tomorrow() {
-			let date = new Date();
+			const date = new Date();
 			date.setDate(date.getDate() + 1);
 			return date;
-		}
+		},
 	},
 
 	data () {
@@ -321,20 +321,24 @@ export default {
 	},
 
 	mounted: function () {
-		const vm = this
-
 		// Don't setup anything before everything is rendered
 		nextTick(async () => {
-			initWS(vm.$cdcBase(vm.$route.params.berta), "hosts", "update", ":uuid.eq." + vm.$route.params.uuid, null, vm);
-			await vm.fetchInit();
+			initWS({
+				vm: this,
+				wsUrl: this.$cdcBase(this.$route.params.berta as string),
+				table: "hosts",
+				eventType: "update",
+				filter: ":uuid.eq." + this.$route.params.uuid,
+			});
+			await this.fetchInit();
 
 			// The first few attempts can fails because the Base.vue WS may not have
 			// already had the time to fetch all hosts/servers info.
 			let retry = 0;
 			do {
-				const rkey = vm.store.configuredKeys.find((obj) => obj.host.uuid === vm.$route.params.uuid);
+				const rkey = this.store.configuredKeys.find((obj) => obj.host.uuid === this.$route.params.uuid);
 				if (rkey !== undefined) {
-					vm.granularity = 3000;
+					this.granularity = 3000;
 					break;
 				}
 				retry += 1;
@@ -366,8 +370,8 @@ export default {
 		},
 		applyRangeSelect: function() {
 			if (this.range.start && this.range.end) {
-				let start = DateTime.fromISO(this.range.start);
-				let end = DateTime.fromISO(this.range.end);
+				const start = DateTime.fromISO(this.range.start);
+				const end = DateTime.fromISO(this.range.end);
 				// Assume the scale will never be bigger than 1 info per seconds
 				this.graphRange = {
 					granularity: computeGranularity(end.diff(start).as('seconds')),
@@ -390,21 +394,21 @@ export default {
 			console.log("Computed granularity is:", this.graphRange.granularity);
 		},
 		fetchInit: async function() {
-			await this.$http.get(this.$serverBase(this.$route.params.berta) + "/api/host?uuid=" + this.$route.params.uuid)
+			await this.$http.get(this.$serverBase(this.$route.params.berta as string) + "/api/host?uuid=" + this.$route.params.uuid)
 				.then((resp) => {
 					this.hostInfo = resp.data as Host;
 				}).catch((err) => {
 					// TODO - Handle errors
 					console.log(err);
 				});
-			await this.$http.get(this.$serverBase(this.$route.params.berta) + "/api/incidents/count?uuid=" + this.$route.params.uuid)
+			await this.$http.get(this.$serverBase(this.$route.params.berta as string) + "/api/incidents/count?uuid=" + this.$route.params.uuid)
 				.then((resp) => {
 					this.incidentsCount = resp.data as HttpIncidentsCount;
 				}).catch((err) => {
 					// TODO - Handle errors
 					console.log(err);
 				});
-			await this.$http.get(this.$serverBase(this.$route.params.berta) + "/api/alerts/count?uuid=" + this.$route.params.uuid)
+			await this.$http.get(this.$serverBase(this.$route.params.berta as string) + "/api/alerts/count?uuid=" + this.$route.params.uuid)
 				.then((resp) => {
 					this.alertsCount = resp.data as HttpAlertsCount;
 				}).catch((err) => {

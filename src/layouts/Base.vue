@@ -143,18 +143,22 @@ export default {
 	},
 
 	mounted: function () {
-		const vm = this
-
 		// Don't setup anything before everything is rendered
 		nextTick(async () => {
 			// Populate the list with the berta and all
-			initWS(vm.$authCdc, "apikeys", "*", ":customer_id.eq." + vm.store.userId, null, vm);
-			await vm.serversStore.fetchApiKeysAndBertas(vm);
-			await vm.serversStore.fetchHostsAllBertas(vm);
+			initWS({
+				vm: this,
+				wsUrl: this.$authCdc,
+				table: "apikeys",
+				eventType: "*",
+				filter: ":customer_id.eq." + this.store.userId,
+			});
+			await this.serversStore.fetchApiKeysAndBertas(this);
+			await this.serversStore.fetchHostsAllBertas(this);
 
 			// Polling to update the uptime & latest info from hosts
-			vm.polling = setInterval(async () => {
-				await vm.serversStore.fetchHostsAllBertas(vm);
+			this.polling = setInterval(async () => {
+				await this.serversStore.fetchHostsAllBertas(this);
 			}, 5000)
 		})
 	},
@@ -195,7 +199,7 @@ export default {
 				const index = this.serversStore.unconfiguredKeys.findIndex((el) => el.key === keyObj.key);
 				if (index !== -1) this.serversStore.unconfiguredKeys.splice(index, 1);
 				// Add to bertas list
-				let thisBerta = this.serversStore.bertas.get(keyObj.berta);
+				const thisBerta = this.serversStore.bertas.get(keyObj.berta);
 				if (thisBerta === undefined) {
 					if (keyObj.host_uuid !== null) {
 						this.serversStore.bertas.set(keyObj.berta, new Set([keyObj.host_uuid]));

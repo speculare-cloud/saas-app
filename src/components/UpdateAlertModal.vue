@@ -118,7 +118,7 @@ export default {
 
 			// TODO - Make the update payload just the updated field
 			const payload = { whole: this.alert.editing, update: this.alert.editing }
-			await this.$http.patch(this.$serverBase(this.$route.params.berta) + "/api/alerts?id=" + this.alert.original.id, payload)
+			await this.$http.patch(this.$serverBase(this.$route.params.berta as string) + "/api/alerts?id=" + this.alert.original.id, payload)
 				.then((resp) => {
 					this.$emit('update:alert', resp.data);
 
@@ -136,7 +136,7 @@ export default {
 			if (this.testLoading) return;
 			this.testLoading = true;
 
-			await this.$http.post(this.$serverBase(this.$route.params.berta) + "/api/alerts/test", this.alert.editing)
+			await this.$http.post(this.$serverBase(this.$route.params.berta  as string) + "/api/alerts/test", this.alert.editing)
 				.then((resp) => {
 					this.lastAlertTested = Object.assign({}, this.alert.editing);
 					this.alertContent = resp.data;

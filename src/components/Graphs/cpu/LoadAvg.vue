@@ -50,7 +50,7 @@ export default {
 			yscale: optUn<number[]>(),
 			fetchingDone: false,
 			loadingMessage: 'Loading',
-			chartSeries: opt<{}[]>(),
+			chartSeries: opt<object[]>(),
 			connection: opt<WebSocket>(),
 			datacollection: optUn<(number | null)[][]>(),
 			wsBuffer: new Array<LoadAvg>(),
@@ -75,14 +75,12 @@ export default {
 	},
 
 	mounted: function () {
-		const vm = this
-
 		// Don't setup anything before everything is rendered
 		nextTick(() => {
 			// Setup the IntersectionObserver
-			vm.obs = graphScrollObs(vm)
+			this.obs = graphScrollObs(this)
 			// Observe the element
-			vm.obs.observe(vm.$el)
+			this.obs.observe(this.$el)
 		})
 	},
 
@@ -181,6 +179,7 @@ export default {
 			}
 		},
 		addNewData: function (elem, update=false) {
+			// eslint-disable-next-line @typescript-eslint/no-this-alias
 			const vm = this
 			// Construct the date
 			let date = DateTime.fromISO(elem.created_at, {zone: "utc"})
