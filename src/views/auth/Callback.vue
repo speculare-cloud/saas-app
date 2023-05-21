@@ -2,7 +2,7 @@
 	<div />
 </template>
 
-<script>
+<script lang="ts">
 import { useMainStore } from '@/stores/main';
 
 export default {
@@ -15,7 +15,7 @@ export default {
 
 	beforeCreate() {
 		if (this.$route.query.jwt === undefined) {
-			this.store.showToast("Incorrect request, try again...", "error");
+			// showToast("Incorrect request, try again...", "error");
 			this.$router.replace({ name: 'Login' });
 			return;
 		}
@@ -29,7 +29,7 @@ export default {
 			}).catch((err) => {
 				console.error("Error", err);
 				// Redirect to the Login page
-				this.store.showToast("Failed to authenticate, try again...", "error");
+				// showToast("Failed to authenticate, try again...", "error");
 				this.$router.replace({ name: 'Login' });
 			});
 	}

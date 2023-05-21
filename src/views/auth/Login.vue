@@ -69,20 +69,17 @@
 	</section>
 </template>
 
-<script>
-import { useMainStore } from '@/stores/main';
+<script lang="ts">
 import { FieldState, getInputStyle, validateEmail } from '@/utils/help';
 
 export default {
 	name: 'Login',
 
 	setup () {
-		const store = useMainStore();
-
 		const curHr = new Date().getHours()
 		const timeOfDay = 5 <= curHr && curHr <= 11 ? 'morning' : 12 <= curHr && curHr <= 17 ? 'afternoon' : 'night';
 
-		return { store, getInputStyle, timeOfDay }
+		return { getInputStyle, timeOfDay }
 	},
 
 	data () {
@@ -92,6 +89,7 @@ export default {
 			requestLoading: false,
 		}
 	},
+
 	methods: {
 		sendRequest: async function() {
 			if (this.requestLoading) return;
@@ -102,9 +100,7 @@ export default {
 			this.requestLoading = true;
 
 			console.log("Sending request for email: ", this.emailAddr);
-			await this.$http.post(this.$authBase + "/api/sso", {
-				email: this.emailAddr
-			}).then(() => {
+			await this.$http.post(this.$authBase + "/api/sso", { email: this.emailAddr }).then(() => {
 				// Redirect to the wait page
 				this.$router.replace({ name: 'Wait' });
 			}).catch((err) => {
@@ -112,15 +108,15 @@ export default {
 					this.emailState = FieldState.Error;
 					switch (err.response.status) {
 					case 404:
-						this.store.showToast("We didn't recognize this e-mail.\nDo you want to sign up instead?", "error");
+						// showToast("We didn't recognize this e-mail.\nDo you want to sign up instead?", "error");
 						break;
 					default:
-						this.store.showToast("Please, verify your information and try again...", "error");
+						// showToast("Please, verify your information and try again...", "error");
 						break;
 					}
 				} else {
 					console.error(err);
-					this.store.showToast("Unknown error, try again later...", "error");
+					// showToast("Unknown error, try again later...", "error");
 				}
 			}).finally(() => {
 				this.requestLoading = false;

@@ -30,7 +30,7 @@
 	</div>
 </template>
 
-<script>
+<script lang="ts">
 import { useServersStore } from '@/stores/servers';
 
 export default {
@@ -65,7 +65,7 @@ export default {
 				await this.$http.delete(this.$authBase + "/api/key", { headers: { "SPTK": this.fullKey } })
 					.then(() => {
 						// Get the index of the key in configuredKeys
-						const indexC = this.store.configuredKeys.findIndex((el) => el.key == this.fullKey);
+						const indexC = this.store.configuredKeys.findIndex((el) => el.key.key == this.fullKey);
 						// If present here, remove it
 						if (indexC !== -1) {
 							this.store.configuredKeys.splice(indexC, 1);
@@ -80,7 +80,7 @@ export default {
 							return;
 						}
 
-						this.$refs.deleteModal.checked = false;
+						(this.$refs.deleteModal as any).checked = false;
 					}).catch((err) => {
 						// TODO - Handle errors
 						console.log(err);

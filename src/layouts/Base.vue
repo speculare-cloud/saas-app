@@ -118,11 +118,13 @@
 	</div>
 </template>
 
-<script>
-import { initWS, closeWS, CDC_VALUES } from '@/utils/websockets';
+<script lang="ts">
+import { initWS, closeWS } from '@/utils/websockets';
 import { useMainStore } from '@/stores/main';
 import { useServersStore } from '@/stores/servers';
 import { nextTick } from 'vue';
+import { opt } from '@/utils/help';
+import type { ApiKey } from '@martichou/sproot';
 
 export default {
 	name: 'Based',
@@ -135,8 +137,8 @@ export default {
 
 	data () {
 		return {
-			connection: null,
-			polling: null,
+			connection: opt<WebSocket>(),
+			polling: opt<number>(),
 		}
 	},
 
@@ -146,7 +148,7 @@ export default {
 		// Don't setup anything before everything is rendered
 		nextTick(async () => {
 			// Populate the list with the berta and all
-			initWS(vm.$authCdc, "apikeys", "*", ":customer_id.eq." + vm.store.userId, false, vm, vm.wsAuthMessageHandle);
+			initWS(vm.$authCdc, "apikeys", "*", ":customer_id.eq." + vm.store.userId, null, vm);
 			await vm.serversStore.fetchApiKeysAndBertas(vm);
 			await vm.serversStore.fetchHostsAllBertas(vm);
 
@@ -160,7 +162,7 @@ export default {
 	beforeUnmount: function () {
 		// Close the webSocket connection
 		closeWS("apikeys", this);
-		clearInterval(this.polling);
+		if (this.polling) clearInterval(this.polling);
 	},
 
 	methods: {
@@ -173,19 +175,16 @@ export default {
 					console.log(err);
 				});
 		},
-		wsAuthMessageHandle: async function(event) {
+		wsMessageHandle: async function(event) {
+			// Parse the data and extract newValue
 			const json = JSON.parse(event.data);
 			const kind = json["kind"];
-			const jsonValues = json[CDC_VALUES];
+			const columnsNames = json.columnnames;
+			const columnsValues = json.columnvalues;
 
-			const keyObj = {
-				id: jsonValues[0],
-				key: jsonValues[1],
-				host_uuid: jsonValues[2],
-				customer_id: jsonValues[3],
-				berta: jsonValues[4],
-				granularity: 3000,
-			};
+			const keyObj: ApiKey = Object.fromEntries(
+				columnsNames.map((_, i) => [columnsNames[i], columnsValues[i]])
+			) as ApiKey;
 
 			switch (kind) {
 			case "update": {

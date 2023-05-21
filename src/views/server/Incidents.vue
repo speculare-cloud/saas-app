@@ -49,7 +49,7 @@
 								<span class="text-[13px]">↪ {{ incident.alert.name }} ({{ incident.alert.info ?? incident.alert.lookup }})</span>
 							</td>
 							<td>
-								{{ moment(incident.started_at).format("hh:mm A - D MMMM YYYY") }}
+								{{ fmtStarted(incident.started_at) }}
 							</td>
 							<td  class="min">
 								{{ getLength(incident.started_at, incident.updated_at, incident.resolved_at) }}
@@ -62,21 +62,18 @@
 	</section>
 </template>
 
-<script>
+<script lang="ts">
 import { nextTick } from 'vue';
-import { fmtDuration } from '@/utils/help';
-import moment from 'moment';
+import { DateTime } from 'luxon';
+import type { IncidentsJoined } from '@martichou/sproot';
+import { fmtDuration } from '@/utils/time';
 
 export default {
 	name: 'Incidents',
 
-	setup () {
-		return { moment }
-	},
-
 	data () {
 		return {
-			incidents: []
+			incidents: new Array<IncidentsJoined>()
 		}
 	},
 
@@ -89,13 +86,16 @@ export default {
 	},
 
 	methods: {
+		fmtStarted: function(started_at) {
+			return DateTime.fromISO(started_at).toFormat("hh:mm A - D MMMM YYYY");
+		},
 		getLength: function(from, to, tox) {
-			return fmtDuration(moment.duration(moment(to ?? tox).diff(moment(from))).asSeconds());
+			return fmtDuration(DateTime.fromISO(to ?? tox).diff(DateTime.fromISO(from)).as('seconds'));
 		},
 		refreshList: async function() {
 			await this.$http.get(this.$serverBase(this.$route.params.berta) + "/api/incidents?uuid=" + this.$route.params.uuid)
 				.then((resp) => {
-					resp.data.forEach(elem => {
+					resp.data.forEach((elem: IncidentsJoined) => {
 						const idx = this.incidents.findIndex(el => el.id == elem.id);
 						if (idx !== -1) {
 							this.incidents[idx] = elem

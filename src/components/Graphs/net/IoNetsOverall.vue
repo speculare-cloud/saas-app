@@ -3,18 +3,20 @@
 		<div v-if="datacollection == null" class="w-100 flex items-center justify-center text-xl text-gray-400" style="height: 258px">
 			<h3>{{ loadingMessage }}</h3>
 		</div>
-		<LineChart :chartdata="datacollection" :chartseries="chartSeries" :unit="unit" />
+		<LineChart :chartdata="datacollection" :chartseries="chartSeries!" :unit="unit" />
 	</div>
 </template>
 
-<script>
+<script lang="ts">
+import LineChart from '@/components/Graphs/Base/LineChart.vue'
 import { nextTick } from 'vue'
 import { graphScrollObs, rebuildGraph } from '@/utils/graphs'
 import { updateGraph, getRangeParams } from '@/utils/graphsData'
 import { series } from '@/utils/graphsCharts'
 import { closeWS } from '@/utils/websockets'
-import LineChart from '@/components/Graphs/Base/LineChart'
-import moment from 'moment'
+import type { IoNet } from '@martichou/sproot'
+import { opt, optUn } from '@/utils/help'
+import { DateTime } from 'luxon'
 
 const BYTES_TO_MB = 1000000
 
@@ -43,33 +45,35 @@ export default {
 			groupedSkip: 1,
 			table: 'ionets',
 			unit: 'MB/s',
-			connection: null,
 			fetchingDone: false,
-			datacollection: null,
 			loadingMessage: 'Loading',
-			chartSeries: [
-				{},
-				{...series(0, false), label: 'recv'},
-				{...series(1, false), label: 'sent'},
-			],
-			wsBuffer: [],
-			chartLabels: [],
-			chartDataObjRecv: [],
-			chartDataObjSent: [],
-			historyDataDate: [],
-			historyDataRecv: [],
-			historyDataSent: [],
-			bufferDataWs: [],
-			obs: null
+			chartSeries: opt<{}[]>(),
+			connection: opt<WebSocket>(),
+			datacollection: optUn<(number | null)[][]>(),
+			wsBuffer: new Array<IoNet>(),
+			chartLabels: new Array<number>(),
+			chartDataObjRecv: new Array<number | null>(),
+			chartDataObjSent: new Array<number | null>(),
+			historyDataDate: new Array<number | null>(),
+			historyDataRecv: new Array<number | null>(),
+			historyDataSent: new Array<number | null>(),
+			bufferDataWs: new Array<IoNet>(),
+			obs: opt<IntersectionObserver>()
 		}
 	},
 
 	watch: {
 		graphRange: async function (newVal, oldVal) {
 			await this.refreshCount();
+			// Rebuild the series with the new threshold
+			this.buildSeries();
 			// true is to tell the fetchInit to handle as grouped values
 			rebuildGraph(this, newVal, oldVal, true)
 		}
+	},
+
+	beforeMount: function() {
+		this.buildSeries();
 	},
 
 	mounted: function () {
@@ -89,23 +93,45 @@ export default {
 
 	beforeUnmount: function () {
 		// Stop the Observation of the element
-		this.obs.unobserve(this.$el)
+		this.obs?.unobserve(this.$el)
 		// Close the webSocket connection
 		this.cleaning()
 	},
 
 	methods: {
+		buildSeries: function() {
+			const threshold = this.getThreshold();
+			this.chartSeries = [
+				{},
+				{...series(0, threshold, false), label: 'recv'},
+				{...series(1, threshold, false), label: 'sent'},
+			]
+		},
 		// Refresh the number of ioblocks there is for the current rangeParams
 		refreshCount: async function() {
 			await this.$http
 				.get(this.$serverBase(this.$route.params.berta) + "/api/ionets/count?uuid=" + this.uuid + getRangeParams(this.graphRange))
 				.then(resp => this.groupedSkip = Math.max(1, resp.data))
 				.catch(err => {
-					console.log('[ionets] Failed to fetch number of disks', err)
+					console.error('[' + this.table + '] Failed to fetch number of disks', err)
 				})
+			console.log('[' + this.table + '] Count of disks', this.groupedSkip);
+		},
+		getThreshold: function() {
+			let threshold;
+			if (this.graphRange.granularity > 60) {
+				threshold = this.graphRange.scale < 345600 ? 600 : 1800
+			} else {
+				threshold = this.graphRange.scale / 60 + this.graphRange.granularity
+			}
+			// Threshold within 5% of the value we should have
+			threshold += (5 / 100) * threshold
+
+			return threshold;
 		},
 		// Empty every arrays and close the websocket
 		cleaning: function (ws = true) {
+			console.log('[' + this.table + '] cleaning called')
 			this.fetchingDone = false
 			this.chartLabels = []
 			this.chartDataObjRecv = []
@@ -116,17 +142,15 @@ export default {
 			this.bufferDataWs = []
 			this.wsBuffer = []
 
-			if (ws) {
-				closeWS(this.table, this)
-			}
+			if (ws) closeWS(this.table, this)
 		},
-		// Null the data of an index (without nulling the Labels)
-		nullData: function (i) {
-			this.chartDataObjRecv[i] = null
-			this.chartDataObjSent[i] = null
-			this.historyDataDate[i] = null
-			this.historyDataRecv[i] = null
-			this.historyDataSent[i] = null
+		swapItem: function(idxA, idxB) {
+			this.chartLabels[idxA] = this.chartLabels.splice(idxB, 1, this.chartLabels[idxA])[0];
+			this.chartDataObjRecv[idxA] = this.chartDataObjRecv.splice(idxB, 1, this.chartDataObjRecv[idxA])[0];
+			this.chartDataObjSent[idxA] = this.chartDataObjSent.splice(idxB, 1, this.chartDataObjSent[idxA])[0];
+			this.historyDataDate[idxA] = this.historyDataDate.splice(idxB, 1, this.historyDataDate[idxA])[0];
+			this.historyDataRecv[idxA] = this.historyDataRecv.splice(idxB, 1, this.historyDataRecv[idxA])[0];
+			this.historyDataSent[idxA] = this.historyDataSent.splice(idxB, 1, this.historyDataSent[idxA])[0];
 		},
 		// Remove nb index from each data arrays starting from start
 		spliceData: function (start, nb) {
@@ -137,8 +161,16 @@ export default {
 			this.historyDataRecv.splice(start, nb)
 			this.historyDataSent.splice(start, nb)
 		},
+		spliceNull: function(start, date) {
+			this.chartLabels.splice(start, 0, date)
+			this.chartDataObjRecv.splice(start, 0, null)
+			this.chartDataObjSent.splice(start, 0, null)
+			this.historyDataDate.splice(start, 0, date)
+			this.historyDataRecv.splice(start, 0, null)
+			this.historyDataSent.splice(start, 0, null)
+		},
 		// Add values (Labels and data) to the arrays
-		pushValue: function (date, recv, sent, histrecv, histSent) {
+		pushValue: function (date, recv = opt<number>(), sent = opt<number>(), histrecv = opt<number>(), histSent = opt<number>()) {
 			this.chartLabels.push(date)
 			// If scale != default, should divide the values by granularity (at least for the graph)
 			// That is because if we don't do it, we get MB/granularity, so to get MB/s we devide by the granularity
@@ -163,13 +195,13 @@ export default {
 		},
 		wsMessageHandle: function (event) {
 			// Parse the data and extract newValue
-			const json = JSON.parse(event.data)
-			const obj = {
-				rx_bytes: json.columnvalues[2],
-				tx_bytes: json.columnvalues[6],
-				created_at: json.columnvalues[11],
-			}
+			const json = JSON.parse(event.data);
+			const columnsNames = json.columnnames;
+			const columnsValues = json.columnvalues;
 
+			const obj: IoNet = Object.fromEntries(
+				columnsNames.map((_, i) => [columnsNames[i], columnsValues[i]])
+			) as IoNet;
 			// Create a buffer of values due to WS sending one event by one event
 			// - and as multiple disks as the same time...
 			this.bufferDataWs.push(obj)
@@ -185,23 +217,28 @@ export default {
 				this.bufferDataWs = []
 			}
 		},
-		addNewData: function (elem, update=false) {
+		addNewData: function (elem: Array<IoNet>, update=false) {
 			const vm = this
 			let total_recv = 0
 			let total_sent = 0
 			// Compute total read and write from all disks
 			for (let i = 0; i < elem.length; i++) {
-				total_recv += elem[i].rx_bytes
-				total_sent += elem[i].tx_bytes
+				total_recv += Number(elem[i].rx_bytes)
+				total_sent += Number(elem[i].tx_bytes)
 			}
-			const currDate = moment.utc(elem[0].created_at).unix();
-			const { recv, sent } = vm.getReadWriteFrom(currDate, total_recv, total_sent)
 
+			// Construct the date
+			let date = DateTime.fromISO(elem[0].created_at, {zone: "utc"})
+			if (!date.isValid) date = DateTime.fromFormat(elem[0].created_at, "yyyy-MM-dd HH:mm:ss.u", {zone: "utc"})
+			let currDate = date.toUnixInteger();
+
+			const { recv, sent } = vm.getReadWriteFrom(currDate, total_recv, total_sent)
 			// Add the new value to the Array
 			vm.pushValue(currDate, recv, sent, total_recv, total_sent)
 
 			// Update onscreen values
 			if (update) {
+				console.log('[' + this.table + '] updating value on graph')
 				updateGraph(vm, function () {
 					vm.datacollection = [
 						vm.chartLabels,
@@ -211,19 +248,21 @@ export default {
 				})
 			}
 		},
+		// TODO - Rework
 		getReadWriteFrom: function (currDate, total_recv, total_sent) {
-			let recv = null
-			let sent = null
+			let recv = opt<number>()
+			let sent = opt<number>()
 			// If the previous does not exist, we can't compute the percent
 			const prevIndex = this.chartLabels.length - 1
-			if (this.historyDataRecv[prevIndex] != null && this.historyDataDate[prevIndex] >= currDate - (this.graphRange.scale / 60 + 15)) {
+			console.log(this.table + ":special condition still needed", this.historyDataDate[prevIndex] as number >= currDate - (this.graphRange.scale / 60 + 15));
+			if (this.historyDataRecv[prevIndex] != null) {
 				// Elapsed is used to work around the network latency and keep a correct scale
 				// - the time between two data point can be greater than the harvest time configured,
 				//   thus falsing the scale. Dividing by the diff can fix this.
 				const elapsed = currDate - this.chartLabels[prevIndex]
 				// Get the previous values
-				const prevRecv = this.historyDataRecv[prevIndex]
-				const prevSent = this.historyDataSent[prevIndex]
+				const prevRecv = this.historyDataRecv[prevIndex] ?? 0
+				const prevSent = this.historyDataSent[prevIndex] ?? 0
 				// TODO - Auto scale to kb/mb/gb depending on the values
 				recv = ((total_recv - prevRecv) / BYTES_TO_MB) / elapsed
 				sent = -((total_sent - prevSent) / BYTES_TO_MB) / elapsed

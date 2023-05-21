@@ -17,7 +17,7 @@
 					<input
 						type="text" placeholder="Search servers"
 						class="input input-md input-bordered w-full bg-base-300 !pl-[34px] h-10"
-						v-model="searchText" @input="filterList" style="font-size: 0.875rem;">
+						v-model="searchText" style="font-size: 0.875rem;">
 				</div>
 
 				<router-link key="add_server" :to="{ name: 'NewServer' }" class="btn btn-md btn-info min-h-[2.5rem] h-[2.5rem]">
@@ -84,7 +84,7 @@
 						</div>
 					</router-link>
 					<!-- Item's modals (delete) -->
-					<DeleteKeyModal :trunk-key="trunkKey(item.key)" :full-key="item.key" />
+					<DeleteKeyModal :trunk-key="trunkKey(item.key) ?? ''" :full-key="item.key" />
 				</div>
 			</div>
 		</section>
@@ -103,26 +103,32 @@
 			</div>
 			<div class="bg-base-300 rounded-lg shadow">
 				<div v-if="!searchText && store.configuredKeys.length === 0" class="animate-pulse bg-slate-600 w-full rounded-lg h-[65.5px]" />
-				<div v-for="item in filteredResult" :key="item.uuid">
+				<div v-for="item in filteredResult" :key="item.host.uuid">
 					<router-link
-						:to="{ name: 'DetailsServer', params: { berta: item.berta, uuid: item.uuid, hostname: item.hostname } }"
+						:to="{ name: 'DetailsServer', params: { berta: item.key.berta, uuid: item.host.uuid, hostname: item.host.hostname } }"
 						class="flex justify-between cursor-pointer pl-4 pr-8 py-3 hover:bg-neutral-focus gap-4 rounded-lg text-[#c5c8cb] hover:text-[#d3d3d3] transition duration-300">
 						<div class="flex items-center gap-4">
-							<div class="status-indicator status-indicator--sm" :class="isServerOnline(item.updated_at) == 2 ? 'status-indicator--success' : isServerOnline(item.updated_at) == 1 ? 'status-indicator--warning' : 'status-indicator--danger'">
+							<div
+								class="status-indicator status-indicator--sm"
+								:class="isServerOnline(item.host.updated_at) == 2 ?
+									'status-indicator--success'
+									: isServerOnline(item.host.updated_at) == 1
+										? 'status-indicator--warning'
+										: 'status-indicator--danger'">
 								<div class="circle circle--animated circle-main" />
 								<div class="circle circle--animated circle-secondary" />
 								<div class="circle circle--animated circle-tertiary" />
 							</div>
 							<div class="flex flex-col align-middle">
 								<p class="text-white font-medium max-w-[340px] text-sm mb-[2px]">
-									{{ item.hostname }}
+									{{ item.host.hostname }}
 								</p>
 								<p class="text-[13px]">
-									<span v-if="isServerOnline(item.updated_at) == 2" class="text-success mr-1">Up</span>
-									<span v-else-if="isServerOnline(item.updated_at) == 1" class="text-warning mr-1">??</span>
+									<span v-if="isServerOnline(item.host.updated_at) == 2" class="text-success mr-1">Up</span>
+									<span v-else-if="isServerOnline(item.host.updated_at) == 1" class="text-warning mr-1">??</span>
 									<span v-else class="text-error mr-1">Down</span>
 									-
-									<span class="ml-1">{{ fmtDuration(item.uptime) }}</span>
+									<span class="ml-1">{{ fmtDuration(item.host.uptime) }}</span>
 								</p>
 							</div>
 						</div>
@@ -139,25 +145,26 @@
 									<li><a>Configure</a></li>
 									<li><a>Incidents</a></li>
 									<div class="divider h-0 my-0" />
-									<li><label @click.stop :for="'delete-modal-' + trunkKey(item.key)">Delete</label></li>
+									<li><label @click.stop :for="'delete-modal-' + trunkKey(item.key.key)">Delete</label></li>
 								</div>
 							</div>
 						</div>
 					</router-link>
 					<!-- Item's modals (delete) -->
-					<DeleteKeyModal :trunk-key="trunkKey(item.key)" :full-key="item.key" />
+					<DeleteKeyModal :trunk-key="trunkKey(item.key.key) ?? ''" :full-key="item.key.key" />
 				</div>
 			</div>
 		</section>
 	</section>
 </template>
 
-<script>
+<script lang="ts">
 import { useServersStore } from '@/stores/servers';
-import { trunkKey, fmtDuration, fmtGranularity, isServerOnline } from '@/utils/help';
+import { trunkKey, fmtGranularity} from '@/utils/help';
+import { fmtDuration, isServerOnline } from '@/utils/time';
 
-import DeleteKeyModal from '@/components/DeleteKeyModal'
-import Error from '@/components/Error'
+import DeleteKeyModal from '@/components/DeleteKeyModal.vue'
+import Error from '@/components/Error.vue'
 
 export default {
 	name: 'Home',
@@ -183,12 +190,12 @@ export default {
 
 			if (this.searchText !== "") {
 				tmpResult = tmpResult.filter((el) => {
-					return el.hostname.match(this.searchText);
+					return el.host.hostname.match(this.searchText);
 				})
 			}
 
 			tmpResult.sort((a, b) => {
-				if (a.hostname.localeCompare(b.hostname)) return 1
+				if (a.host.hostname.localeCompare(b.host.hostname)) return 1
 				else return -1
 			});
 

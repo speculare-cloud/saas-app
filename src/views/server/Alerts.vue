@@ -71,23 +71,24 @@
 	</section>
 </template>
 
-<script>
-import { nextTick } from 'vue';
-import UpdateAlertModal from '@/components/UpdateAlertModal.vue';
+<script lang="ts">
+import { defineAsyncComponent, nextTick } from 'vue';
+import type { Alerts, AlertsDTO, AlertsDTOUpdate } from '@martichou/sproot';
+import { opt } from '@/utils/help';
 
 export default {
 	name: 'Alerts',
 
 	components: {
-		UpdateAlertModal
+		UpdateAlertModal: defineAsyncComponent(() => import('@/components/UpdateAlertModal.vue')),
 	},
 
 	data() {
 		return {
-			alerts: [],
+			alerts: new Array<Alerts>(),
 			editingAlert: {
-				original: null,
-				editing: null
+				original: opt<AlertsDTO>(),
+				editing: opt<AlertsDTOUpdate>()
 			},
 			activeLoading: null,
 			deleteLoading: null,
@@ -105,10 +106,10 @@ export default {
 			if (alert == null) {
 				this.editingAlert = {
 					original: null,
-					editing: null
-				}
+					editing: null,
+				};
 				// Force close to avoid issues (fails to reopen on first click next)
-				this.$refs.updateToggle.checked = false;
+				(this.$refs.updateToggle as any).checked = false;
 				return;
 			}
 
@@ -120,7 +121,7 @@ export default {
 		refreshList: async function() {
 			await this.$http.get(this.$serverBase(this.$route.params.berta) + "/api/alerts?uuid=" + this.$route.params.uuid)
 				.then((resp) => {
-					resp.data.forEach(elem => {
+					resp.data.forEach((elem: Alerts) => {
 						const idx = this.alerts.findIndex(el => el.id == elem.id);
 						if (idx !== -1) {
 							this.alerts[idx] = elem
@@ -140,11 +141,13 @@ export default {
 			const payload = { whole: alert, update: { active: !alert.active }};
 			await this.$http.patch(this.$serverBase(this.$route.params.berta) + "/api/alerts?id=" + alert.id, payload)
 				.then((resp) => {
-					const idx = this.alerts.findIndex(el => el.id == resp.data.id);
+					const elem = resp.data as Alerts;
+
+					const idx = this.alerts.findIndex(el => el.id == elem.id);
 					if (idx !== -1) {
-						this.alerts[idx] = resp.data
+						this.alerts[idx] = elem
 					} else {
-						this.alerts.push(resp.data);
+						this.alerts.push(elem);
 					}
 				}).catch((err) => {
 					// TODO - Handle erros

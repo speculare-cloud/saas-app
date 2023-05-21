@@ -25,7 +25,7 @@
 							ref="emailField" autocomplete="email" name="email" type="email"
 							placeholder="john.doe@speculare.cloud"
 							class="input input-bordered w-full bg-base-300" :class="getInputStyle(emailState)"
-							v-model="emailAddr" @input="checkEmail" style="font-size: 0.875rem;">
+							v-model="emailAddr" style="font-size: 0.875rem;">
 						<div class="input-error mt-2 text-error" :class="emailState >= 2 ? 'block' : 'hidden'">
 							<span v-if="emailState == 3">Email address cannot be empty.</span>
 							<span v-if="emailState == 2">Email is not valid.</span>
@@ -77,7 +77,7 @@
 	</section>
 </template>
 
-<script>
+<script lang="ts">
 import { useMainStore } from '@/stores/main';
 import { FieldState, getInputStyle, validateEmail } from '@/utils/help';
 
@@ -117,17 +117,19 @@ export default {
 				this.$router.replace({ name: 'Wait' });
 			}).catch((err) => {
 				if (err.response) {
-					// this.emailState = FieldState.Error;
-					if (400 <= err.response.status < 500) {
+					// this.emailState = FieldState.Error;)
+					const statusCode = err.response.status as number;
+					if (statusCode < 400 && statusCode < 500) {
 						// TODO - Open registration once the MAIL system is prepared.
-						this.store.showToast("Successfully added to the waiting list.", "success");
+						// showToast("Successfully added to the waiting list.", "success");
+
 						// this.store.showToast("Please, verify your information and\nmake sure you don't already have an account.", "error");
 					} else {
-						this.store.showToast("Unknown error, please try again later...", "error");
+						// showToast("Unknown error, please try again later...", "error");
 					}
 				} else {
 					console.error(err);
-					this.store.showToast("Unknown error, try again later...", "error");
+					// showToast("Unknown error, try again later...", "error");
 				}
 			}).finally(() => {
 				this.requestLoading = false;

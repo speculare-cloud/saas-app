@@ -1,4 +1,18 @@
+/* eslint-env node */
+require('@rushstack/eslint-patch/modern-module-resolution')
+
 module.exports = {
+	root: true,
+	'extends': [
+		'eslint:recommended',
+		'plugin:vue/base',
+		'plugin:vue/vue3-essential',
+		'plugin:vue/vue3-strongly-recommended',
+		'@vue/eslint-config-typescript',
+	],
+	parserOptions: {
+		ecmaVersion: 'latest'
+	},
 	rules: {
 		'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
 		'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
@@ -33,19 +47,4 @@ module.exports = {
 		'no-tabs': 0,
 		indent: [2, 'tab']
 	},
-
-	root: true,
-
-	env: {
-		es2021: true,
-	},
-
-	extends: [
-		'plugin:vue/base',
-		'plugin:vue/vue3-essential',
-		'plugin:vue/vue3-strongly-recommended',
-		'eslint:recommended'
-	],
-
-	parser: 'vue-eslint-parser'
 }

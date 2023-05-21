@@ -1,3 +1,5 @@
+/* eslint-env node */
+
 const colors = require('tailwindcss/colors');
 
 delete colors['lightBlue'];
@@ -6,9 +8,12 @@ delete colors['trueGray'];
 delete colors['coolGray'];
 delete colors['blueGray'];
 
+/** @type {import('tailwindcss').Config} */
 module.exports = {
-	content: ['./public/index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
-	variants: {},
+	content: [
+		"./index.html",
+		"./src/**/*.{vue,js,ts,jsx,tsx}",
+	],
 	themes: {
 		...colors
 	},
@@ -35,3 +40,4 @@ module.exports = {
 		require('daisyui')
 	]
 }
+

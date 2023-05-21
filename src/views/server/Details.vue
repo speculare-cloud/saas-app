@@ -27,7 +27,7 @@
 						<span v-else-if="isServerOnline(hostInfo?.updated_at) == 1" class="text-warning mr-1">??</span>
 						<span v-else class="text-error mr-1">Down</span>
 						-
-						<span class="ml-1">Granularity of {{ fmtGranularity(granularity) }}</span>
+						<span class="ml-1">Granularity of {{ fmtGranularity(granularity ?? 0) }}</span>
 					</p>
 				</div>
 			</div>
@@ -52,7 +52,7 @@
 								Incidents
 							</h6>
 							<h4 class="text-white text-lg mt-2 flex flex-row gap-2 min-h-[34px]">
-								<span v-if="hostInfo">{{ incidentsCount }}<span v-if="incidentsCount > 100">+</span></span>
+								<span v-if="hostInfo">{{ incidentsCount?.total ?? 0 }}<span v-if="(incidentsCount?.total ?? 0) >= 100">+</span></span>
 								<div v-else class="animate-pulse bg-slate-600 w-full rounded h-[22px] mt-3" />
 							</h4>
 						</div>
@@ -72,12 +72,12 @@
 						</h6>
 						<h4 class="text-white mt-2 flex flex-row gap-2 min-h-[34px]">
 							<span v-if="hostInfo" class="badge badge-success bg-opacity-[15%] p-4 text-white text-[15px] w-full text-ellipsis whitespace-nowrap">
-								{{ alertsCount.active }} {{ alertsCount.active > 1 ? 'actives' : 'active' }}
+								{{ alertsCount?.active ?? 0 }} {{ (alertsCount?.active ?? 0) > 1 ? 'actives' : 'active' }}
 							</span>
 							<div v-else class="animate-pulse bg-slate-600 w-full rounded h-[22px] mt-3" />
 
 							<span v-if="hostInfo" class="badge badge-error bg-opacity-[15%] p-4 text-white text-[15px] w-full text-ellipsis whitespace-nowrap">
-								{{ alertsCount.inactive }} {{ alertsCount.inactive > 1 ? 'inactives' : 'inactive' }}
+								{{ alertsCount?.inactive ?? 0 }} {{ (alertsCount?.inactive ?? 0) > 1 ? 'inactives' : 'inactive' }}
 							</span>
 							<div v-else class="animate-pulse bg-slate-600 w-full rounded h-[22px] mt-3" />
 						</h4>
@@ -99,14 +99,14 @@
 			<p class="text-sm text-gray-200">
 				Total CPU utilization. 100% here means there is no CPU idle time at all.
 			</p>
-			<CpuTimes :key="this.$route.params.uuid" :uuid="this.$route.params.uuid" :berta="this.$route.params.berta" :graph-range="graphRange" />
+			<CpuTimes :key="$route.params.uuid as string" :uuid="$route.params.uuid as string" :berta="$route.params.berta as string" :graph-range="graphRange" />
 			<h3 class="text-2xl text-gray-100 mb-4 mt-4" id="loadavg">
 				load
 			</h3>
 			<p class="text-sm text-gray-200">
 				System load. The 3 metrics refer to 1, 5 and 15 minutes averages. Computed once every 5 seconds.
 			</p>
-			<LoadAvg :key="this.$route.params.uuid" :uuid="this.$route.params.uuid" :berta="this.$route.params.berta" :graph-range="graphRange" />
+			<LoadAvg :key="$route.params.uuid as string" :uuid="$route.params.uuid as string" :berta="$route.params.berta as string" :graph-range="graphRange" />
 		</div>
 		<div role="section" class="mt-4">
 			<h3 class="text-2xl text-gray-100 mb-4" id="ioblocks">
@@ -115,7 +115,7 @@
 			<p class="text-sm text-gray-200">
 				Total Disk I/O for all physical disks. Physical are disks present in <code>/sys/block</code> but don't have a <code>{}/device</code> in it.
 			</p>
-			<IoBlocksOverall :key="this.$route.params.uuid" :uuid="this.$route.params.uuid" :berta="this.$route.params.berta" :graph-range="graphRange" />
+			<IoBlocksOverall :key="$route.params.uuid as string" :uuid="$route.params.uuid as string" :berta="$route.params.berta as string" :graph-range="graphRange" />
 		</div>
 		<div role="section" class="mt-4">
 			<h3 class="text-2xl text-gray-100 mb-4" id="ram">
@@ -124,7 +124,7 @@
 			<p class="text-sm text-gray-200">
 				System Random Access Memory (i.e. physical memory) usage.
 			</p>
-			<Ram :key="this.$route.params.uuid" :uuid="this.$route.params.uuid" :berta="this.$route.params.berta" :graph-range="graphRange" />
+			<Ram :key="$route.params.uuid as string" :uuid="$route.params.uuid as string" :berta="$route.params.berta as string" :graph-range="graphRange" />
 		</div>
 		<div role="section" class="mt-4">
 			<h3 class="text-2xl text-gray-100 mb-4" id="swap">
@@ -133,7 +133,7 @@
 			<p class="text-sm text-gray-200">
 				System swap memory usage. Swap space is used when the RAM if full.
 			</p>
-			<Swap :key="this.$route.params.uuid" :uuid="this.$route.params.uuid" :berta="this.$route.params.berta" :graph-range="graphRange" />
+			<Swap :key="$route.params.uuid as string" :uuid="$route.params.uuid as string" :berta="$route.params.berta as string" :graph-range="graphRange" />
 		</div>
 		<div role="section" class="mt-4 mb-16">
 			<h3 class="text-2xl text-gray-100 mb-4" id="ionets">
@@ -142,7 +142,7 @@
 			<p class="text-sm text-gray-200">
 				Total bandwidth of all physical network interfaces. Physical are all the network interfaces that are listed in <code>/proc/net/dev</code>, but do not exist in <code>/sys/devices/virtual/net</code>.
 			</p>
-			<IoNetsOverall :key="this.$route.params.uuid" :uuid="this.$route.params.uuid" :berta="this.$route.params.berta" :graph-range="graphRange" />
+			<IoNetsOverall :key="$route.params.uuid as string" :uuid="$route.params.uuid as string" :berta="$route.params.berta as string" :graph-range="graphRange" />
 		</div>
 
 		<label for="my-modal-6" class="btn btn-md bg-success fixed bottom-8 right-8 text-black hover:text-white">
@@ -161,7 +161,7 @@
 				<select class="form-select block w-full py-1 mb-6" ref="scaleSelect">
 					<option />
 					<option :selected="selectedIdx == 1">
-						Last 5 minutes (live)
+						Last 5 minutes (realtime data)
 					</option>
 					<option :selected="selectedIdx == 2">
 						Last 15 minutes
@@ -180,9 +180,7 @@
 					</option>
 				</select>
 				<h3 class="text-lg font-bold mb-2">Range selector</h3>
-				<DatePicker
-					v-model="range" :max-date="tomorrow" :model-config="modelConfig" color="teal"
-					is-range is-dark>
+				<DatePicker v-model.range.string="range" :masks="{ input: 'MMMM D, YYYY', modelValue: 'YYYY-MM-DD' }" :max-date="tomorrow" color="blue">
 					<template #default="{ inputValue, isDragging, togglePopover }">
 						<div class="flex flex-col sm:flex-row justify-start items-center">
 							<div class="relative flex-grow w-full">
@@ -241,16 +239,17 @@
 	</section>
 </template>
 
-<script>
-import moment from 'moment';
-import Skeleton from '@/components/Graphs/Base/Skeleton'
+<script lang="ts">
+import Skeleton from '@/components/Graphs/Base/Skeleton.vue'
 
 import { DatePicker } from 'v-calendar'
 import { useServersStore } from '@/stores/servers';
-import { nextTick } from 'vue';
-import { initWS, closeWS, CDC_VALUES } from '@/utils/websockets';
-import { fmtDuration, fmtGranularity, isServerOnline, computeGranularity } from '@/utils/help';
-import { defineAsyncComponent } from 'vue'
+import { nextTick , defineAsyncComponent } from 'vue';
+import { initWS, closeWS } from '@/utils/websockets';
+import { fmtGranularity, computeGranularity, opt } from '@/utils/help';
+import type { Host, HttpAlertsCount, HttpIncidentsCount } from '@martichou/sproot';
+import { DateTime } from 'luxon';
+import { fmtDuration, isServerOnline } from '@/utils/time';
 
 import 'v-calendar/dist/style.css';
 
@@ -262,27 +261,27 @@ export default {
 	components: {
 		DatePicker,
 		CpuTimes: defineAsyncComponent({
-			loader: () => import('@/components/Graphs/cpu/CpuTimes'),
+			loader: () => import('@/components/Graphs/cpu/CpuTimes.vue'),
 			loadingComponent: Skeleton
 		}),
 		LoadAvg: defineAsyncComponent({
-			loader: () => import('@/components/Graphs/cpu/LoadAvg'),
+			loader: () => import('@/components/Graphs/cpu/LoadAvg.vue'),
 			loadingComponent: Skeleton
 		}),
 		IoBlocksOverall: defineAsyncComponent({
-			loader: () => import('@/components/Graphs/disks/IoBlocksOverall'),
+			loader: () => import('@/components/Graphs/disks/IoBlocksOverall.vue'),
 			loadingComponent: Skeleton
 		}),
 		Ram: defineAsyncComponent({
-			loader: () => import('@/components/Graphs/memory/Ram'),
+			loader: () => import('@/components/Graphs/memory/Ram.vue'),
 			loadingComponent: Skeleton
 		}),
 		Swap: defineAsyncComponent({
-			loader: () => import('@/components/Graphs/memory/Swap'),
+			loader: () => import('@/components/Graphs/memory/Swap.vue'),
 			loadingComponent: Skeleton
 		}),
 		IoNetsOverall: defineAsyncComponent({
-			loader: () => import('@/components/Graphs/net/IoNetsOverall'),
+			loader: () => import('@/components/Graphs/net/IoNetsOverall.vue'),
 			loadingComponent: Skeleton
 		})
 	},
@@ -303,30 +302,21 @@ export default {
 	data () {
 		return {
 			selectedIdx: 1,
-			rangePickOpen: false,
-			modelConfig: {
-				type: 'string',
-				mask: 'YYYY-MM-DD'
-			},
 			range: {
-				start: null,
-				end: null
+				start: opt<string>(),
+				end: opt<string>(),
 			},
 			graphRange: {
 				granularity: 1,
 				scale: 300,
-				start: null,
-				end: null
+				start: opt<DateTime>(),
+				end: opt<DateTime>()
 			},
-			alertsCount: {
-				active: 0,
-				inactive: 0,
-				total: 0
-			},
-			hostInfo: null,
+			alertsCount: opt<HttpAlertsCount>(),
+			hostInfo: opt<Host>(),
 			connection: null,
-			incidentsCount: 0,
-			granularity: null,
+			incidentsCount: opt<HttpIncidentsCount>(),
+			granularity: opt<number>(),
 		}
 	},
 
@@ -335,16 +325,16 @@ export default {
 
 		// Don't setup anything before everything is rendered
 		nextTick(async () => {
-			initWS(vm.$cdcBase(vm.$route.params.berta), "hosts", "update", ":uuid.eq." + vm.$route.params.uuid, false, vm);
+			initWS(vm.$cdcBase(vm.$route.params.berta), "hosts", "update", ":uuid.eq." + vm.$route.params.uuid, null, vm);
 			await vm.fetchInit();
 
 			// The first few attempts can fails because the Base.vue WS may not have
 			// already had the time to fetch all hosts/servers info.
 			let retry = 0;
 			do {
-				const rkey = vm.store.configuredKeys.find((obj) => obj.uuid === vm.$route.params.uuid);
+				const rkey = vm.store.configuredKeys.find((obj) => obj.host.uuid === vm.$route.params.uuid);
 				if (rkey !== undefined) {
-					vm.granularity = rkey.granularity;
+					vm.granularity = 3000;
 					break;
 				}
 				retry += 1;
@@ -361,7 +351,7 @@ export default {
 
 	methods: {
 		resetGraphRange: function() {
-			this.$refs.scaleSelect.selectedIndex = 1;
+			(this.$refs.scaleSelect as any).selectedIndex = 1;
 			this.graphRange = {
 				granularity: 1,
 				scale: 300,
@@ -375,72 +365,48 @@ export default {
 			}
 		},
 		applyRangeSelect: function() {
-			if (this.range.start != null) {
-				// TODO:
-				// Define the trueRange in the format of YYYY-MM-DDTHH:mm:ss.SSS
-				let start = moment(this.range.start);
-				let end = moment(this.range.end)
+			if (this.range.start && this.range.end) {
+				let start = DateTime.fromISO(this.range.start);
+				let end = DateTime.fromISO(this.range.end);
 				// Assume the scale will never be bigger than 1 info per seconds
 				this.graphRange = {
-					granularity: computeGranularity(moment.duration(end.diff(start)).asSeconds()),
-					scale: end.diff(start, 'seconds'),
-					start: start.format("YYYY-MM-DDTHH:mm:ss.SSS"),
-					end: end.format("YYYY-MM-DDTHH:mm:ss.SSS")
+					granularity: computeGranularity(end.diff(start).as('seconds')),
+					scale: end.diff(start).as('seconds'),
+					start: start,
+					end: end
 				}
-				console.log("Computed granularity is:", this.graphRange.granularity);
 			} else {
-				const scaleIdx = this.$refs.scaleSelect.selectedIndex;
-				if (scaleIdx !== 0) {
-					this.selectedIdx = scaleIdx;
-					this.graphRange = {
-						granularity: computeGranularity(scaleIdxArr[scaleIdx - 1] * 60),
-						scale: scaleIdxArr[scaleIdx - 1] * 60,
-						start: null,
-						end: null
-					}
-					console.log("Computed granularity is:", this.graphRange.granularity);
+				const scaleIdx = (this.$refs.scaleSelect as any).selectedIndex;
+				if (scaleIdx === 0) return;
+
+				this.selectedIdx = scaleIdx;
+				this.graphRange = {
+					granularity: computeGranularity(scaleIdxArr[scaleIdx - 1] * 60),
+					scale: scaleIdxArr[scaleIdx - 1] * 60,
+					start: null,
+					end: null
 				}
 			}
-
-			this.rangePickOpen = false;
-		},
-		convertToObject: function(jsonValues) {
-			return {
-				system: jsonValues[0],
-				os_version: jsonValues[1],
-				hostname: jsonValues[2],
-				uptime: jsonValues[3],
-				uuid: jsonValues[4],
-				created_at: jsonValues[5],
-				updated_at: jsonValues[6],
-			}
+			console.log("Computed granularity is:", this.graphRange.granularity);
 		},
 		fetchInit: async function() {
 			await this.$http.get(this.$serverBase(this.$route.params.berta) + "/api/host?uuid=" + this.$route.params.uuid)
 				.then((resp) => {
-					this.hostInfo = {
-						system: resp.data.system,
-						os_version: resp.data.os_version,
-						hostname: resp.data.hostname,
-						uptime: resp.data.uptime,
-						uuid: resp.data.uuid,
-						created_at: resp.data.created_at,
-						updated_at: resp.data.updated_at,
-					};
+					this.hostInfo = resp.data as Host;
 				}).catch((err) => {
 					// TODO - Handle errors
 					console.log(err);
 				});
 			await this.$http.get(this.$serverBase(this.$route.params.berta) + "/api/incidents/count?uuid=" + this.$route.params.uuid)
 				.then((resp) => {
-					this.incidentsCount = resp.data.total;
+					this.incidentsCount = resp.data as HttpIncidentsCount;
 				}).catch((err) => {
 					// TODO - Handle errors
 					console.log(err);
 				});
 			await this.$http.get(this.$serverBase(this.$route.params.berta) + "/api/alerts/count?uuid=" + this.$route.params.uuid)
 				.then((resp) => {
-					this.alertsCount = resp.data;
+					this.alertsCount = resp.data as HttpAlertsCount;
 				}).catch((err) => {
 					// TODO - Handle errors
 					console.log(err);
@@ -448,16 +414,13 @@ export default {
 		},
 		// Function responsible to init the fetching data and the websocket connection
 		wsMessageHandle: function (event) {
-			const jsonValues = JSON.parse(event.data)[CDC_VALUES];
-			this.hostInfo = {
-				system: jsonValues[0],
-				os_version: jsonValues[1],
-				hostname: jsonValues[2],
-				uptime: jsonValues[3],
-				uuid: jsonValues[4],
-				created_at: jsonValues[5],
-				updated_at: jsonValues[6],
-			};
+			const json = JSON.parse(event.data);
+			const columnsNames = json.columnnames;
+			const columnsValues = json.columnvalues;
+
+			this.hostInfo = Object.fromEntries(
+				columnsNames.map((_, i) => [columnsNames[i], columnsValues[i]])
+			) as Host;
 		}
 	}
 }
