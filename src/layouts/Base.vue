@@ -1,6 +1,6 @@
 <template>
 	<div class="drawer drawer-mobile">
-		<input id="side-drawer" type="checkbox" class="drawer-toggle">
+		<input id="side-drawer" type="checkbox" class="drawer-toggle" ref="drawer">
 		<div class="drawer-content flex flex-col">
 			<nav class="px-4 py-4 navbar justify-between min-h-[83px]">
 				<span class="hidden lg:block" />
@@ -70,7 +70,7 @@
 				</div>
 				<ul class="flex-grow -mx-4 menu p-4 text-base-content gap-1">
 					<li>
-						<router-link key="servers" :to="{ name: 'Servers' }" :class="$route.meta.child === 'servers' ? 'router-link-active' : ''">
+						<router-link @click="closeDrawer()" key="servers" :to="{ name: 'Servers' }" :class="$route.meta.child === 'servers' ? 'router-link-active' : ''">
 							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="h-5 w-5" fill="currentColor">
 								<path d="M13 18.002a.998.998 0 0 1-.94-.658L8.986 8.889l-2.048 5.465a1.001 1.001 0 0 1-1.794.163l-2.187-3.645-1.124 1.685a1.001 1.001 0 0 1-1.664-1.11l2-3a.966.966 0 0 1 .856-.445.997.997 0 0 1 .833.485l1.935 3.224 2.27-6.06A1 1 0 0 1 9 5h.005a1 1 0 0 1 .935.659l2.946 8.102 3.152-11.035c.12-.421.502-.715.94-.725.43-.026.833.268.97.684l2 6a1 1 0 1 1-1.896.632l-.98-2.933-3.11 10.89a1 1 0 0 1-.927.726H13" />
 							</svg>
@@ -78,7 +78,7 @@
 						</router-link>
 					</li>
 					<li>
-						<router-link key="incidents" :to="{ name: 'Incidents' }">
+						<router-link @click="closeDrawer()" key="incidents" :to="{ name: 'Incidents' }">
 							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="h-5 w-5" fill="currentColor">
 								<path fill-rule="evenodd" clip-rule="evenodd" d="M10 1.944C7.84496 3.87782 5.06127 4.96373 2.166 5C2.056 5.649 2 6.319 2 7C2 12.225 5.34 16.67 10 18.317C14.66 16.67 18 12.225 18 7C18 6.318 17.943 5.65 17.834 4.999C14.9389 4.963 12.1552 3.87746 10 1.944ZM11 14C11 14.2652 10.8946 14.5196 10.7071 14.7071C10.5196 14.8946 10.2652 15 10 15C9.73478 15 9.48043 14.8946 9.29289 14.7071C9.10536 14.5196 9 14.2652 9 14C9 13.7348 9.10536 13.4804 9.29289 13.2929C9.48043 13.1054 9.73478 13 10 13C10.2652 13 10.5196 13.1054 10.7071 13.2929C10.8946 13.4804 11 13.7348 11 14ZM11 7C11 6.73478 10.8946 6.48043 10.7071 6.29289C10.5196 6.10536 10.2652 6 10 6C9.73478 6 9.48043 6.10536 9.29289 6.29289C9.10536 6.48043 9 6.73478 9 7V10C9 10.2652 9.10536 10.5196 9.29289 10.7071C9.48043 10.8946 9.73478 11 10 11C10.2652 11 10.5196 10.8946 10.7071 10.7071C10.8946 10.5196 11 10.2652 11 10V7Z" />
 							</svg>
@@ -88,7 +88,7 @@
 				</ul>
 				<ul class="-mx-4 -mb-4 menu p-4 text-base-content gap-1">
 					<li>
-						<router-link key="billing" :to="{ name: 'Billing' }" class="text-sm">
+						<router-link @click="closeDrawer()" key="billing" :to="{ name: 'Billing' }" class="text-sm">
 							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="h-5 w-5" fill="currentColor">
 								<path d="M4 4C3.46957 4 2.96086 4.21071 2.58579 4.58579C2.21071 4.96086 2 5.46957 2 6V7H18V6C18 5.46957 17.7893 4.96086 17.4142 4.58579C17.0391 4.21071 16.5304 4 16 4H4Z" />
 								<path d="M18 9H2V14C2 14.5304 2.21071 15.0391 2.58579 15.4142C2.96086 15.7893 3.46957 16 4 16H16C16.5304 16 17.0391 15.7893 17.4142 15.4142C17.7893 15.0391 18 14.5304 18 14V9ZM4 13C4 12.7348 4.10536 12.4804 4.29289 12.2929C4.48043 12.1054 4.73478 12 5 12H6C6.26522 12 6.51957 12.1054 6.70711 12.2929C6.89464 12.4804 7 12.7348 7 13C7 13.2652 6.89464 13.5196 6.70711 13.7071C6.51957 13.8946 6.26522 14 6 14H5C4.73478 14 4.48043 13.8946 4.29289 13.7071C4.10536 13.5196 4 13.2652 4 13ZM9 12C8.73478 12 8.48043 12.1054 8.29289 12.2929C8.10536 12.4804 8 12.7348 8 13C8 13.2652 8.10536 13.5196 8.29289 13.7071C8.48043 13.8946 8.73478 14 9 14H10C10.2652 14 10.5196 13.8946 10.7071 13.7071C10.8946 13.5196 11 13.2652 11 13C11 12.7348 10.8946 12.4804 10.7071 12.2929C10.5196 12.1054 10.2652 12 10 12H9Z" />
@@ -97,7 +97,7 @@
 						</router-link>
 					</li>
 					<li>
-						<router-link key="notifications" :to="{ name: 'Notifications' }" class="text-sm">
+						<router-link @click="closeDrawer()" key="notifications" :to="{ name: 'Notifications' }" class="text-sm">
 							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="h-5 w-5" fill="currentColor">
 								<path d="M10 2C8.40873 2 6.88261 2.63214 5.75739 3.75736C4.63217 4.88258 4.00003 6.4087 4.00003 8V11.586L3.29303 12.293C3.15322 12.4329 3.05802 12.611 3.01945 12.805C2.98088 12.9989 3.00068 13.2 3.07635 13.3827C3.15202 13.5654 3.28016 13.7215 3.44457 13.8314C3.60898 13.9413 3.80228 14 4.00003 14H16C16.1978 14 16.3911 13.9413 16.5555 13.8314C16.7199 13.7215 16.848 13.5654 16.9237 13.3827C16.9994 13.2 17.0192 12.9989 16.9806 12.805C16.942 12.611 16.8468 12.4329 16.707 12.293L16 11.586V8C16 6.4087 15.3679 4.88258 14.2427 3.75736C13.1175 2.63214 11.5913 2 10 2ZM10 18C9.20438 18 8.44132 17.6839 7.87871 17.1213C7.3161 16.5587 7.00003 15.7956 7.00003 15H13C13 15.7956 12.684 16.5587 12.1214 17.1213C11.5587 17.6839 10.7957 18 10 18Z" />
 							</svg>
@@ -105,7 +105,7 @@
 						</router-link>
 					</li>
 					<li>
-						<router-link key="help" :to="{ name: 'Help' }" class="text-sm">
+						<router-link @click="closeDrawer()" key="help" :to="{ name: 'Help' }" class="text-sm">
 							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="h-5 w-5" fill="currentColor">
 								<path d="M10 0C4.486 0 0 4.486 0 10s4.486 10 10 10 10-4.486 10-10S15.514 0 10 0m0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8m0-4.1a1.1 1.1 0 1 0 .001 2.201A1.1 1.1 0 0 0 10 13.9M10 4C8.625 4 7.425 5.161 7.293 5.293A1.001 1.001 0 0 0 8.704 6.71C8.995 6.424 9.608 6 10 6a1.001 1.001 0 0 1 .591 1.808C9.58 8.548 9 9.616 9 10.737V11a1 1 0 1 0 2 0v-.263c0-.653.484-1.105.773-1.317A3.013 3.013 0 0 0 13 7c0-1.654-1.346-3-3-3" />
 							</svg>
@@ -170,6 +170,9 @@ export default {
 	},
 
 	methods: {
+		closeDrawer: function() {
+			(this.$refs.drawer as any).checked = false;
+		},
 		logout: async function() {
 			await this.$http.get(this.$authBase + "/api/logout")
 				.then(() => {
