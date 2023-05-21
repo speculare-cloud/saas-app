@@ -63,10 +63,17 @@ function sanitizeGraphData (vm: GraphComponents) {
 	}
 
 	// Is bound to be deleted once the algorithm is stable enough
-	for (let i = 0; i < newDataSize; i++) {
+	for (let i = 0; i < newDataSize - 1; i++) {
+		// If not in the correct order, try to "quickly" correct that
 		if (vm.chartLabels[i] > vm.chartLabels[i + 1]) {
-			console.warn(vm.table + ": [" + i + "]current", vm.chartLabels[i], "is bigger than [" + (i + 1) + "]next", vm.chartLabels[i + 1]);
-			vm.swapItem(i, i+1);
+			console.warn(vm.table + ": [" + i + "]:", vm.chartLabels[i], "is bigger than [" + (i + 1) + "]next", vm.chartLabels[i + 1]);
+			vm.swapItem(i, i + 1);
+		}
+
+		// If duplicated value, get rid of one of them
+		if (vm.chartLabels[i] === vm.chartLabels[i + 1]) {
+			console.warn(vm.table + ": [" + i + "]:", vm.chartLabels[i], "is equals [" + (i + 1) + "]next", vm.chartLabels[i + 1]);
+			vm.spliceData(i + 1, 1);
 		}
 	}
 }
