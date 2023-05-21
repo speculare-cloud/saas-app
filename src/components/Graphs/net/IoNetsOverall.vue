@@ -1,9 +1,9 @@
 <template>
 	<div>
-		<div v-if="datacollection == null" class="w-100 flex items-center justify-center text-xl text-gray-400" style="height: 253.5px">
+		<div v-if="datacollection == null" class="w-100 flex items-center justify-center text-xl text-gray-400" style="height: 258px">
 			<h3>{{ loadingMessage }}</h3>
 		</div>
-		<LineChart v-else :chartdata="datacollection" :chartseries="chartSeries!" :unit="unit" />
+		<LineChart :chartdata="datacollection" :chartseries="chartSeries!" :unit="unit" />
 	</div>
 </template>
 
