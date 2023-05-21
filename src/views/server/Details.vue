@@ -27,7 +27,7 @@
 						<span v-else-if="isServerOnline(hostInfo?.updated_at) == 1" class="text-warning mr-1">??</span>
 						<span v-else class="text-error mr-1">Down</span>
 						-
-						<span class="ml-1">Granularity of {{ fmtGranularity(granularity ?? 0) }}</span>
+						<span class="ml-1">Granularity of {{ fmtGranularity(syncInterval ?? 0) }}</span>
 					</p>
 				</div>
 			</div>
@@ -316,7 +316,8 @@ export default {
 			hostInfo: opt<Host>(),
 			connection: null,
 			incidentsCount: opt<HttpIncidentsCount>(),
-			granularity: opt<number>(),
+			// TODO - What to do regarding the graph with this
+			syncInterval: opt<number>(),
 		}
 	},
 
@@ -338,7 +339,7 @@ export default {
 			do {
 				const rkey = this.store.configuredKeys.find((obj) => obj.host.uuid === this.$route.params.uuid);
 				if (rkey !== undefined) {
-					this.granularity = 3000;
+					this.syncInterval = rkey.host.sync_interval * 1000;
 					break;
 				}
 				retry += 1;
@@ -391,7 +392,6 @@ export default {
 					end: null
 				}
 			}
-			console.log("Computed granularity is:", this.graphRange.granularity);
 		},
 		fetchInit: async function() {
 			await this.$http.get(this.$serverBase(this.$route.params.berta as string) + "/api/host?uuid=" + this.$route.params.uuid)

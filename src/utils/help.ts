@@ -8,9 +8,9 @@ export function trunkKey (text?: string) {
 export function fmtGranularity (granularity?: number) {
 	if (!granularity) return 'unknown'
 
-	if (granularity > 60000) {
+	if (granularity >= 60000) {
 		return Math.floor(granularity / 60000) + 'm ' + ((granularity % 60000) / 1000).toFixed(0) + 's'
-	} else if (granularity > 1000) {
+	} else if (granularity >= 1000) {
 		return granularity / 1000 + 's'
 	} else {
 		return granularity + 'ms'
