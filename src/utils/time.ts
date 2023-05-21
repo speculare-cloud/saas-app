@@ -10,5 +10,5 @@ export function isServerOnline (updated_at?: string) {
 
 
 export function fmtDuration (durationinsec: number) {
-	return Duration.fromMillis(durationinsec * 1000).rescale().toHuman({ unitDisplay: "narrow" }).replace(/,/g, '')
+	return Duration.fromMillis(durationinsec * 1000).rescale().toHuman({ unitDisplay: "short" }).replace(/,/g, '')
 }
