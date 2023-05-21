@@ -226,12 +226,12 @@
 						</svg>
 					</label>
 					<div class="flex flex-row gap-2">
-						<button class="btn btn-md" @click="resetGraphRange()">
+						<label for="my-modal-6" class="btn btn-md" @click="resetGraphRange()">
 							Clear
-						</button>
-						<button class="btn btn-md btn-success" @click="applyRangeSelect()">
+						</label>
+						<label for="my-modal-6" class="btn btn-md btn-success" @click="applyRangeSelect()">
 							Apply
-						</button>
+						</label>
 					</div>
 				</div>
 			</label>
