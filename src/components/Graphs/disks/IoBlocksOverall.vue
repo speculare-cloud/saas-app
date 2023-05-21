@@ -248,14 +248,12 @@ export default {
 				})
 			}
 		},
-		// TODO - Rework
 		getReadWriteFrom: function (currDate, total_read, total_write) {
 			let read = opt<number>()
 			let write = opt<number>()
 			// If the previous does not exist, we can't compute the percent
 			const prevIndex = this.chartLabels.length - 1
-			console.log(this.table + ":special condition still needed", this.historyDataDate[prevIndex] as number >= currDate - (this.graphRange.scale / 60 + 15));
-			if (this.historyDataRead[prevIndex] != null) {
+			if (this.historyDataRead[prevIndex] != null && this.historyDataDate[prevIndex] as number >= currDate - this.getThreshold()) {
 				// Elapsed is used to work around the network latency and keep a correct scale
 				// - the time between two data point can be greater than the harvest time configured,
 				//   thus falsing the scale. Dividing by the diff can fix this.
