@@ -10,5 +10,24 @@ export function isServerOnline (updated_at?: string) {
 
 
 export function fmtDuration (durationinsec: number) {
-	return Duration.fromMillis(durationinsec * 1000).rescale().toHuman({ unitDisplay: "short" }).replace(/,/g, '')
+	const vals = removeZeroes(Duration.fromObject({ seconds: durationinsec })
+		.normalize()
+		.shiftTo("years", "months", "days", "hours", "minutes", "seconds")
+		.toObject());
+
+	return Duration.fromObject(vals)
+		.toHuman({ unitDisplay: "short", maximumFractionDigits: 0 })
+		.replace(/,/g, '')
+}
+
+function removeZeroes(vals) {
+	const newVals = {};
+
+	for (const [key, value] of Object.entries(vals)) {
+		if (value !== 0) {
+			newVals[key] = value;
+		}
+	}
+
+	return newVals;
 }
