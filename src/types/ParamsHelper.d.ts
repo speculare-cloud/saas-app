@@ -24,6 +24,7 @@ interface GraphComponents {
 	getThreshold: () => number;
 	swapItem: (iA: number, iB: number) => void;
 
+	predicateGrouped?: (el: any, disk: any) => boolean;
 	loadingMessage?: string;
 	groupedSkip?: number;
 

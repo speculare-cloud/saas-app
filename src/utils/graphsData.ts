@@ -87,20 +87,30 @@ function basicRespHandler (vm: GraphComponents, data) {
 }
 
 function groupedRespHandler (vm: GraphComponents, data: Array<any>) {
-	if (vm.groupedSkip === undefined) return;
 	const dataLength = data.length
-	// - data in reverse order (push_back) as uPlot use last as most recent
-	// - skip intNumber by intNumber
-	for (let i = dataLength - 1; i >= 0; i -= vm.groupedSkip) {
-		if (vm.groupedSkip > 1) {
-			const currentData = new Array<any>()
-			for (let y = 0; y < vm.groupedSkip; y++) {
-				currentData.push(data[i - y])
+
+	let currentData = new Array<any>();
+	for (let i = dataLength - 1; i >= 0; i--) {
+		// console.log(vm.table + ": looping in", i);
+		let y = 0;
+		while (y <= i) {
+			// console.log(">> inner:", y, "so", i-y, "name", data[i - y].device_name);
+			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+			const isAlready = currentData.some((el) => vm.predicateGrouped!(el, data[i - y]))
+			if (isAlready) {
+				// console.log(">> breaking")
+				break;
 			}
-			vm.addNewData(currentData, i === 0 || i === 1)
-		} else {
-			vm.addNewData([data[i]], i === 0)
+			else currentData.push(data[i - y])
+
+			y++;
 		}
+		vm.addNewData(currentData, i <= 0)
+
+		currentData = [];
+		// console.log("Adding", i - y)
+		currentData.push(data[i - y])
+		i -= y;
 	}
 }
 

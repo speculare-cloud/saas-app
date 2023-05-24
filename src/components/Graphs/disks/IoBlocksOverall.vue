@@ -12,7 +12,7 @@ import LineChart from '@/components/Graphs/Base/LineChart.vue'
 
 import { nextTick } from 'vue'
 import { graphScrollObs, rebuildGraph } from '@/utils/graphs'
-import { updateGraph, getRangeParams } from '@/utils/graphsData'
+import { updateGraph } from '@/utils/graphsData'
 import { series } from '@/utils/graphsCharts'
 import { closeWS } from '@/utils/websockets'
 import { opt, optUn } from '@/utils/help'
@@ -43,11 +43,11 @@ export default {
 
 	data () {
 		return {
-			groupedSkip: 1,
 			table: 'ioblocks',
 			unit: 'MB/s',
 			fetchingDone: false,
 			loadingMessage: 'Loading',
+			predicateGrouped: (el: IoBlock, disk: IoBlock) => el.device_name === disk.device_name,
 			chartSeries: opt<object[]>(),
 			connection: opt<WebSocket>(),
 			datacollection: optUn<(number | null)[][]>(),
@@ -65,7 +65,6 @@ export default {
 
 	watch: {
 		graphRange: async function (newVal, oldVal) {
-			await this.refreshCount();
 			// Rebuild the series with the new threshold
 			this.buildSeries();
 			// true is to tell the fetchInit to handle as grouped values
@@ -80,8 +79,6 @@ export default {
 	mounted: function () {
 		// Don't setup anything before everything is rendered
 		nextTick(async () => {
-			// Await the first call to ioblocks/count cause it's needed for the next
-			await this.refreshCount();
 			// Setup the IntersectionObserver
 			// true is to tell the fetchInit to handle as grouped values
 			this.obs = graphScrollObs(this, true)
@@ -98,15 +95,6 @@ export default {
 	},
 
 	methods: {
-		// Refresh the number of ioblocks there is for the current rangeParams
-		refreshCount: async function() {
-			await this.$http
-				.get(this.$serverBase(this.$route.params.berta as string) + "/api/ioblocks/count?uuid=" + this.uuid + getRangeParams(this.graphRange))
-				.then(resp => this.groupedSkip = Math.max(1, resp.data))
-				.catch(err => {
-					console.log('[ionets] Failed to fetch number of disks', err)
-				})
-		},
 		buildSeries: function() {
 			const threshold = this.getThreshold();
 			this.chartSeries = [
@@ -200,20 +188,26 @@ export default {
 			const obj: IoBlock = Object.fromEntries(
 				columnsNames.map((_, i) => [columnsNames[i], columnsValues[i]])
 			) as IoBlock;
-			// Create a buffer of values due to WS sending one event by one event
-			// - and as multiple disks as the same time...
-			this.bufferDataWs.push(obj)
-			if (this.fetchingDone && this.bufferDataWs.length === this.groupedSkip) {
+
+			// If the obj.disk_name is already in the bufferDataWs, this
+			// means we've looped through all the disks and we have to
+			// call addNewData with the current bufferDataWs before adding
+			// the current obj to the bufferDataWs.
+			const isAlready = this.bufferDataWs.some((el) => el.device_name === obj.device_name);
+			if (this.fetchingDone && isAlready) {
 				// Add the new data to the graph
-				this.addNewData(this.bufferDataWs, true)
+				this.addNewData(this.bufferDataWs, true);
+				// Clear the array
 				this.bufferDataWs = []
-			} else if (!this.fetchingDone && this.bufferDataWs.length === this.groupedSkip) {
+			} else if (!this.fetchingDone && isAlready) {
 				// Add the value to the wsBuffer
 				console.log('[' + this.table + '] >> Adding value to the wsBuffer (WS opened but fetching not done yet)')
 				this.wsBuffer.push(obj)
 				// Clear the array
 				this.bufferDataWs = []
 			}
+
+			this.bufferDataWs.push(obj)
 		},
 		addNewData: function (elem: Array<IoBlock>, update=false) {
 			// eslint-disable-next-line @typescript-eslint/no-this-alias
