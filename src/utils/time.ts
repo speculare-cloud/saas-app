@@ -10,13 +10,22 @@ export function isServerOnline (updated_at?: string) {
 
 
 export function fmtDuration (durationinsec: number) {
-	const vals = removeZeroes(Duration.fromObject({ seconds: durationinsec })
-		.normalize()
-		.shiftTo("years", "months", "days", "hours", "minutes", "seconds")
-		.toObject());
+	const duration = Duration.fromObject({ seconds: durationinsec });
+
+	const durationKeys = ["years", "months", "days", "hours", "minutes", "seconds"];
+	if (duration >= Duration.fromObject({ month: 1 })) {
+		durationKeys.pop()
+	}
+
+	const vals = removeZeroes(
+		duration
+			.normalize()
+			.shiftTo("years", "months", "days", "hours", "minutes", "seconds")
+			.toObject()
+	);
 
 	return Duration.fromObject(vals)
-		.toHuman({ unitDisplay: "short", maximumFractionDigits: 0 })
+		.toHuman({ unitDisplay: "narrow", maximumFractionDigits: 0 })
 		.replace(/,/g, '')
 }
 
