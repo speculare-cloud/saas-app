@@ -72,7 +72,7 @@ export default {
 
 	methods: {
 		fmtStarted: function(started_at) {
-			return DateTime.fromISO(started_at).toFormat("hh:mm A - D MMMM YYYY");
+			return DateTime.fromISO(started_at).toLocaleString(DateTime.DATETIME_SHORT);
 		},
 		getLength: function(from, to, tox) {
 			return fmtDuration(DateTime.fromISO(to ?? tox).diff(DateTime.fromISO(from)).as('seconds'));
