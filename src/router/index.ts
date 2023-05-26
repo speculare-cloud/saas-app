@@ -16,9 +16,17 @@ const router = createRouter({
 		path: '/',
 		component: Base,
 		redirect: ({
-			name: 'Servers'
+			name: 'Overview'
 		}),
 		children: [{
+			path: 'overview',
+			name: 'Overview',
+			component: () =>
+				import('@/views/Overview.vue'),
+			meta: {
+				requireAuth: true
+			}
+		}, {
 			path: 'servers',
 			name: 'Servers',
 			component: () =>

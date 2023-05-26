@@ -70,6 +70,14 @@
 				</div>
 				<ul class="flex-grow -mx-4 menu p-4 text-base-content gap-1">
 					<li>
+						<router-link @click="closeDrawer()" key="overview" :to="{ name: 'Overview' }">
+							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" class="h-5 w-5" fill="currentColor">
+								<path d="M100-200q-24 0-42-18t-18-42v-440q0-24 18-42t42-18h440q24 0 42 18t18 42v440q0 24-18 42t-42 18H100Zm0-60h440v-440H100v440Zm600 60v-560h60v560h-60Zm160 0v-560h60v560h-60Zm-760-60v-440 440Z" />
+							</svg>
+							Overview
+						</router-link>
+					</li>
+					<li>
 						<router-link @click="closeDrawer()" key="servers" :to="{ name: 'Servers' }" :class="$route.meta.child === 'servers' ? 'router-link-active' : ''">
 							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="h-5 w-5" fill="currentColor">
 								<path d="M13 18.002a.998.998 0 0 1-.94-.658L8.986 8.889l-2.048 5.465a1.001 1.001 0 0 1-1.794.163l-2.187-3.645-1.124 1.685a1.001 1.001 0 0 1-1.664-1.11l2-3a.966.966 0 0 1 .856-.445.997.997 0 0 1 .833.485l1.935 3.224 2.27-6.06A1 1 0 0 1 9 5h.005a1 1 0 0 1 .935.659l2.946 8.102 3.152-11.035c.12-.421.502-.715.94-.725.43-.026.833.268.97.684l2 6a1 1 0 1 1-1.896.632l-.98-2.933-3.11 10.89a1 1 0 0 1-.927.726H13" />
