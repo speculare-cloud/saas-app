@@ -1,4 +1,4 @@
-import { DateTime, Duration } from "luxon";
+import { DateTime, Duration, type DurationLikeObject } from "luxon";
 
 export const SPS_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS";
 
@@ -12,7 +12,7 @@ export function isServerOnline (updated_at?: string) {
 export function fmtDuration (durationinsec: number) {
 	const duration = Duration.fromObject({ seconds: durationinsec });
 
-	const durationKeys = ["years", "months", "days", "hours", "minutes", "seconds"];
+	const durationKeys: Array<keyof DurationLikeObject> = ["days", "hours", "minutes", "seconds"];
 	if (duration >= Duration.fromObject({ month: 1 })) {
 		durationKeys.pop()
 	}
@@ -20,7 +20,7 @@ export function fmtDuration (durationinsec: number) {
 	const vals = removeZeroes(
 		duration
 			.normalize()
-			.shiftTo("years", "months", "days", "hours", "minutes", "seconds")
+			.shiftTo(...durationKeys)
 			.toObject()
 	);
 
