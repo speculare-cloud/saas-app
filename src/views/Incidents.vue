@@ -68,10 +68,8 @@ export default {
 					}).catch((err) => {
 						// TODO - Handle errors
 						console.error(err)
-					})
+					}).finally(() => this.loadingIncidents = false);
 			}
-
-			this.loadingIncidents = false;
 		}
 	}
 }
