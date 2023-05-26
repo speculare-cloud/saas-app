@@ -1,5 +1,5 @@
 <template>
-	<section>
+	<IncidentsBase :incidents="incidents">
 		<div class="flex-col">
 			<router-link
 				:to="{ name: 'DetailsServer', params: { berta: $route.params.berta, uuid: $route.params.uuid, hostname: $route.params.hostname } }"
@@ -22,90 +22,50 @@
 				</div>
 			</div>
 		</div>
-		<div class="mt-12 mb-12">
-			<div class="overflow-x-auto no-scrollbar rounded-lg shadow">
-				<table class="table w-full text-[#c5c8cb]">
-					<thead>
-						<tr>
-							<th />
-							<th class="flex flex-col">
-								<span>Server</span>
-								<span>↪ Alert</span>
-							</th>
-							<th>Started at</th>
-							<th>Duration</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr v-for="incident in incidents" :key="incident.id" class="text-[13px]">
-							<td class="min">
-								<span v-if="!incident.status">ongoing&nbsp;</span>
-								<span v-if="incident.status" class="text-success">resolved</span>
-								<span v-else-if="incident.severity" class="text-error">critical</span>
-								<span v-else class="text-warning">warning</span>
-							</td>
-							<td class="flex flex-col">
-								<span class="text-sm text-white">{{ incident.hostname }}</span>
-								<span class="text-[13px]">↪ {{ incident.alert.name }} ({{ incident.alert.info ?? incident.alert.lookup }})</span>
-							</td>
-							<td>
-								{{ fmtStarted(incident.started_at) }}
-							</td>
-							<td  class="min">
-								{{ getLength(incident.started_at, incident.updated_at, incident.resolved_at) }}
-							</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-		</div>
-	</section>
+	</IncidentsBase>
 </template>
 
 <script lang="ts">
 import { nextTick } from 'vue';
-import { DateTime } from 'luxon';
 import type { IncidentsJoined } from '@martichou/sproot';
-import { fmtDuration } from '@/utils/time';
+
+import IncidentsBase from '@/components/IncidentsBase.vue';
 
 export default {
-	name: 'Incidents',
+	name: "Incidents",
 
-	data () {
+	components: { IncidentsBase },
+
+	data() {
 		return {
 			incidents: new Array<IncidentsJoined>()
-		}
+		};
 	},
 
 	mounted: function () {
 		nextTick(async () => {
 			await this.refreshList();
-		})
+		});
 	},
 
 	methods: {
-		fmtStarted: function(started_at) {
-			return DateTime.fromISO(started_at).toFormat("hh:mm A - D MMMM YYYY");
-		},
-		getLength: function(from, to, tox) {
-			return fmtDuration(DateTime.fromISO(to ?? tox).diff(DateTime.fromISO(from)).as('seconds'));
-		},
-		refreshList: async function() {
+		refreshList: async function () {
 			await this.$http.get(this.$serverBase(this.$route.params.berta as string) + "/api/incidents?uuid=" + this.$route.params.uuid)
 				.then((resp) => {
 					resp.data.forEach((elem: IncidentsJoined) => {
 						const idx = this.incidents.findIndex(el => el.id == elem.id);
 						if (idx !== -1) {
-							this.incidents[idx] = elem
-						} else {
+							this.incidents[idx] = elem;
+						}
+						else {
 							this.incidents.push(elem);
 						}
-					})
+					});
 				}).catch((err) => {
 					// TODO - Handle errors
-					console.error(err)
-				})
+					console.error(err);
+				});
 		}
-	}
+	},
 }
 </script>
