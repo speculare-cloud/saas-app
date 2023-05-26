@@ -48,11 +48,21 @@ const router = createRouter({
 			path: 'servers/:berta/:uuid/:hostname/alerts',
 			name: 'AlertsServer',
 			component: () =>
-				import('@/views/server/Alerts.vue'),
+				import('@/views/server/alerts/Alerts.vue'),
 			meta: {
 				requireAuth: true,
 				child: 'servers',
 				pageName: 'Alerts server'
+			}
+		}, {
+			path: 'servers/:berta/:uuid/:hostname/alerts/new',
+			name: 'NewAlert',
+			component: () =>
+				import('@/views/server/alerts/New.vue'),
+			meta: {
+				requireAuth: true,
+				child: 'servers',
+				pageName: 'New alert'
 			}
 		}, {
 			path: 'servers/:berta/:uuid/:hostname/incidents',
