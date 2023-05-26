@@ -1,5 +1,5 @@
 <template>
-	<IncidentsBase :incidents="incidents">
+	<IncidentsBase :incidents="incidents" :loading="loadingIncidents">
 		<div class="flex-col">
 			<router-link
 				:to="{ name: 'DetailsServer', params: { berta: $route.params.berta, uuid: $route.params.uuid, hostname: $route.params.hostname } }"
@@ -38,6 +38,7 @@ export default {
 
 	data() {
 		return {
+			loadingIncidents: true,
 			incidents: new Array<IncidentsJoined>()
 		};
 	},
@@ -65,6 +66,8 @@ export default {
 					// TODO - Handle errors
 					console.error(err);
 				});
+
+			this.loadingIncidents = false;
 		}
 	},
 }

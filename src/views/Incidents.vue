@@ -1,5 +1,5 @@
 <template>
-	<IncidentsBase :incidents="incidents">
+	<IncidentsBase :incidents="incidents" :loading="loadingIncidents">
 		<div class="md:flex justify-between">
 			<div class="prose-sm flex justify-between items-center">
 				<h1>
@@ -31,6 +31,7 @@ export default {
 
 	data () {
 		return {
+			loadingIncidents: true,
 			incidents: new Array<IncidentsJoined>()
 		}
 	},
@@ -69,6 +70,8 @@ export default {
 						console.error(err)
 					})
 			}
+
+			this.loadingIncidents = false;
 		}
 	}
 }

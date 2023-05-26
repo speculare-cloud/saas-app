@@ -37,7 +37,13 @@
 					</tbody>
 				</table>
 			</div>
-			<section v-if="incidents.length === 0" class="mt-12 flex justify-center items-center h-52">
+			<section v-if="loading" class="mt-12 flex justify-center items-center h-52">
+				<div class="prose-sm max-w-sm">
+					<h1>Loading...</h1>
+					<p>We are retrieving the incidents, please allow us a moment.</p>
+				</div>
+			</section>
+			<section v-if="incidents.length === 0 && !loading" class="mt-12 flex justify-center items-center h-52">
 				<div class="prose-sm max-w-sm">
 					<h1>No incidents.</h1>
 					<div class="w-fit mx-auto flex flex-col">
@@ -66,6 +72,10 @@ export default {
 	props: {
 		incidents: {
 			type: Array<IncidentsJoined>,
+			required: true,
+		},
+		loading: {
+			type: Boolean,
 			required: true,
 		}
 	},
