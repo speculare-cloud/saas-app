@@ -3,6 +3,27 @@
 		<label class="modal-box relative flex flex-col gap-4" for="">
 			<h3 class="text-lg font-bold">{{ alert.original.name }}</h3>
 
+			<div class="form-control">
+				<label class="label">
+					<span class="label-text">Which metric</span>
+				</label>
+				<input
+					v-model="alertEditing.table" type="text" placeholder="enter which metric"
+					class="input input-bordered w-full h-10 form-control-custom focus:outline-none">
+			</div>
+
+			<div class="form-control">
+				<label class="label">
+					<span class="label-text">Lookup query</span>
+				</label>
+				<input
+					v-model="alertEditing.lookup" type="text" placeholder="enter your lookup query"
+					class="input input-bordered w-full h-10 form-control-custom focus:outline-none">
+				<label class="label flex-col items-start">
+					<span class="label-text">↪ [aggr] [mode] [timeframe] of [table] {over} {table}</span>
+				</label>
+			</div>
+
 			<div class="flex flex-col gap-1">
 				<p>Warning threshold:</p>
 				<codemirror
@@ -23,6 +44,15 @@
 					:tab-size="4"
 					:extensions="extensions"
 					@ready="handleReady" />
+			</div>
+
+			<div class="form-control">
+				<label class="label">
+					<span class="label-text">Additional WHERE (opt)</span>
+				</label>
+				<input
+					v-model="alertEditing.where_clause" type="text" placeholder="WHERE clause to be added (optional)"
+					class="input input-bordered w-full h-10 form-control-custom focus:outline-none">
 			</div>
 
 			<div class="modal-action justify-between mt-0">
