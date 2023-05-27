@@ -1,5 +1,6 @@
 import { openSpecificWS } from '@/utils/graphsWebsockets'
 import { fetchInit } from '@/utils/graphsData'
+import type { GraphComponents } from '@/types/ParamsHelper'
 
 export function graphScrollObs (vm: GraphComponents, grouped = false) {
 	// Observe if the $el is visible or not

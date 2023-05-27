@@ -1,3 +1,5 @@
+import type { WsVM, GraphComponents } from "@/types/ParamsHelper";
+
 interface initWsNamed {
 	vm: WsVM,
 	wsUrl: string,

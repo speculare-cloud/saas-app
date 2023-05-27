@@ -1,3 +1,4 @@
+import type { ChartComponents } from '@/types/ParamsHelper'
 import uPlot from 'uplot'
 
 export function reactDataChange (vm: ChartComponents, oldData, newData, stack = false) {

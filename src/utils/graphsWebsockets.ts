@@ -1,3 +1,4 @@
+import type { GraphComponents } from '@/types/ParamsHelper';
 import { fetchInit } from '@/utils/graphsData'
 import { initWS } from '@/utils/websockets'
 import { DateTime } from 'luxon'
