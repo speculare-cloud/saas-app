@@ -49,7 +49,7 @@
 							</button>
 						</div>
 					</div>
-					<div class="mockup-code flex flex-col">
+					<div class="mockup-code flex flex-col gap-1">
 						<code>Lookup: {{ alert.lookup }}</code>
 						<code v-if="alert.where_clause">Where: {{ alert.where_clause }}</code>
 						<code>Warning: {{ alert.warn }}</code>
