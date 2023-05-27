@@ -1,3 +1,5 @@
+import type { AlertsDTO } from "@martichou/sproot";
+
 interface GraphComponents {
 	table: string;
 	berta: string;
@@ -49,4 +51,17 @@ interface ChartComponents {
 	createChart: (data: any) => void;
 	stack?: (d: any, o: any) => {data: any[], bands: uPlot.Band[]};
 	$el: any;
+}
+
+interface AlertTestingComponent {
+	testLoading: boolean;
+	alertContent: string | null;
+	alertSuccess: boolean;
+	lastAlertTested: AlertsDTO | null;
+	editing: AlertsDTO;
+
+	$cdcBase: (b: string) => string;
+	$serverBase: (b: string) => string;
+	$route: Route;
+	$http: AxiosInstance;
 }

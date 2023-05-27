@@ -34,7 +34,7 @@
 					</svg>
 				</label>
 				<div class="flex flex-row gap-2">
-					<button class="btn btn-md btn-info" @click="testAlert()">
+					<button class="btn btn-md btn-info" @click="testAlert(self)">
 						{{ testLoading ? 'loading...' : 'test' }}
 					</button>
 					<button class="btn btn-md btn-success" @click="updateAlert()" :disabled="applyDisabled">
@@ -57,6 +57,7 @@ import { oneDark } from '@codemirror/theme-one-dark'
 import { rust } from '@codemirror/lang-rust'
 import type { AlertsDTO } from '@martichou/sproot';
 import { opt } from '@/utils/help';
+import { testAlert } from '@/utils/alerts';
 
 export default {
 	name: 'UpdateAlertModal',
@@ -81,12 +82,11 @@ export default {
 			view.value = payload.view
 		}
 
-		return { extensions, handleReady };
+		return { extensions, handleReady, testAlert };
 	},
 
 	data() {
 		return {
-			alertTested: true,
 			testLoading: false,
 			updateLoading: false,
 
@@ -109,6 +109,12 @@ export default {
 				this.$emit('update:editing', value)
 			}
 		},
+		editing() {
+			return this.alert.editing;
+		},
+		self() {
+			return this;
+		}
 	},
 
 	methods: {
@@ -132,23 +138,6 @@ export default {
 
 			this.updateLoading = false;
 		},
-		testAlert: async function() {
-			if (this.testLoading) return;
-			this.testLoading = true;
-
-			await this.$http.post(this.$serverBase(this.$route.params.berta  as string) + "/api/alerts/test", this.alert.editing)
-				.then((resp) => {
-					this.lastAlertTested = Object.assign({}, this.alert.editing);
-					this.alertContent = resp.data;
-					this.alertSuccess = true;
-				}).catch((err) => {
-					console.error(err);
-					this.alertContent = "error: " + err.request.response ?? err.message;
-					this.alertSuccess = false;
-				});
-
-			this.testLoading = false;
-		}
 	}
 }
 </script>
