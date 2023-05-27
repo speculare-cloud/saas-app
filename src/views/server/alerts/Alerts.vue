@@ -31,30 +31,34 @@
 		</div>
 		<div class="mt-12 mb-12">
 			<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-				<div v-for="alert in alerts" :key="alert.id" class="group flex flex-col gap-4 p-5 bg-base-300 shadow-md rounded-lg">
-					<div class="flex flex-row justify-between gap-2 items-center">
-						<div class="flex flex-col flex-1 gap-2">
-							{{ alert.name }}
-							<p class="text-sm">
-								↪ Running every {{ alert.timing }}s
-							</p>
+				<div v-for="alert in alerts" :key="alert.id" class="group flex flex-col gap-4 p-5 bg-base-300 shadow-md rounded-lg justify-between">
+					<div class="flex flex-col gap-4">
+						<div class="flex flex-row justify-between gap-2 items-center">
+							<div class="flex flex-col flex-1 gap-2">
+								{{ alert.name }}
+								<p class="text-sm">
+									↪ Running every {{ alert.timing }}s
+								</p>
+							</div>
+							<div class="tooltip" :data-tip="activeLoading != alert.id ? (alert.active ? 'Pause' : 'Resume') : 'Loading'">
+								<button
+									@click="switchActiveAlert(alert)" class="status-indicator status-indicator--xs"
+									:class="activeLoading != alert.id ? (alert.active ? 'status-indicator--success' : 'status-indicator--danger') : 'status-indicator--warning'">
+									<div class="circle circle--animated circle-main" />
+									<div class="circle circle--animated circle-secondary" />
+									<div class="circle circle--animated circle-tertiary" />
+								</button>
+							</div>
 						</div>
-						<div class="tooltip" :data-tip="activeLoading != alert.id ? (alert.active ? 'Pause' : 'Resume') : 'Loading'">
-							<button
-								@click="switchActiveAlert(alert)" class="status-indicator status-indicator--xs"
-								:class="activeLoading != alert.id ? (alert.active ? 'status-indicator--success' : 'status-indicator--danger') : 'status-indicator--warning'">
-								<div class="circle circle--animated circle-main" />
-								<div class="circle circle--animated circle-secondary" />
-								<div class="circle circle--animated circle-tertiary" />
-							</button>
+
+						<div class="mockup-code flex flex-col gap-1">
+							<code>Lookup: {{ alert.lookup }}</code>
+							<code v-if="alert.where_clause">Where: {{ alert.where_clause }}</code>
+							<code>Warning: {{ alert.warn }}</code>
+							<code>Critical: {{ alert.crit }}</code>
 						</div>
 					</div>
-					<div class="mockup-code flex flex-col gap-1">
-						<code>Lookup: {{ alert.lookup }}</code>
-						<code v-if="alert.where_clause">Where: {{ alert.where_clause }}</code>
-						<code>Warning: {{ alert.warn }}</code>
-						<code>Critical: {{ alert.crit }}</code>
-					</div>
+
 					<div class="flex flex-row justify-end gap-2">
 						<button @click="deleteAlert(alert)" class="invisible opacity-0 group-hover:visible group-hover:opacity-100 btn btn-md btn-error transition-opacity">
 							<span v-if="deleteLoading != alert.id">delete</span>
