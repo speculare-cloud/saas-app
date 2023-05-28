@@ -49,7 +49,7 @@
 			<div class="bg-base-300 rounded-lg shadow">
 				<div v-for="item in store.unconfiguredKeys" :key="item.key">
 					<router-link
-						:to="{ name: 'NewDetails', params: { secretKey: item.key } }" id="servers-item"
+						:to="{ name: 'NewDetails', params: { kid: item.id } }" id="servers-item"
 						class="flex justify-between cursor-pointer pl-4 pr-8 py-3 hover:bg-neutral-focus gap-4 rounded-lg text-[#c5c8cb] hover:text-[#d3d3d3] transition duration-300">
 						<div class="flex items-center gap-4">
 							<div class="status-indicator status-indicator--sm status-indicator--warning">

@@ -85,7 +85,7 @@ const router = createRouter({
 				pageName: 'New server'
 			}
 		}, {
-			path: 'servers/new/:secretKey',
+			path: 'servers/new/:kid',
 			name: 'NewDetails',
 			component: () =>
 				import('@/views/server/New.vue'),

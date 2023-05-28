@@ -45,8 +45,8 @@
 				<div class="overflow-hidden" style="border-radius: var(--rounded-box, 1rem);">
 					<div class="flex-2 mockup-code">
 						<pre data-prefix="1"><code class="code-unstyled">curl https://speculare.cloud/some_random_script.sh | bash</code></pre>
-						<pre v-if="host_uuid === null" data-prefix="2" class="bg-warning text-warning-content"><code class="code-unstyled">Waiting for data...</code></pre>
-						<pre v-if="host_uuid !== null" data-prefix="2" class="bg-success text-success-content"><code class="code-unstyled">Success!</code></pre>
+						<pre v-if="apikey?.host_uuid === null" data-prefix="2" class="bg-warning text-warning-content"><code class="code-unstyled">Waiting for data...</code></pre>
+						<pre v-if="apikey?.host_uuid !== null" data-prefix="2" class="bg-success text-success-content"><code class="code-unstyled">Success!</code></pre>
 					</div>
 				</div>
 				<div class="flex-1 prose-sm xl:flex flex-col justify-center align-middle">
@@ -61,17 +61,17 @@
 				finally
 			</div>
 			<div class="max-w-lg mx-auto flex flex-col justify-center gap-6">
-				<div class="prose-sm rounded-lg shadow px-4 py-6" :class="host_uuid === null ? 'bg-neutral bg-opacity-20' : 'bg-base-300'">
-					<h3 class="font-semibold" :class="host_uuid === null ? 'text-base-content text-opacity-20' : ''">
+				<div class="prose-sm rounded-lg shadow px-4 py-6" :class="apikey?.host_uuid === null ? 'bg-neutral bg-opacity-20' : 'bg-base-300'">
+					<h3 class="font-semibold" :class="apikey?.host_uuid === null ? 'text-base-content text-opacity-20' : ''">
 						You're all set
 					</h3>
-					<p class="mt-3 text-sm" :class="host_uuid === null ? 'text-base-content text-opacity-20' : 'text-[#c5c8cb]'">
+					<p class="mt-3 text-sm" :class="apikey?.host_uuid === null ? 'text-base-content text-opacity-20' : 'text-[#c5c8cb]'">
 						It's all good, your server is periodically sending metrics and you can now see
 						them in the dashboard.
 					</p>
 				</div>
 				<router-link
-					:to="{ name: 'Servers' }" :class="host_uuid === null ? 'disabled' : ''"
+					:to="{ name: 'Servers' }" :class="apikey?.host_uuid === null ? 'disabled' : ''"
 					class="btn btn-md btn-info" key="add_server">
 					goto servers
 				</router-link>
@@ -81,7 +81,7 @@
 </template>
 
 <script lang="ts">
-import { opt } from '@/utils/help';
+import { opt, optUn } from '@/utils/help';
 import { initWS, closeWS } from '@/utils/websockets';
 import type { ApiKey } from '@martichou/sproot';
 import { nextTick } from 'vue';
@@ -91,23 +91,30 @@ export default {
 
 	data () {
 		return {
-			connection: null,
-			host_uuid: opt<string>(),
-			secretKey: opt<string>(this.$route.params.secretKey as string),
+			connection: opt<WebSocket>(),
+			apikey: optUn<ApiKey>(),
+		}
+	},
+
+	computed: {
+		secretKey() {
+			return this.apikey?.key
 		}
 	},
 
 	mounted: function () {
 		nextTick(async () => {
-			if (this.secretKey === null) await this.generateKey();
+			if (this.$route.params.kid === null) await this.generateKey();
 			else await this.getKeyInfo();
+
+			if (this.apikey == null) return;
 
 			initWS({
 				vm: this,
 				wsUrl: this.$authCdc,
 				table: "apikeys",
 				eventType: "update",
-				filter: ":key.eq." + this.secretKey,
+				filter: ":key.eq." + this.apikey.key,
 			});
 		})
 	},
@@ -122,18 +129,20 @@ export default {
 			// Create a new API key and refresh the list on success
 			await this.$http.post(this.$authBase + "/api/key", {})
 				.then((resp) => {
-					this.secretKey = resp.data.key;
-					this.$router.replace({ name: 'NewDetails', params: { secretKey: this.secretKey }})
+					const apikey: ApiKey = resp.data;
+					this.apikey = apikey;
+					this.$router.replace({ name: 'NewDetails', params: { kid: apikey.id }})
 				}).catch((err) => {
 					// TODO - Handle errors
 					console.log(err);
 				});
 		},
 		getKeyInfo: async function() {
-			await this.$http.get(this.$authBase + "/api/key", { headers: { "SPTK": this.secretKey } })
+			await this.$http.get(this.$authBase + "/api/key?id=" + this.$route.params.kid)
 				.then((resp) => {
-					this.host_uuid = resp.data.host_uuid ?? null;
-					if (this.host_uuid !== null) closeWS("apikeys", this);
+					const apikey: ApiKey = resp.data;
+					this.apikey = apikey;
+					if (this.connection !== null) closeWS("apikeys", this);
 				}).catch((err) => {
 					// TODO - Handle errors
 					console.log(err);
@@ -147,7 +156,7 @@ export default {
 			const keyObj: ApiKey = Object.fromEntries(
 				columnsNames.map((_, i) => [columnsNames[i], columnsValues[i]])
 			) as ApiKey;
-			this.host_uuid = keyObj.host_uuid ?? null;
+			this.apikey = keyObj;
 		}
 	}
 }

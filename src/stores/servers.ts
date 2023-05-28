@@ -45,7 +45,7 @@ export const useServersStore = defineStore('servers', {
 		},
 		async fetchApiKeysAndBertas (vm) {
 			// Fetch the API keys for the current user
-			await vm.$http.get(vm.$authBase + '/api/key')
+			await vm.$http.get(vm.$authBase + '/api/key/list')
 				.then((resp) => {
 					resp.data.forEach((elem: ApiKey) => {
 						const thisBerta = this.bertas.get(elem.berta)
