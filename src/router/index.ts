@@ -14,6 +14,7 @@ const router = createRouter({
 		}
 	}, {
 		path: '/',
+		name: 'Base',
 		component: Base,
 		redirect: ({
 			name: 'Overview'
