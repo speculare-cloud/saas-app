@@ -1,8 +1,8 @@
 import uPlot from 'uplot'
 
-const strokeColors = ['#EAB839', '#008080', '#DA70D6', '#EAB839']
-const fillColorsAlpha = ['#EAB8391A', '#0080801A', '#DA70D61A', '#EAB8391A']
-const fillColors = ['#EAB839', '#008080', '#DA70D6', '#EAB839']
+const strokeColors = ['#EAB839', '#008080', '#DA70D6', '#34D399']
+const fillColorsAlpha = ['#EAB8391A', '#0080801A', '#DA70D61A', '#34D3991A']
+const fillColors = ['#EAB839', '#008080', '#DA70D6', '#34D399']
 
 const pointsFilter = (u, seriesIdx, show, gaps) => {
 	const filtered = new Array<number>();
