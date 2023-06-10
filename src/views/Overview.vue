@@ -57,7 +57,7 @@
 
 						<div class="relative h-28 w-28 flex justify-center items-center">
 							<Doughnut v-if="arrSum(serverStatus) !== 0 && ssData" :options="dognOpt" :data="(ssData as any)" />
-							<div v-else>
+							<div v-else class="text-center">
 								No servers
 							</div>
 						</div>
@@ -92,7 +92,7 @@
 
 						<div class="relative h-28 w-28 flex justify-center items-center">
 							<Doughnut v-if="arrSum(incidentsStatus) !== 0 && isData" :options="dognOpt" :data="(isData as any)" />
-							<div v-else>
+							<div v-else class="text-center">
 								No active incidents
 							</div>
 						</div>
@@ -194,6 +194,9 @@ export default {
 
 	mounted() {
 		nextTick(async () => {
+			this.refreshServerStatus();
+			this.refreshIncidentsStatus();
+
 			await this.$incidentsStore.refresh(this.bertas.keys(), this);
 		})
 	},
@@ -224,7 +227,7 @@ export default {
 					],
 					backgroundColor: [
 						'#FF4136',
-						'#008080',
+						'#EAB839',
 					],
 				}]
 			};
