@@ -7,7 +7,7 @@
 				</h1>
 			</div>
 		</div>
-		<div class="mt-12">
+		<div class="mt-12 mb-12">
 			<div class="flex flex-col md:grid grid-cols-2 xl:grid-cols-3 gap-4">
 				<div class="flex flex-col p-5 bg-base-300 shadow-md rounded-lg gap-1">
 					<h6 class="text-[#c5c8cb]">
@@ -123,12 +123,13 @@ export default {
 
 	setup() {
 		const serverStore = useServersStore();
-		const { configuredKeys, unconfiguredKeys } = storeToRefs(serverStore);
-
 		const incidentsStore = useIncidentsStore();
+
+		const { configuredKeys, unconfiguredKeys } = storeToRefs(serverStore);
+		const { bertas } = storeToRefs(serverStore)
 		const { incidents } = storeToRefs(incidentsStore);
 
-		return { configuredKeys, unconfiguredKeys, incidents, arrSum }
+		return { bertas, configuredKeys, unconfiguredKeys, incidents, arrSum }
 	},
 
 	data() {
@@ -161,6 +162,12 @@ export default {
 				this.refreshIncidentsStatus();
 			},
 			deep: true
+		},
+		bertas: {
+			async handler() {
+				await this.$incidentsStore.refresh(this.bertas.keys(), this);
+			},
+			deep: true
 		}
 	},
 
@@ -176,16 +183,17 @@ export default {
 			]
 		},
 		incidentsStatus() {
+			const critCount = this.incidents.filter((el) => el.severity === 1).length;
 			return [
-				this.incidents.length,
-				this.incidents.length,
+				critCount,
+				this.incidents.length - critCount,
 			]
 		}
 	},
 
 	mounted() {
-		nextTick(() => {
-			this.refreshServerStatus();
+		nextTick(async () => {
+			await this.$incidentsStore.refresh(this.bertas.keys(), this);
 		})
 	},
 

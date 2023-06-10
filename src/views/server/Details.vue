@@ -32,7 +32,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="mt-12">
+		<div class="mt-12 mb-12">
 			<div class="flex flex-col md:flex-row md:space-x-4">
 				<div class="flex-[2_2_0%] grid grid-cols-2 gap-4 mb-5">
 					<div class="flex flex-row items-center justify-between text-left p-5 bg-base-300 shadow-md rounded-lg">
@@ -99,14 +99,14 @@
 			<p class="text-sm text-gray-200">
 				Total CPU utilization. 100% here means there is no CPU idle time at all.
 			</p>
-			<CpuTimes :key="$route.params.uuid as string" :uuid="$route.params.uuid as string" :berta="$route.params.berta as string" :graph-range="graphRange" />
+			<CpuTimes :key="($route.params.uuid as string)" :uuid="($route.params.uuid as string)" :berta="($route.params.berta as string)" :graph-range="graphRange" />
 			<h3 class="text-2xl text-gray-100 mb-4 mt-4" id="loadavg">
 				load
 			</h3>
 			<p class="text-sm text-gray-200">
 				System load. The 3 metrics refer to 1, 5 and 15 minutes averages. Computed once every 5 seconds.
 			</p>
-			<LoadAvg :key="$route.params.uuid as string" :uuid="$route.params.uuid as string" :berta="$route.params.berta as string" :graph-range="graphRange" />
+			<LoadAvg :key="($route.params.uuid as string)" :uuid="($route.params.uuid as string)" :berta="($route.params.berta as string)" :graph-range="graphRange" />
 		</div>
 		<div role="section" class="mt-4">
 			<h3 class="text-2xl text-gray-100 mb-4" id="ioblocks">
@@ -115,7 +115,7 @@
 			<p class="text-sm text-gray-200">
 				Total Disk I/O for all physical disks. Physical are disks present in <code>/sys/block</code> but don't have a <code>{}/device</code> in it.
 			</p>
-			<IoBlocksOverall :key="$route.params.uuid as string" :uuid="$route.params.uuid as string" :berta="$route.params.berta as string" :graph-range="graphRange" />
+			<IoBlocksOverall :key="($route.params.uuid as string)" :uuid="($route.params.uuid as string)" :berta="($route.params.berta as string)" :graph-range="graphRange" />
 		</div>
 		<div role="section" class="mt-4">
 			<h3 class="text-2xl text-gray-100 mb-4" id="ram">
@@ -124,7 +124,7 @@
 			<p class="text-sm text-gray-200">
 				System Random Access Memory (i.e. physical memory) usage.
 			</p>
-			<Ram :key="$route.params.uuid as string" :uuid="$route.params.uuid as string" :berta="$route.params.berta as string" :graph-range="graphRange" />
+			<Ram :key="($route.params.uuid as string)" :uuid="($route.params.uuid as string)" :berta="($route.params.berta as string)" :graph-range="graphRange" />
 		</div>
 		<div role="section" class="mt-4">
 			<h3 class="text-2xl text-gray-100 mb-4" id="swap">
@@ -133,16 +133,16 @@
 			<p class="text-sm text-gray-200">
 				System swap memory usage. Swap space is used when the RAM if full.
 			</p>
-			<Swap :key="$route.params.uuid as string" :uuid="$route.params.uuid as string" :berta="$route.params.berta as string" :graph-range="graphRange" />
+			<Swap :key="($route.params.uuid as string)" :uuid="($route.params.uuid as string)" :berta="($route.params.berta as string)" :graph-range="graphRange" />
 		</div>
-		<div role="section" class="mt-4 mb-16">
+		<div role="section" class="mt-4">
 			<h3 class="text-2xl text-gray-100 mb-4" id="ionets">
 				network
 			</h3>
 			<p class="text-sm text-gray-200">
 				Total bandwidth of all physical network interfaces. Physical are all the network interfaces that are listed in <code>/proc/net/dev</code>, but do not exist in <code>/sys/devices/virtual/net</code>.
 			</p>
-			<IoNetsOverall :key="$route.params.uuid as string" :uuid="$route.params.uuid as string" :berta="$route.params.berta as string" :graph-range="graphRange" />
+			<IoNetsOverall :key="($route.params.uuid as string)" :uuid="($route.params.uuid as string)" :berta="($route.params.berta as string)" :graph-range="graphRange" />
 		</div>
 
 		<label for="my-modal-6" class="btn btn-md bg-success fixed bottom-8 right-8 text-black hover:text-white">

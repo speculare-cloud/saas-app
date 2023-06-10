@@ -1,5 +1,5 @@
 <template>
-	<IncidentsBase :incidents="incidents" :loading="loadingIncidents">
+	<IncidentsBase :incidents="$incidentsStore.incidents" :loading="$incidentsStore.loadingIncidents">
 		<div class="md:flex justify-between">
 			<div class="prose-sm flex justify-between items-center">
 				<h1>
@@ -14,7 +14,6 @@
 import { storeToRefs } from 'pinia'
 import { nextTick } from 'vue';
 import { useServersStore } from '@/stores/servers';
-import type { IncidentsJoined } from "@martichou/sproot";
 
 import IncidentsBase from '@/components/IncidentsBase.vue';
 
@@ -26,19 +25,13 @@ export default {
 	setup () {
 		const serverStore = useServersStore();
 		const { bertas } = storeToRefs(serverStore)
-		return { serverStore, bertas }
-	},
 
-	data () {
-		return {
-			loadingIncidents: true,
-			incidents: new Array<IncidentsJoined>()
-		}
+		return { bertas }
 	},
 
 	mounted: function () {
 		nextTick(async () => {
-			await this.refreshList();
+			await this.$incidentsStore.refresh(this.bertas.keys(), this);
 		})
 	},
 
@@ -46,31 +39,10 @@ export default {
 		// execute the refresh when the bertas get updated too (in case of new bertas).
 		bertas: {
 			async handler() {
-				await this.refreshList();
+				await this.$incidentsStore.refresh(this.bertas.keys(), this);
 			},
 			deep: true
 		}
 	},
-
-	methods: {
-		refreshList: async function() {
-			for (const berta of this.bertas.keys()) {
-				await this.$http.get(this.$serverBase(berta) + "/api/incidents")
-					.then((resp) => {
-						resp.data.forEach((elem: IncidentsJoined) => {
-							const idx = this.incidents.findIndex(el => el.id == elem.id);
-							if (idx !== -1) {
-								this.incidents[idx] = elem
-							} else {
-								this.incidents.push(elem);
-							}
-						})
-					}).catch((err) => {
-						// TODO - Handle errors
-						console.error(err)
-					}).finally(() => this.loadingIncidents = false);
-			}
-		}
-	}
 }
 </script>
