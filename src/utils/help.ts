@@ -63,3 +63,7 @@ export function opt<T>(v?: T) {
 export function optUn<T>(v?: T) {
 	return v ?? undefined;
 }
+
+export function arrSum(arr: Array<number>) {
+	return arr.reduce((a, b) => a + b, 0);
+}
