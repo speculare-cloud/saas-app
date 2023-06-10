@@ -93,7 +93,7 @@
 						<div class="relative h-28 w-28 flex justify-center items-center">
 							<Doughnut v-if="arrSum(incidentsStatus) !== 0 && isData" :options="dognOpt" :data="(isData as any)" />
 							<div v-else>
-								No incidents
+								No active incidents
 							</div>
 						</div>
 					</div>
@@ -183,10 +183,11 @@ export default {
 			]
 		},
 		incidentsStatus() {
-			const critCount = this.incidents.filter((el) => el.severity === 1).length;
+			const active = this.incidents.filter((el) => el.resolved_at === null)
+			const critCount = active.filter((el) => el.severity === 1).length;
 			return [
 				critCount,
-				this.incidents.length - critCount,
+				active.length - critCount,
 			]
 		}
 	},
