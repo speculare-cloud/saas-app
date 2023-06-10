@@ -25,7 +25,7 @@ export default {
 				console.log(resp);
 				// Redirect to the Home page
 				this.store.logged(resp.data);
-				this.$router.replace({ name: 'Base' });
+				this.$router.replace({ name: 'Overview' });
 			}).catch((err) => {
 				console.error("Error", err);
 				// Redirect to the Login page

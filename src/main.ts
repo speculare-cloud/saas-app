@@ -74,7 +74,7 @@ router.beforeEach(async (toRoute, _fromRoute, next) => {
 				if (toRoute.meta.accessibleBoth) {
 					next()
 				} else {
-					next({ name: 'Servers' })
+					next({ name: 'Overview' })
 				}
 			}).catch(() => {
 				mainStore.logout()
