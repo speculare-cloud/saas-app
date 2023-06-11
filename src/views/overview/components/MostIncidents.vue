@@ -51,7 +51,7 @@ export default {
 				if (idx !== -1) {
 					arr[idx] = {
 						...arr[idx],
-						count: arr[idx].count++
+						count: arr[idx].count + 1
 					}
 				} else {
 					arr.push({

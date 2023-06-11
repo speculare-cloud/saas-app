@@ -27,6 +27,16 @@ export const useIncidentsStore = defineStore('incidents', {
 						console.error(err)
 					}).finally(() => this.loadingIncidents = false);
 			}
+
+			this.incidents.push({
+				host_uuid: "azrty",
+				hostname: "hello",
+			} as any);
+
+			this.incidents.push({
+				host_uuid: "azrty",
+				hostname: "hello",
+			} as any);
 		},
 	}
 })
