@@ -63,7 +63,7 @@ export default {
 			});
 
 			arr.sort((a, b) => {
-				if (a.count > b.count) {
+				if (a.count < b.count) {
 					return 1
 				}
 
