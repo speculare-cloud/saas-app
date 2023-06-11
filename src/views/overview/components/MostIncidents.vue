@@ -2,7 +2,7 @@ import { groupBy } from '../../../utils/help';
 <template>
 	<div class="flex flex-col p-5 bg-base-300 shadow-md rounded-lg gap-1">
 		<h6 class="text-[#c5c8cb]">
-			Reliability score
+			Reliability
 		</h6>
 		<p class="text-[13px]">
 			Breakdown of the least reliable servers (by incidents count)
