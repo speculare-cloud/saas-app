@@ -405,3 +405,7 @@ td.min {
 .cm-content {
 	padding: 0!important;
 }
+
+.alternate tbody tr:nth-child(even) td {
+	background-color: #25262866;
+}

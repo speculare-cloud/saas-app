@@ -8,8 +8,8 @@ import { groupBy } from '../../../utils/help';
 			Breakdown of the least reliable servers (by incidents count)
 		</p>
 		<div class="pt-4">
-			<div class="overflow-x-auto rounded-lg shadow">
-				<table class="table w-full text-[#c5c8cb]">
+			<div class="overflow-x-auto rounded-lg">
+				<table class="table alternate w-full text-[#c5c8cb]">
 					<thead>
 						<tr>
 							<th>Server</th>
