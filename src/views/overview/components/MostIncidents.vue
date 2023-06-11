@@ -22,7 +22,7 @@ import { groupBy } from '../../../utils/help';
 						<tr v-for="el in leaderboard" :key="el.host_uuid">
 							<td>{{ el.hostname }}</td>
 							<td class="text-right">
-								{{ el.count }}
+								{{ el.count >= 100 ? '100+' : el.count }}
 							</td>
 						</tr>
 					</tbody>
