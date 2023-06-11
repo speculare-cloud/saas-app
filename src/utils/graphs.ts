@@ -47,3 +47,9 @@ export function rebuildGraph (vm: GraphComponents, newVal, oldVal, grouped = fal
 		}
 	}
 }
+
+export const dognOpt = {
+	responsive: true,
+	borderWidth: 0,
+	cutout: "80%"
+};
