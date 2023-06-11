@@ -19,10 +19,10 @@ import { groupBy } from '../../../utils/help';
 						</tr>
 					</thead>
 					<tbody>
-						<tr v-for="el in leaderboard" :key="el[0]">
-							<td>{{ el[1].hostname }}</td>
+						<tr v-for="el in leaderboard" :key="el.host_uuid">
+							<td>{{ el.hostname }}</td>
 							<td class="text-right">
-								{{ el[1].count }}
+								{{ el.count }}
 							</td>
 						</tr>
 					</tbody>
@@ -36,7 +36,7 @@ import { groupBy } from '../../../utils/help';
 import { groupBy } from "@/utils/help";
 
 export default {
-	name: 'ActiveIncidents',
+	name: 'MostIncidents',
 
 	setup() {
 		return { groupBy }
@@ -70,6 +70,8 @@ export default {
 				return -1
 			});
 			arr.slice(0, 5);
+
+			console.log(arr);
 
 			return arr;
 		}
