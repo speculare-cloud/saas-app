@@ -410,9 +410,11 @@ td.min {
 	background-color: #25262866;
 }
 
-#overview > div {
-	max-height: 250px;
-	min-height: 250px;
+@media (min-width: 768px) {
+	#overview > div {
+		max-height: 250px;
+		min-height: 250px;
+	}
 }
 
 .scroll-bg-300 {
