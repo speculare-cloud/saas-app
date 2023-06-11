@@ -67,3 +67,10 @@ export function optUn<T>(v?: T) {
 export function arrSum(arr: Array<number>) {
 	return arr.reduce((a, b) => a + b, 0);
 }
+
+export function groupBy(xs: Array<any>, key: string) {
+	return xs.reduce(function(rv, x) {
+		(rv[x[key]] = rv[x[key]] || []).push(x);
+		return rv;
+	}, {});
+}

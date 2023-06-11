@@ -24,13 +24,16 @@
 				</div>
 				<ServersStatus />
 				<ActiveIncidents />
+				<MostIncidents />
 			</div>
 		</div>
 	</section>
 </template>
 
 <script lang="ts">
-import { defineAsyncComponent } from 'vue'
+import { useServersStore } from '@/stores/servers';
+import { storeToRefs } from 'pinia';
+import { defineAsyncComponent, nextTick } from 'vue'
 
 export default {
 	name: 'Billing',
@@ -41,7 +44,31 @@ export default {
 		}),
 		ServersStatus: defineAsyncComponent({
 			loader: () => import('@/views/overview/components/ServersStatus.vue'),
+		}),
+		MostIncidents: defineAsyncComponent({
+			loader: () => import('@/views/overview/components/MostIncidents.vue'),
 		})
+	},
+
+	setup() {
+		const serverStore = useServersStore();
+
+		const { bertas } = storeToRefs(serverStore)
+
+		return { bertas }
+	},
+
+	watch: {
+		bertas: {
+			async handler() {
+				await this.$incidentsStore.refresh(this.bertas.keys(), this);
+			},
+			deep: true
+		}
+	},
+
+	mounted() {
+		nextTick(async () => await this.$incidentsStore.refresh(this.bertas.keys(), this))
 	},
 }
 </script>

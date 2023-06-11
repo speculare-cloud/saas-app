@@ -43,7 +43,6 @@ import { Chart as ChartJS, ArcElement, type ChartData } from 'chart.js'
 import { nextTick } from 'vue'
 import { opt, arrSum } from '../../../utils/help';
 import { storeToRefs } from 'pinia';
-import { useServersStore } from '@/stores/servers';
 import { useIncidentsStore } from '../../../stores/incidents';
 import { dognOpt } from '../../../utils/graphs';
 
@@ -57,13 +56,11 @@ export default {
 	},
 
 	setup() {
-		const serverStore = useServersStore();
 		const incidentsStore = useIncidentsStore();
 
-		const { bertas } = storeToRefs(serverStore)
 		const { incidents } = storeToRefs(incidentsStore);
 
-		return { bertas, incidents, dognOpt, arrSum }
+		return { incidents, dognOpt, arrSum }
 	},
 
 	data() {
@@ -79,12 +76,6 @@ export default {
 			},
 			deep: true
 		},
-		bertas: {
-			async handler() {
-				await this.$incidentsStore.refresh(this.bertas.keys(), this);
-			},
-			deep: true
-		}
 	},
 
 	computed: {
@@ -99,11 +90,7 @@ export default {
 	},
 
 	mounted() {
-		nextTick(async () => {
-			this.refreshIncidentsStatus();
-
-			await this.$incidentsStore.refresh(this.bertas.keys(), this);
-		})
+		nextTick(async () => this.refreshIncidentsStatus())
 	},
 
 	methods: {
