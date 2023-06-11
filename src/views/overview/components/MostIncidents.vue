@@ -17,7 +17,7 @@ import { groupBy } from '../../../utils/help';
 						</th>
 					</tr>
 				</thead>
-				<tbody>
+				<tbody v-if="leaderboard.length > 0">
 					<tr v-for="el in leaderboard" :key="el.host_uuid">
 						<td>{{ el.hostname }}</td>
 						<td class="text-right">
@@ -26,6 +26,11 @@ import { groupBy } from '../../../utils/help';
 					</tr>
 				</tbody>
 			</table>
+			<section v-if="leaderboard.length === 0" class="mt-10 flex justify-center items-center">
+				<div class="prose-sm max-w-sm">
+					<h3>Nothing to show.</h3>
+				</div>
+			</section>
 		</div>
 	</div>
 </template>

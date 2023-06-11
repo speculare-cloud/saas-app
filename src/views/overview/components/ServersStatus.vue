@@ -6,7 +6,7 @@
 		<p class="text-[13px]">
 			Breakdown of the servers (un.configureds)
 		</p>
-		<div class="mt-4 flex flex-row justify-around items-center gap-20 h-full">
+		<div class="flex-1 mt-4 flex flex-row justify-around items-center gap-20">
 			<div class="text-sm flex flex-row gap-4">
 				<div class="space-y-2">
 					<p class="pl-2 border-l-2 border-[#34D399]">
