@@ -6,7 +6,7 @@
 		<p class="text-[13px]">
 			Breakdown of the active incidents by types accross all servers
 		</p>
-		<div class="pt-4 flex flex-row justify-around items-center gap-20">
+		<div class="mt-4 flex flex-row justify-around items-center gap-20 h-full">
 			<div class="text-sm flex flex-row gap-4">
 				<div class="space-y-2">
 					<p class="pl-2 border-l-2 border-[#FF4136]">
