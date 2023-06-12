@@ -20,8 +20,8 @@ export async function testAlert (vm: AlertTestingComponent) {
 
 export async function performTest(vm: BaseHttp, berta: string, alert: AlertsDTO, then: ((resp) => void) | null, catched: ((err) => void) | null) {
 	await vm.$http.post(vm.$serverBase(berta) + "/api/alerts/test", alert)
-		.then((resp) => {
-			if (then != null) then(resp);
+		.then(async (resp) => {
+			if (then != null) await then(resp);
 		}).catch((err) => {
 			if (catched != null) catched(err);
 		});

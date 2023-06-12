@@ -100,16 +100,20 @@ export default {
 			// 1. Test it against the test endpoint
 			// 2. Save it into the servers
 			await this.toDuplicate.map(async (el) => {
-				await performTest(this, el.k.key.berta, el.a, (resp) => {
-					console.log("Resp", resp);
+				await performTest(this, el.k.key.berta, el.a, async () => {
+					// Save the alert into the DB
+					await this.$http.post(this.$serverBase(el.k.key.berta) + "/api/alerts", el.a)
+						.then((resp) => {
+							console.log("Alert saved success:", resp);
+						}).catch((err) => {
+							console.error("post: err:", err);
+						});
 				}, (err) => {
-					console.error("Error", err);
+					// TODO
+					console.error("performTest: err", err)
 				});
-
 				return;
 			});
-
-
 
 			this.duplicateLoading = false;
 		},
