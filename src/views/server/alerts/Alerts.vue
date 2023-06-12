@@ -59,14 +59,21 @@
 						</div>
 					</div>
 
-					<div class="flex flex-row justify-end gap-2">
-						<button @click="deleteAlert(alert)" class="invisible opacity-0 group-hover:visible group-hover:opacity-100 btn btn-md btn-error transition-opacity">
-							<span v-if="deleteLoading != alert.id">delete</span>
-							<span v-else>loading...</span>
-						</button>
-						<label for="my-modal-4" class="btn btn-md group-hover:btn-info" @click="defineEditingAlert(alert)">
-							Edit
+					<div class="flex flex-row justify-between gap-2">
+						<label for="my-modal-5" @click="defineDuplicateAlert(alert)" class="invisible opacity-0 group-hover:visible group-hover:opacity-100 btn btn-md bg-transparent border-none transition-opacity text-[#d5cece]">
+							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" class="h-6 w-6" fill="currentColor">
+								<path d="M260-200q-24 0-42-18t-18-42v-160h60v160h560v-500H260v160h-60v-220q0-24 18-42t42-18h560q24 0 42 18t18 42v560q0 24-18 42t-42 18H260ZM140-80q-24 0-42-18t-18-42v-620h60v620h620v60H140Zm360-264-42-42 93-94H200v-60h351l-93-94 42-42 166 166-166 166Z" />
+							</svg>
 						</label>
+						<div class="space-x-2">
+							<button @click="deleteAlert(alert)" class="invisible opacity-0 group-hover:visible group-hover:opacity-100 btn btn-md btn-error transition-opacity">
+								<span v-if="deleteLoading != alert.id">delete</span>
+								<span v-else>loading...</span>
+							</button>
+							<label for="my-modal-4" class="btn btn-md group-hover:btn-info" @click="defineEditingAlert(alert)">
+								Edit
+							</label>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -79,6 +86,12 @@
 			@close="defineEditingAlert(null)"
 			@update:alert="(alert) => alertUpdated(alert)"
 			@update:editing="(alert) => editingAlert.editing = alert" />
+
+		<input type="checkbox" id="my-modal-5" class="modal-toggle" ref="duplicateToggle">
+		<DuplicateAlertModal
+			v-if="duplicateAlert"
+			:alert="duplicateAlert"
+			@close="defineEditingAlert(null)" />
 	</section>
 </template>
 
@@ -92,6 +105,7 @@ export default {
 
 	components: {
 		UpdateAlertModal: defineAsyncComponent(() => import('@/components/UpdateAlertModal.vue')),
+		DuplicateAlertModal: defineAsyncComponent(() => import('@/components/DuplicateAlertModal.vue')),
 	},
 
 	data() {
@@ -103,6 +117,8 @@ export default {
 			},
 			activeLoading: null,
 			deleteLoading: null,
+
+			duplicateAlert: opt<AlertsDTO>(),
 		}
 	},
 
@@ -113,7 +129,7 @@ export default {
 	},
 
 	methods: {
-		defineEditingAlert: function(alert) {
+		defineEditingAlert: function(alert: AlertsDTO | null) {
 			if (alert == null) {
 				this.editingAlert = {
 					original: null,
@@ -128,6 +144,16 @@ export default {
 				original: alert,
 				editing: Object.assign({}, alert)
 			}
+		},
+		defineDuplicateAlert: function(alert: AlertsDTO | null) {
+			if (alert == null) {
+				this.duplicateAlert = null;
+				// Force close to avoid issues (fails to reopen on first click next)
+				(this.$refs.duplicateToggle as any).checked = false;
+				return;
+			}
+
+			this.duplicateAlert = alert;
 		},
 		refreshList: async function() {
 			await this.$http.get(this.$serverBase(this.$route.params.berta as string) + "/api/alerts?uuid=" + this.$route.params.uuid)

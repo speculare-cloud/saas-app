@@ -65,3 +65,9 @@ interface AlertTestingComponent {
 	$route: Route;
 	$http: AxiosInstance;
 }
+
+interface BaseHttp {
+	$http: AxiosInstance;
+	$cdcBase: (b: string) => string;
+	$serverBase: (b: string) => string;
+}
