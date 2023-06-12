@@ -6,7 +6,7 @@
 
 			<div class="overflow-y-auto scroll-bg-base max-h-72 grid grid-cols-1 md:grid-cols-2 gap-4">
 				<label
-					v-for="s in $serversStore.configuredKeys" :key="s.host.uuid" :for="'s-' + s.host.uuid"
+					v-for="s in $serversStore.configuredKeys.filter((el) => el.host.uuid !== $route.params.uuid)" :key="s.host.uuid" :for="'s-' + s.host.uuid"
 					class="py-3 px-4 border rounded-lg flex flex-row items-center border-gray-500 border-opacity-25 gap-4 cursor-pointer hover:bg-white hover:bg-opacity-5">
 					<input
 						:id="'s-' + s.host.uuid" type="checkbox" :checked="isChecked(s)" class="checkbox checkbox-sm"
