@@ -25,7 +25,8 @@
 							</td>
 							<td class="flex flex-col">
 								<span class="text-sm text-white">{{ incident.hostname }}</span>
-								<span class="text-[13px]">↪ {{ incident.alert.name }} ({{ incident.alert.info ?? incident.alert.lookup }})</span>
+								<span class="text-[13px]" v-if="incident.alert">↪ {{ incident.alert.name }} ({{ incident.alert.info ?? incident.alert.lookup }})</span>
+								<span class="text-[13px]" v-else>↪ delete alert</span>
 							</td>
 							<td>
 								{{ fmtStarted(incident.started_at) }}
