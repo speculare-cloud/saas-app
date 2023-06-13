@@ -28,7 +28,7 @@
 					</svg>
 				</label>
 				<p v-if="duplicateLoading && successTo.length >= 1" class="text-sm">{{ successTo[successTo.length - 1].a.hostname }}</p>
-				<button class="btn btn-md btn-success" @click="duplicateAlert()" :disabled="toDuplicate.length === 0">
+				<button class="btn btn-md btn-success" @click="duplicateAlert()" :disabled="toDuplicate.length === 0 || done">
 					{{ duplicateLoading ? 'loading...' : 'apply' }}
 				</button>
 			</div>
