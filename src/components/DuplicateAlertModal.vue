@@ -4,7 +4,7 @@
 			<h3 class="text-lg font-bold">{{ alert.name }}</h3>
 			<p>Duplicate this alert to others servers by selecting the targeted servers in the list below.</p>
 
-			<div class="overflow-y-auto scroll-bg-base max-h-72 grid grid-cols-1 md:grid-cols-2 gap-4">
+			<div class="overflow-y-auto scroll-bg-base max-h-72 grid grid-cols-1 md:grid-cols-2 gap-4" v-if="!done">
 				<label
 					v-for="s in $serversStore.configuredKeys.filter((el) => el.host.uuid !== $route.params.uuid)" :key="s.host.uuid" :for="'s-' + s.host.uuid"
 					class="py-3 px-4 border rounded-lg flex flex-row items-center border-gray-500 border-opacity-25 gap-4 cursor-pointer hover:bg-white hover:bg-opacity-5">
@@ -15,7 +15,11 @@
 				</label>
 			</div>
 
-			<div class="modal-action justify-between mt-0">
+			<div v-else class="flex justify-center my-8">
+				<p>Duplicated to {{ successTo.length }} servers.</p>
+			</div>
+
+			<div class="modal-action justify-between mt-0 items-center">
 				<label for="my-modal-5" class="btn btn-md" @click="$emit('close')">
 					<svg
 						class="fill-current text-white" xmlns="http://www.w3.org/2000/svg" width="18" height="18"
@@ -23,6 +27,7 @@
 						<path d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z" />
 					</svg>
 				</label>
+				<p v-if="duplicateLoading && successTo.length >= 1" class="text-sm">{{ successTo[successTo.length - 1].a.hostname }}</p>
 				<button class="btn btn-md btn-success" @click="duplicateAlert()" :disabled="toDuplicate.length === 0">
 					{{ duplicateLoading ? 'loading...' : 'apply' }}
 				</button>
@@ -54,8 +59,10 @@ export default {
 		return {
 			testLoading: false,
 			duplicateLoading: false,
+			done: false,
 
 			toDuplicate: new Array<DupAlert>,
+			successTo: new Array<DupAlert>,
 		}
 	},
 
@@ -95,26 +102,28 @@ export default {
 		},
 		duplicateAlert: async function() {
 			if (this.duplicateLoading) return;
+			this.duplicateLoading = true;
 
 			// For each element inside toDuplicate
 			// 1. Test it against the test endpoint
 			// 2. Save it into the servers
-			await this.toDuplicate.map(async (el) => {
-				await performTest(this, el.k.key.berta, el.a, async () => {
-					// Save the alert into the DB
-					await this.$http.post(this.$serverBase(el.k.key.berta) + "/api/alerts", el.a)
-						.then((resp) => {
-							console.log("Alert saved success:", resp);
-						}).catch((err) => {
-							console.error("post: err:", err);
-						});
-				}, (err) => {
-					// TODO
-					console.error("performTest: err", err)
-				});
-				return;
-			});
+			await Promise.all(this.toDuplicate.map(async (el) => {
+				await performTest(this, el.k.key.berta, el.a)
+					.then(async () => {
+						console.log("Testing:", el.a.host_uuid);
+						// Save the alert into the DB
+						await this.$http.post(this.$serverBase(el.k.key.berta) + "/api/alerts", el.a)
+							.then(() => this.successTo.push(el))
+							.catch((err) => {
+								console.error("post: err:", err);
+							});
+					}).catch((err) => {
+						// TODO
+						console.error("performTest: err", err)
+					});
+			}));
 
+			this.done = true
 			this.duplicateLoading = false;
 		},
 	}
