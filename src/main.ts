@@ -68,7 +68,7 @@ router.beforeEach(async (toRoute, _fromRoute, next) => {
 	if (toRoute.meta.requireAuth && !mainStore.isLogged) {
 		next({ name: 'Login' })
 	} else if (!toRoute.meta.requireAuth) {
-		await client.get(app.config.globalProperties.$authBase + '/api/whoami')
+		await client.get(app.config.globalProperties.$authBase + '/api/whoami', {timeout: 3000})
 			.then(async (resp) => {
 				mainStore.logged(resp.data)
 				if (toRoute.meta.accessibleBoth) {
