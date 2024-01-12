@@ -24,7 +24,7 @@
 				</div>
 				<ServersStatus />
 				<ActiveIncidents />
-				<MostIncidents />
+				<MostIncidents class="col-span-2" />
 			</div>
 		</div>
 	</section>
