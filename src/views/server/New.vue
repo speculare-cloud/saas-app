@@ -45,8 +45,8 @@
 				<div class="overflow-hidden" style="border-radius: var(--rounded-box, 1rem);">
 					<div class="flex-2 mockup-code">
 						<pre data-prefix="1"><code class="code-unstyled">curl https://speculare.cloud/some_random_script.sh | bash</code></pre>
-						<pre v-if="apikey?.host_uuid === null" data-prefix="2" class="bg-warning text-warning-content"><code class="code-unstyled">Waiting for data...</code></pre>
-						<pre v-if="apikey?.host_uuid !== null" data-prefix="2" class="bg-success text-success-content"><code class="code-unstyled">Success!</code></pre>
+						<pre v-if="apikey?.host_uuid == null" data-prefix="2" class="bg-warning text-warning-content"><code class="code-unstyled">Waiting for data...</code></pre>
+						<pre v-if="apikey?.host_uuid != null" data-prefix="2" class="bg-success text-success-content"><code class="code-unstyled">Success!</code></pre>
 					</div>
 				</div>
 				<div class="flex-1 prose-sm xl:flex flex-col justify-center align-middle">
@@ -135,6 +135,7 @@ export default {
 				}).catch((err) => {
 					// TODO - Handle errors
 					console.log(err);
+					alert("Unknown error, try again...");
 				});
 		},
 		getKeyInfo: async function() {
@@ -146,6 +147,7 @@ export default {
 				}).catch((err) => {
 					// TODO - Handle errors
 					console.log(err);
+					alert("Unknown error, try again...");
 				});
 		},
 		wsMessageHandle: async function(event) {
