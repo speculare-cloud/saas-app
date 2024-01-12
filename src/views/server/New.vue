@@ -104,7 +104,7 @@ export default {
 
 	mounted: function () {
 		nextTick(async () => {
-			if (this.$route.params.kid === null) await this.generateKey();
+			if (this.$route.params.kid == null) await this.generateKey();
 			else await this.getKeyInfo();
 
 			if (this.apikey == null) return;
