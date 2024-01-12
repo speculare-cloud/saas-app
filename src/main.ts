@@ -42,7 +42,7 @@ const client = axios.create({
 app.config.globalProperties.$http = client
 
 function getBaseCDCUrl (berta) {
-	return cdcOverride || 'wss://rt.' + berta + '.speculare.cloud:9641'
+	return cdcOverride || 'wss://rt.' + berta + '.speculare.cloud'
 }
 
 app.config.globalProperties.$cdcBase = getBaseCDCUrl
