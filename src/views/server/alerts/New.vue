@@ -24,10 +24,52 @@
 		</div>
 		<div class="mt-12 mb-12">
 			<div class="flex flex-col xl:flex-row xl:space-x-20 space-y-8 xl:space-y-0">
-				<div class="flex-1 prose-sm xl:flex flex-col align-middle pt-10">
+				<div class="flex-1 prose-sm xl:flex flex-col align-middle pt-10 max-w-xs">
 					<h3>Define your alert details</h3>
 					<p class="mt-3 text-[#c5c8cb] text-sm">
 						The first step is to define your alert details, such as the targeted metrics, etc.
+					</p>
+					<span class="mt-12 font-semibold">Table</span>
+					<p>
+						Any one of the following:
+					</p>
+					<div class="flex flex-row flex-wrap gap-2">
+						<span
+							v-for="t in tables" :key="t"
+							class="bg-gray-700 text-gray-300 text-xs font-medium px-2.5 py-0.5 rounded">
+							{{ t }}
+						</span>
+					</div>
+					<span class="mt-12 font-semibold">Lookup query</span>
+					<p>
+						<b>aggr</b><br>
+						Any of the following
+					</p>
+					<div class="flex flex-row flex-wrap gap-2">
+						<span
+							v-for="a in aggr" :key="a"
+							class="bg-gray-700 text-gray-300 text-xs font-medium px-2.5 py-0.5 rounded">
+							{{ a }}
+						</span>
+					</div>
+					<p>
+						<b>mode</b><br>
+						Any of the following
+					</p>
+					<div class="flex flex-row flex-wrap gap-2">
+						<span
+							v-for="m in mode" :key="m"
+							class="bg-gray-700 text-gray-300 text-xs font-medium px-2.5 py-0.5 rounded">
+							{{ m }}
+						</span>
+					</div>
+					<p>
+						<b>timeframe</b><br>
+						Regular timeframe like '10m'
+					</p>
+					<p>
+						<b>column</b><br>
+						Any numerical column of the table
 					</p>
 				</div>
 				<div class="flex-2 flex flex-col gap-4 bg-base-300 rounded-lg shadow px-6 py-8">
@@ -51,10 +93,10 @@
 
 					<div class="form-control">
 						<label class="label">
-							<span class="label-text">Which metric</span>
+							<span class="label-text">Which table</span>
 						</label>
 						<input
-							v-model="alert.table" type="text" placeholder="enter which metric"
+							v-model="alert.table" type="text" placeholder="enter which table"
 							class="input input-bordered w-full h-10 form-control-custom focus:outline-none">
 					</div>
 
@@ -66,13 +108,13 @@
 							v-model="alert.lookup" type="text" placeholder="enter your lookup query"
 							class="input input-bordered w-full h-10 form-control-custom focus:outline-none">
 						<label class="label flex-col items-start">
-							<span class="label-text">↪ [aggr] [mode] [timeframe] of [table] {over} {table}</span>
+							<span class="label-text">↪ [aggr] [mode] [timeframe] of [column] {over} {column}</span>
 						</label>
 					</div>
 
 					<div class="form-control">
 						<label class="label">
-							<span class="label-text">Timing</span>
+							<span class="label-text">Timing (in seconds)</span>
 						</label>
 						<input
 							v-model="alert.timing" type="number" placeholder="how often to run (in s)"
@@ -201,8 +243,11 @@ export default {
 		const handleReady = (payload) => {
 			view.value = payload.view
 		}
+		const tables = ["cpustats", "cputimes", "disks", "hosts", "ioblocks", "ionets", "loadavg", "memory", "swap"]
+		const aggr = ["avg", "sum", "min", "max", "count"]
+		const mode = ["abs", "pct"]
 
-		return { extensions, handleReady, testAlert };
+		return { extensions, handleReady, testAlert, tables, aggr, mode };
 	},
 
 	data() {
